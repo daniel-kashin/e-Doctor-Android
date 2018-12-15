@@ -1,0 +1,114 @@
+ext {
+    androidBuildToolsVersion = '28.0.3'
+    androidMinSdkVersion = 19
+    androidMinSdkVersionDev = 21
+    androidTargetSdkVersion = 28
+    androidCompileSdkVersion = 28
+
+    // Libraries
+    androidSupportVersion = '28.0.0'
+    daggerVersion = '2.14.1'
+    retrofitVersion = '2.3.0'
+    okHttpVersion = '3.8.1'
+    storioVersion = '1.13.0'
+    awsVersion = '2.6.30'
+    leakCanaryVersion = '1.5.1'
+    blockCanaryVersion = '1.5.0'
+    glideVersion = '4.5.0'
+
+    // Testing
+    robolectricVersion = '4.0-beta-2'
+    espressoVersion = '2.2.2'
+    spekVersion = '1.1.5'
+
+    javaDependencies = [
+            kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
+            kotlinReflect           : "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion",
+            rxJava2                 : "io.reactivex.rxjava2:rxjava:2.1.1",
+            rxKotlin2               : "io.reactivex.rxjava2:rxkotlin:2.1.0",
+            rxRelay2                : "com.jakewharton.rxrelay2:rxrelay:2.0.0",
+
+            dagger                  : "com.google.dagger:dagger:$daggerVersion",
+            daggerCompiler          : "com.google.dagger:dagger-compiler:$daggerVersion",
+            javaxAnnotation         : "javax.annotation:jsr250-api:1.0",
+            gson                    : "com.google.code.gson:gson:2.8.2",
+
+            // Network
+            retrofit                : "com.squareup.retrofit2:retrofit:$retrofitVersion",
+            retrofitRxJavaAdapter   : "com.squareup.retrofit2:adapter-rxjava:$retrofitVersion",
+            retrofitRxJava2Adapter  : "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion",
+            retrofitConverterGson   : "com.squareup.retrofit2:converter-gson:$retrofitVersion",
+            retrofitConverterScalars: "com.squareup.retrofit2:converter-scalars:$retrofitVersion",
+            okHttp                  : "com.squareup.okhttp3:okhttp:$okHttpVersion",
+            okHttpLoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
+    ]
+
+    androidDependencies = [
+            // Support
+            supportAnnotations        : "com.android.support:support-annotations:$androidSupportVersion",
+            appCompat                 : "com.android.support:appcompat-v7:$androidSupportVersion",
+            supportV4                 : "com.android.support:support-v4:$androidSupportVersion",
+            supportV13                : "com.android.support:support-v13:$androidSupportVersion",
+            cardView                  : "com.android.support:cardview-v7:$androidSupportVersion",
+            recyclerView              : "com.android.support:recyclerview-v7:$androidSupportVersion",
+            palette                   : "com.android.support:palette-v7:$androidSupportVersion",
+            design                    : "com.android.support:design:$androidSupportVersion",
+            customTabs                : "com.android.support:customtabs:$androidSupportVersion",
+            percent                   : "com.android.support:percent:$androidSupportVersion",
+            vectorDrawable            : "com.android.support:support-vector-drawable:$androidSupportVersion",
+            multidex                  : "com.android.support:multidex:1.0.1",
+            constraintLayout          : 'com.android.support.constraint:constraint-layout:1.1.3',
+
+            // Glide
+            glide                     : "com.github.bumptech.glide:glide:$glideVersion",
+            glideOkHttp3              : "com.github.bumptech.glide:okhttp3-integration:$glideVersion",
+            glideCompiler             : "com.github.bumptech.glide:compiler:$glideVersion",
+
+            // Rx
+            rxAndroid2                : "io.reactivex.rxjava2:rxandroid:2.0.1",
+            rxBinding2                : "com.jakewharton.rxbinding2:rxbinding:2.0.0",
+
+            // Database
+            storio                    : "com.pushtorefresh.storio:sqlite:$storioVersion",
+            storioAnnotations         : "com.pushtorefresh.storio:sqlite-annotations:$storioVersion",
+            storioAnnotationsProcessor: "com.pushtorefresh.storio:sqlite-annotations-processor:$storioVersion",
+
+            // Profiling
+            leakCanary                : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion",
+            leakCanaryNoOp            : "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion",
+            blockCanary               : "com.github.markzhai:blockcanary-android:$blockCanaryVersion",
+            blockCanaryNoOp           : "com.github.markzhai:blockcanary-no-op:$blockCanaryVersion",
+
+            // Other
+            conceal                   : "com.facebook.conceal:conceal:1.1.3@aar",
+            flowLayout                : "org.apmem.tools:layouts:1.10@aar",
+            flexbox                   : "com.google.android:flexbox:1.0.0",
+            filedownloader            : "com.liulishuo.filedownloader:library:1.6.8",
+            blurry                    : "jp.wasabeef:blurry:2.1.1",
+            lottie                    : "com.airbnb.android:lottie:2.2.5",
+            gestureImageView          : 'com.alexvasilkov:gesture-views:2.5.2',
+            uil                       : 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
+            zendesk                   : 'com.zendesk:support-providers:2.0.0',
+            circlePagerIndicator      : 'me.relex:circleindicator:1.2.2@aar'
+    ]
+
+    //Test
+    testJavaDependencies = [
+            junit              : "junit:junit:4.12",
+            kotlinJunit        : "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion",
+
+            // Mockito
+            mockito            : "org.mockito:mockito-core:2.23.0",
+            mockitoKotlin      : "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0",
+
+            // Spek
+            spekApi            : "org.jetbrains.spek:spek-api:$spekVersion",
+            spekJunitEngine    : "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion",
+            junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0"
+    ]
+
+    testAndroidDependencies = [
+            assertj: "org.assertj:assertj-core:1.7.1"
+    ]
+
+}
