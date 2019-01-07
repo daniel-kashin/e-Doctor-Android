@@ -33,6 +33,12 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+        exclude 'META-INF/io.netty.versions.properties'
+        exclude 'META-INF/INDEX.LIST'
+    }
+
     lintOptions {
         abortOnError false
         xmlReport false
@@ -90,6 +96,11 @@ dependencies {
     implementation javaDependencies.okHttp
     implementation javaDependencies.okHttpLoggingInterceptor
     implementation javaDependencies.gson
+    implementation javaDependencies.scarlet
+    implementation javaDependencies.scarletMoshi
+    implementation javaDependencies.scarletRxJava2
+    implementation javaDependencies.scatletLifecycle
+    implementation javaDependencies.scarletOkHttp
 
     // Social networks
     implementation 'com.vk:androidsdk:1.6.9'
