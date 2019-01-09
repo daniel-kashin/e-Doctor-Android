@@ -15,7 +15,7 @@ ext {
     leakCanaryVersion = '1.5.1'
     blockCanaryVersion = '1.5.0'
     glideVersion = '4.5.0'
-    scarletVersion = '0.2.1-alpha1'
+    scarletVersion = '0.1.6'
 
     // Testing
     robolectricVersion = '4.0-beta-2'
@@ -44,12 +44,11 @@ ext {
             okHttpLoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:$okHttpVersion",
 
             // scarlet
-            scarlet                 : 'com.github.tinder.scarlet:scarlet:0.1.6',
-            scarletMoshi            : 'com.github.tinder.scarlet:scarlet-message-adapter-moshi:0.1.6',
-            scarletSocketIo         : 'com.github.tinder.scarlet:scarlet-protocol-socketio-client:0.1.6',
-            scarletRxJava2          : 'com.github.tinder.scarlet:scarlet-stream-adapter-rxjava2:0.1.6',
-            scatletLifecycle        : 'com.github.tinder.scarlet:scarlet-lifecycle-android:0.1.6',
-            scarletOkHttp           : 'com.github.tinder.scarlet:scarlet-websocket-okhttp:0.1.6'
+            scarlet                 : "com.github.tinder.scarlet:scarlet:$scarletVersion",
+            scarletMoshi            : "com.github.tinder.scarlet:scarlet-message-adapter-moshi:$scarletVersion",
+            scarletRxJava2          : "com.github.tinder.scarlet:scarlet-stream-adapter-rxjava2:$scarletVersion",
+            scatletLifecycle        : "com.github.tinder.scarlet:scarlet-lifecycle-android:$scarletVersion",
+            scarletOkHttp           : "com.github.tinder.scarlet:scarlet-websocket-okhttp:$scarletVersion"
     ]
 
     androidDependencies = [
