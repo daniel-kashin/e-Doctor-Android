@@ -84,6 +84,7 @@ dependencies {
     // Rx
     implementation javaDependencies.rxJava2
     implementation javaDependencies.rxRelay2
+    implementation androidDependencies.rxAndroid
     implementation androidDependencies.rxAndroid2
     implementation 'com.tbruyelle.rxpermissions:rxpermissions:0.8.2@aar'
     implementation 'com.cantrowitz:rxbroadcast:1.1.2'

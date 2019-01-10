@@ -1,13 +1,12 @@
 package com.edoctor.presentation
 
 import android.os.Bundle
-import android.util.Log.d
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.edoctor.R
-import com.edoctor.data.chat.service.MessageService
+import com.edoctor.data.chat.ChatService
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.Scarlet
@@ -22,7 +21,6 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.Authenticator
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,11 +36,6 @@ class MainActivity : AppCompatActivity() {
 
     val okHttpClient by lazy {
         OkHttpClient.Builder()
-            .addInterceptor {
-                HttpLoggingInterceptor { d("Retrofit", it) }
-                    .setLevel(HttpLoggingInterceptor.Level.BODY)
-                    .intercept(it)
-            }
             .authenticator(springAuthenticator)
             .build()
     }
@@ -60,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             .addMessageAdapterFactory(MoshiMessageAdapter.Factory(moshi))
             .addStreamAdapterFactory(RxJava2StreamAdapterFactory())
             .build()
-            .create<MessageService>()
+            .create<ChatService>()
     }
 
     val disposable = CompositeDisposable()
