@@ -1,4 +1,4 @@
-package com.edoctor
+package com.edoctor.presentation
 
 import android.os.Bundle
 import android.util.Log.d
@@ -6,7 +6,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.edoctor.service.MessageService
+import com.edoctor.R
+import com.edoctor.data.chat.service.MessageService
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.Scarlet
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             null
         } else {
             response.request().newBuilder()
-                .header("Authorization", Credentials.basic("danil", "danil"))
+                .header("Authorization", Credentials.basic("android-client", "android-secret"))
                 .build()
         }
     }

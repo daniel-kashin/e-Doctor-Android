@@ -1,4 +1,4 @@
-package com.edoctor.service
+package com.edoctor.data.chat.service
 
 import com.tinder.scarlet.WebSocket
 import com.tinder.scarlet.ws.Receive
