@@ -1,11 +1,11 @@
-package com.edoctor.data.chat.service
+package com.edoctor.data.chat
 
 import com.tinder.scarlet.WebSocket
 import com.tinder.scarlet.ws.Receive
 import com.tinder.scarlet.ws.Send
 import io.reactivex.Flowable
 
-interface MessageService {
+interface ChatService {
     @Receive
     fun observeEvent(): Flowable<WebSocket.Event>
     @Receive

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion androidCompileSdkVersion
@@ -59,6 +60,7 @@ dependencies {
     debugImplementation androidDependencies.leakCanary
     releaseImplementation androidDependencies.leakCanaryNoOp
     testImplementation androidDependencies.leakCanaryNoOp
+    implementation 'com.github.anrwatchdog:anrwatchdog:1.3.0'
 
     // Block
     debugImplementation androidDependencies.blockCanary
@@ -80,6 +82,7 @@ dependencies {
 
     // Dagger
     implementation javaDependencies.dagger
+    kapt javaDependencies.daggerCompiler
 
     // Rx
     implementation javaDependencies.rxJava2

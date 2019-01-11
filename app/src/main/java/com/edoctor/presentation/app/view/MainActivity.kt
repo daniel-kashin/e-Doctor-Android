@@ -1,4 +1,4 @@
-package com.edoctor.presentation
+package com.edoctor.presentation.app.view
 
 import android.os.Bundle
 import android.widget.Button
