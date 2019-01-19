@@ -3,4 +3,18 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="primaryText">#000000</color>
+    <color name="secondaryText">#8a000000</color>
+    <color name="hintText">#61000000</color>
+    <color name="lightHintText">#18000000</color>
+    <color name="lightLightHintText">#06000000</color>
+
+    <color name="lightGrey">#c8b4b4b4</color>
+    <color name="lightLightGrey">#c8dcdcdc</color>
+
+    <color name="secondaryTextWhite">#8affffff</color>
+    <color name="primaryTextWhite">#deffffff</color>
+
+    <color name="navigationBlue">#2e61b4</color>
 </resources>

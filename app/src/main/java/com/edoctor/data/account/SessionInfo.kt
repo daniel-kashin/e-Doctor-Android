@@ -1,12 +1,12 @@
 package com.edoctor.data.account
 
+import com.edoctor.data.remote.entity.UserResult
 import com.edoctor.utils.JavaTime
 import com.edoctor.utils.withHiddenPart
-import com.twitter.sdk.android.core.models.User
 import java.util.concurrent.TimeUnit
 
 data class SessionInfo(
-    val profile: User,
+    val profile: UserResult,
     val refreshToken: RefreshToken,
     val accessToken: AccessToken? = null
 ) {

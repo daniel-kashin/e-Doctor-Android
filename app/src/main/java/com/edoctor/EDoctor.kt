@@ -13,10 +13,7 @@ import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.injection.DaggerApplicationComponent
 import com.edoctor.data.injection.NetworkModule
 import com.edoctor.data.properties.AppProperties
-import com.edoctor.utils.ConnectivityNotifier
-import com.edoctor.utils.CredentialsInterceptor
-import com.edoctor.utils.isNetworkAvailable
-import com.edoctor.utils.session
+import com.edoctor.utils.*
 import com.github.anrwatchdog.ANRWatchDog
 
 open class EDoctor : MultiDexApplication() {
@@ -56,15 +53,15 @@ open class EDoctor : MultiDexApplication() {
     protected open fun initAppComponent(): ApplicationComponent {
         return DaggerApplicationComponent.builder()
             .applicationModule(ApplicationModule(this))
-            .networkModule(NetworkModule(CredentialsInterceptor(this)))
+            .networkModule(NetworkModule(CredentialsInterceptor(this), AnonymousInterceptor()))
             .build()
     }
 
     protected open fun initSession() {
         session.tryToRestore()
-            .toCompletable()
+            .ignoreElement()
             .onErrorComplete()
-            .await()
+            .blockingAwait()
     }
 
     protected open fun initPreferences() {

@@ -95,6 +95,7 @@ dependencies {
     // Network
     implementation javaDependencies.retrofit
     implementation javaDependencies.retrofitRxJavaAdapter
+    implementation javaDependencies.retrofitRxJava2Adapter
     implementation javaDependencies.retrofitConverterGson
     implementation javaDependencies.retrofitConverterScalars
     implementation javaDependencies.okHttp

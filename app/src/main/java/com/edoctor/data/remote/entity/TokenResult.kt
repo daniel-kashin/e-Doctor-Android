@@ -1,4 +1,4 @@
-package com.edoctor.data.remote.result
+package com.edoctor.data.remote.entity
 
 data class TokenResult(
     val accessToken: String,

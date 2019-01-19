@@ -30,7 +30,7 @@ class LaunchActivity : AppCompatActivity() {
         } else {
             overridePendingTransition(0, 0) // to disable activity startup animation
             if (session.isOpen) {
-                state = State.MAIN_LAUNCHED
+                startMainActivity()
             } else {
                 startAuthActivity()
             }

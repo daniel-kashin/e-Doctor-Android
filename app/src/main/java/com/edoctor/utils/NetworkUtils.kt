@@ -2,6 +2,7 @@ package com.edoctor.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.SingleSource
 import java.io.IOException
@@ -37,7 +38,10 @@ fun Throwable.isNoNetworkError(): Boolean =
             || (cause?.isNoNetworkError() ?: false)
 
 
-private fun <T> Single<T>.onErrorConvertRetrofitThrowable(): Single<T> =
+fun <T> Single<T>.onErrorConvertRetrofitThrowable(): Single<T> =
+    onErrorResumeNext { convertRetrofitThrowable<T>(it) }
+
+fun Completable.onErrorConvertRetrofitThrowable(): Completable =
     onErrorResumeNext { convertRetrofitThrowable(it) }
 
 private fun <T> convertRetrofitThrowable(error: Throwable): SingleSource<T> =
@@ -45,4 +49,11 @@ private fun <T> convertRetrofitThrowable(error: Throwable): SingleSource<T> =
         Single.error(NoConnectivityException())
     } else {
         Single.error(error)
+    }
+
+private fun convertRetrofitThrowable(error: Throwable): Completable =
+    if (error.isNoNetworkError()) {
+        Completable.error(NoConnectivityException())
+    } else {
+        Completable.error(error)
     }

@@ -1,8 +1,8 @@
 package com.edoctor.data.account
 
 import com.edoctor.utils.SynchronizedDelegate
-import rx.Completable
-import rx.Single
+import io.reactivex.Completable
+import io.reactivex.Single
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -33,7 +33,8 @@ class SessionManager @Inject constructor(
 
         return sessionStorage.get()
             .doOnSuccess { info -> sessionInfo = info }
-            .map { it != null }
+            .map { true }
+            .toSingle(false)
     }
 
     @Suppress("TooGenericExceptionThrown")
@@ -63,7 +64,7 @@ class SessionManager @Inject constructor(
             Completable.fromAction { isSessionClosingInProgress.set(true) }
                 .andThen(sessionStorage.remove())
                 .onErrorComplete()
-                .doOnCompleted {
+                .doOnComplete {
                     if (sessionInfo != null) {
                         sessionInfo = null
                     }

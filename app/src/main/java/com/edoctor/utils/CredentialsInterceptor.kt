@@ -5,11 +5,10 @@ import com.edoctor.EDoctor
 import com.edoctor.data.account.SessionInfo.AccessToken
 import com.edoctor.data.account.SessionInfo.RefreshToken
 import com.edoctor.data.account.SessionManager
-import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class CredentialsInterceptor(private val context: Application) : Interceptor {
+class CredentialsInterceptor(private val context: Application) : AnonymousInterceptor() {
 
     companion object {
         private const val HTTP_ERROR_EXPIRED_TOKEN = 401
@@ -19,22 +18,14 @@ class CredentialsInterceptor(private val context: Application) : Interceptor {
 
     private val REFRESH_TOKEN_LOCK = Any()
 
-    private val temporaryTokenUsecase by lazy {
-        EDoctor.get(context).applicationComponent.tokenUsecase
-    }
-
-    private val applicationBasicCredentials by lazy {
-        Credentials.basic(EDoctor.applicationKey, EDoctor.applicationSecret)
+    private val authRepository by lazy {
+        EDoctor.get(context).applicationComponent.authRepository
     }
 
     @Suppress("ReturnCount")
     override fun intercept(chain: Interceptor.Chain): Response = context.session.run {
         if (!isOpen) {
-            return chain.proceed(
-                chain.request().newBuilder()
-                    .addHeader(AUTHORIZATION_HEADER, applicationBasicCredentials)
-                    .build()
-            )
+            return super.intercept(chain)
         }
 
         val token = info.accessToken?.takeUnless { it.isExpired() } ?: getFreshestAccessToken(this)
@@ -59,8 +50,8 @@ class CredentialsInterceptor(private val context: Application) : Interceptor {
     }
 
     private fun getFreshestAccessToken(session: SessionManager) = synchronized(REFRESH_TOKEN_LOCK) {
-        temporaryTokenUsecase
-            .getFreshestToken(session.info.refreshToken.value)
+        authRepository
+            .getFreshestTokenByRequestToken(session.info.refreshToken.value)
             .blockingGet()
             .let {
                 val expiresAfter = it.expiresIn.unixTimeToJavaTime() + currentJavaTime()

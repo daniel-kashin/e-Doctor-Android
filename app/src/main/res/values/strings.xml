@@ -1,3 +1,81 @@
-<resources>
-    <string name="app_name">e-Doctor</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" translatable="false" tools:override="true">e-Doctor</string>
+
+    <string name="btn_interesting">Interesting</string>
+    <string name="btn_search">Search</string>
+    <string name="btn_my_excursions">My excursions</string>
+    <string name="btn_account">Account</string>
+
+    <string name="kilometers">km</string>
+    <string name="meters">m</string>
+
+    <string name="open_permission_settings_request_title">Open permission settings?</string>
+    <string name="open_permission_settings_request_message">Please, enable location permission to be able to see your location on the map.</string>
+
+    <string name="open_gps_settings_request_title">Open GPS settings?</string>
+    <string name="open_gps_settings_request_message">Please, turn on GPS to be able to see your location on the map.</string>
+
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="ok" translatable="false">OK</string>
+
+    <string name="try_again">Try again</string>
+    <string name="server_error_message">An error on the server side. Please, try again later.</string>
+    <string name="media_upload_error_message">Unable to upload</string>
+    <string name="empty_bought_excursions">Bought excursions will be shown here</string>
+    <string name="unhandled_error_message">Something gone wrong.</string>
+    <string name="server_login_error_message">Either login or password is incorrect.</string>
+    <string name="server_registration_error_message">The data you typed is invalid.</string>
+
+    <string name="loading_map">Loading map...</string>
+    <string name="loading_json">Loading info...</string>
+    <string name="loading_media">Loading media..</string>
+    <string name="loading">Loading...</string>
+
+    <string name="cancel">Cancel</string>
+
+    <string name="download_excursion">Download excursion</string>
+
+    <string name="search_excursions">Search request</string>
+    <string name="type_search_excursions">Find excursions by address or key phrase</string>
+    <string name="nothing_was_found">There were found nothing. Please, try to change your request.</string>
+
+    <string name="username_error">At least 1 character</string>
+    <string name="password_hint">Password</string>
+    <string name="password_error">At least 1 character</string>
+    <string name="email_hint">Email</string>
+    <string name="email_error">At least 5 characters</string>
+    <string name="first_name_hint">First name</string>
+    <string name="first_name_error">At least 1 character</string>
+    <string name="second_name_hint">Last name</string>
+    <string name="login_button">Log in</string>
+    <string name="log_out_button">Log out</string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="enjoy_zighter">Enjoy Zighter!</string>
+    <string name="new_at_zighter">New at Zighter?</string>
+
+    <string name="your_guide">Your guide</string>
+
+    <string name="you_logged_in_as">You logged in as:</string>
+
+    <string name="rouble" translatable="false">\u20BD</string>
+    <string name="free" translatable="false">FREE</string>
+
+    <string name="map">Route</string>
+    <string name="map_and_media">Media</string>
+    <string name="guide">Guide</string>
+    <string name="network_error_message">An error while trying to download data. Please, check your connection.</string>
+    <string name="personal_recommendation">Your personal recommendation</string>
+    <string name="default_sort">Default</string>
+    <string name="cheapest_sort">From cheapest</string>
+    <string name="expensive_sort">From most expensive</string>
+    <string name="oldest_sort">From oldest</string>
+    <string name="newest_sort">From newest</string>
+
+    <string name="only_route_supported">Media and Guide will be added automatically when adding Route. Thank you for using Zighter.</string>
+    <string name="money_not_supported">Money transfers not supported yet. Please, choose free excursions from the list. Thank you for using Zighter.</string>
+    <string name="route_added">Route has been added to the list of your excursions.</string>
+    <string name="adding_route">Adding route...</string>
+    <string name="adding_exception">Unable to add route. Please, choose another route and try again.</string>
+    <string name="register">Register</string>
 </resources>

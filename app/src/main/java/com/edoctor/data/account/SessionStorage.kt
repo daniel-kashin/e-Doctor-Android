@@ -1,12 +1,12 @@
 package com.edoctor.data.account
 
-import rx.Completable
-import rx.Single
+import io.reactivex.Completable
+import io.reactivex.Maybe
 
 class SessionStorage {
 
-    fun get(): Single<SessionInfo?> =
-        Single.fromCallable {
+    fun get(): Maybe<SessionInfo> =
+        Maybe.fromCallable {
             SessionPreferences.sessionInfo
         }
 

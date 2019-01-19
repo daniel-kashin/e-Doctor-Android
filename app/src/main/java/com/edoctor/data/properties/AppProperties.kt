@@ -8,7 +8,7 @@ object AppProperties {
 
     enum class Key(val key: String) {
         APPLICATION_KEY("application_key"),
-        APPLICATION_SECRET("applicationSecret")
+        APPLICATION_SECRET("application_secret")
     }
 
     private const val FILE_NAME = "edoctor.properties"
