@@ -1,5 +1,6 @@
 package com.edoctor.presentation.app.view
 
+import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.widget.Button
@@ -82,7 +83,7 @@ class WelcomeActivity : BaseActivity<WelcomePresenter, ViewState, Event>("Welcom
                 Toast.makeText(this, "Необычная ошибка", Toast.LENGTH_SHORT).show()
             }
             Event.AuthSuccessEvent -> {
-                Toast.makeText(this, "Успешно", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, MainActivity::class.java))
             }
         }
     }

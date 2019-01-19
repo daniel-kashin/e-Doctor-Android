@@ -2,11 +2,12 @@ package com.edoctor.utils
 
 import android.app.Application
 import com.edoctor.EDoctor
-import com.edoctor.data.account.SessionInfo.AccessToken
-import com.edoctor.data.account.SessionInfo.RefreshToken
+import com.edoctor.data.account.SessionInfo
 import com.edoctor.data.account.SessionManager
 import okhttp3.Interceptor
 import okhttp3.Response
+import retrofit2.HttpException
+import java.io.IOException
 
 class CredentialsInterceptor(private val context: Application) : AnonymousInterceptor() {
 
@@ -50,16 +51,19 @@ class CredentialsInterceptor(private val context: Application) : AnonymousInterc
     }
 
     private fun getFreshestAccessToken(session: SessionManager) = synchronized(REFRESH_TOKEN_LOCK) {
-        authRepository
-            .getFreshestTokenByRequestToken(session.info.refreshToken.value)
-            .blockingGet()
-            .let {
-                val expiresAfter = it.expiresIn.unixTimeToJavaTime() + currentJavaTime()
-                val newRefreshToken = RefreshToken(it.refreshToken)
-                val accessToken = AccessToken(it.tokenType, it.accessToken, expiresAfter)
-                session.update { it.copy(refreshToken = newRefreshToken, accessToken = accessToken) }
-                accessToken
+        try {
+            val tokenResult = authRepository.getFreshestTokenByRequestToken(session.info.refreshToken.value)
+            val expiresAfter = tokenResult.expiresIn.unixTimeToJavaTime() + currentJavaTime()
+            val newRefreshToken = SessionInfo.RefreshToken(tokenResult.refreshToken)
+            val accessToken = SessionInfo.AccessToken(tokenResult.tokenType, tokenResult.accessToken, expiresAfter)
+            session.update { it.copy(refreshToken = newRefreshToken, accessToken = accessToken) }
+            accessToken
+        } catch (e: Exception) {
+            if (e is HttpException && e.code() == 400) {
+                session.close().onErrorComplete().blockingAwait()
             }
+            throw IOException(e)
+        }
     }
 
 }

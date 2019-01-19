@@ -6,4 +6,8 @@ data class TokenResult(
     val refreshToken: String,
     val expiresIn: Long,
     val scope: String
-)
+) {
+    companion object {
+        val EMPTY = TokenResult("", "", "", -1, "")
+    }
+}

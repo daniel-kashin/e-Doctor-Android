@@ -10,6 +10,7 @@ import com.edoctor.utils.onErrorConvertRetrofitThrowable
 import com.edoctor.utils.unixTimeToJavaTime
 import io.reactivex.Completable
 import io.reactivex.Single
+import retrofit2.HttpException
 
 class AuthRepository(
     private val authorizedApi: AuthRestApi,
@@ -17,9 +18,11 @@ class AuthRepository(
     private val sessionManager: SessionManager
 ) {
 
-    fun getFreshestTokenByRequestToken(refreshToken: String): Single<TokenResult> {
-        return anonymousApi.getFreshestTokenByRefreshToken(refreshToken)
-            .onErrorConvertRetrofitThrowable()
+    fun getFreshestTokenByRequestToken(refreshToken: String): TokenResult {
+        val result =  anonymousApi.getFreshestTokenByRefreshToken(refreshToken)
+            .execute()
+
+        return result.body() ?: throw HttpException(result)
     }
 
     fun register(loginData: LoginData): Completable {

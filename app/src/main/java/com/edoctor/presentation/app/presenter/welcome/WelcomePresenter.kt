@@ -7,6 +7,7 @@ import com.edoctor.data.repository.AuthRepository
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.isNoNetworkError
 import com.edoctor.utils.plusAssign
+import com.tinder.scarlet.ShutdownReason.Companion.GRACEFUL
 import io.reactivex.Scheduler
 import javax.inject.Inject
 import javax.inject.Named
@@ -36,6 +37,8 @@ class WelcomePresenter @Inject constructor(
                     sendEvent(Event.UnknownExceptionEvent)
                 }
             })
+
+        GRACEFUL
     }
 
     class ViewState : Presenter.ViewState {
