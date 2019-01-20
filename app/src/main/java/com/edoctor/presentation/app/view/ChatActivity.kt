@@ -3,12 +3,10 @@ package com.edoctor.presentation.app.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.edoctor.R
+import com.edoctor.data.entity.remote.TextMessage
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ChatModule
 import com.edoctor.presentation.app.presenter.chat.ChatPresenter
@@ -16,12 +14,17 @@ import com.edoctor.presentation.app.presenter.chat.ChatPresenter.Event
 import com.edoctor.presentation.app.presenter.chat.ChatPresenter.ViewState
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.utils.CheckedIntentBuilder
+import com.edoctor.utils.MessagesAdapter
 import com.edoctor.utils.lazyFind
+import com.stfalcon.chatkit.messages.MessageInput
+import com.stfalcon.chatkit.messages.MessagesList
 import javax.inject.Inject
 
 class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatFragment") {
 
     companion object {
+        // TODO: replace with id
+        private val EXTRA_SENDER_EMAIL = "SENDER_EMAIL"
         private val EXTRA_RECIPIENT_EMAIL = "RECIPIENT_EMAIL"
     }
 
@@ -30,35 +33,34 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatFragment
 
     override val layoutRes: Int = R.layout.activity_chat
 
-    private val textView by lazyFind<TextView>(R.id.text_view)
-    private val editText by lazyFind<EditText>(R.id.edit_text)
-    private val send by lazyFind<Button>(R.id.send)
-    private val clean by lazyFind<Button>(R.id.clean)
+    private val messageInput by lazyFind<MessageInput>(R.id.message_input)
+    private val messagesList by lazyFind<MessagesList>(R.id.messages_list)
 
+    private lateinit var messagesAdapter: MessagesAdapter<TextMessage>
 
     override fun init(applicationComponent: ApplicationComponent) {
         val recipientEmail = intent.getStringExtra(EXTRA_RECIPIENT_EMAIL)
-        applicationComponent.plus(ChatModule(recipientEmail)).inject(this)
-        presenter.init()
+        val senderEmail = intent.getStringExtra(EXTRA_SENDER_EMAIL)
+        applicationComponent.plus(ChatModule(senderEmail, recipientEmail)).inject(this)
+        presenter.init(senderEmail)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        send.setOnClickListener {
-            textView.text = textView.text.toString() + "onMessageSent: ${editText.text}\n"
-            presenter.sendMessage(editText.text.toString())
+        messageInput.setInputListener { input ->
+            presenter.sendMessage(input.toString())
+            true
         }
 
-        clean.setOnClickListener {
-            textView.text = ""
-        }
-
-        lifecycle
+        messagesAdapter = MessagesAdapter(presenter.senderEmail)
+        messagesList.setAdapter(messagesAdapter)
     }
 
     override fun render(viewState: ViewState) {
-        textView.text = viewState.messages.joinToString(separator = "\n")
+        messagesAdapter.setMessages(viewState.messages) {
+            messagesList.layoutManager?.scrollToPosition(0)
+        }
     }
 
     override fun showEvent(event: Event) {
@@ -72,14 +74,17 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatFragment
         constructor(fragment: Fragment) : super(fragment)
         constructor(context: Context) : super(context)
 
+        private var senderEmail: String? = null
         private var recipientEmail: String? = null
 
         fun recipientEmail(recipientEmail: String) = apply { this.recipientEmail = recipientEmail }
+        fun senderEmail(senderEmail: String) = apply { this.senderEmail = senderEmail }
 
-        override fun areParamsValid() = recipientEmail != null
+        override fun areParamsValid() = recipientEmail != null && senderEmail != null
 
         override fun get() = Intent(context, ChatActivity::class.java)
             .putExtra(EXTRA_RECIPIENT_EMAIL, recipientEmail)
+            .putExtra(EXTRA_SENDER_EMAIL, senderEmail)
 
     }
 

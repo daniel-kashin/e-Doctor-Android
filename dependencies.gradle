@@ -98,7 +98,8 @@ ext {
             gestureImageView          : 'com.alexvasilkov:gesture-views:2.5.2',
             uil                       : 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
             zendesk                   : 'com.zendesk:support-providers:2.0.0',
-            circlePagerIndicator      : 'me.relex:circleindicator:1.2.2@aar'
+            circlePagerIndicator      : 'me.relex:circleindicator:1.2.2@aar',
+            chatKit                   : 'com.github.stfalcon:chatkit:0.3.3'
     ]
 
     //Test

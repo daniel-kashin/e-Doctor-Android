@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import com.edoctor.EDoctor
 import com.edoctor.R
 
 class PickDoctorFragment : Fragment() {
@@ -16,10 +17,13 @@ class PickDoctorFragment : Fragment() {
             val editText = view.findViewById<EditText>(R.id.edit_text)
             val button = view.findViewById<Button>(R.id.button)
 
-            button.setOnClickListener {
-                ChatActivity.IntentBuilder(this)
-                    .recipientEmail(editText.text.toString())
-                    .start()
+            (activity?.application as? EDoctor)?.applicationComponent?.sessionManager?.runIfOpened { sessionInfo ->
+                button.setOnClickListener {
+                    ChatActivity.IntentBuilder(this)
+                        .recipientEmail(editText.text.toString())
+                        .senderEmail(sessionInfo.profile.email)
+                        .start()
+                }
             }
         }
     }

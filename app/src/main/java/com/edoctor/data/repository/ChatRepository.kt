@@ -15,6 +15,7 @@ import io.reactivex.Flowable
 import java.util.*
 
 class ChatRepository(
+    val senderEmail: String,
     val recipientEmail: String,
     val chatService: ChatService,
     val sessionManager: SessionManager
@@ -30,17 +31,15 @@ class ChatRepository(
     }
 
     fun sendMessage(message: String) {
-        sessionManager.runIfOpened { sessionInfo ->
-            chatService.sendMessage(
-                TextMessage(
-                    UUID.randomUUID().toString(),
-                    sessionInfo.profile.email,
-                    recipientEmail,
-                    System.currentTimeMillis().javaTimeToUnixTime(),
-                    message
-                )
+        chatService.sendMessage(
+            TextMessage(
+                UUID.randomUUID().toString(),
+                senderEmail,
+                recipientEmail,
+                System.currentTimeMillis().javaTimeToUnixTime(),
+                message
             )
-        }
+        )
     }
 
     fun dispose() {

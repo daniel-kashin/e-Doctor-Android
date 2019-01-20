@@ -90,7 +90,7 @@ dependencies {
     implementation androidDependencies.rxAndroid
     implementation androidDependencies.rxAndroid2
     implementation 'com.tbruyelle.rxpermissions:rxpermissions:0.8.2@aar'
-    implementation 'com.cantrowitz:rxbroadcast:1.1.2'
+    implementation 'com.cantrowitz:rxbroadcast:2.0.0'
 
     // Network
     implementation javaDependencies.retrofit
@@ -126,6 +126,7 @@ dependencies {
     implementation androidDependencies.uil
     implementation androidDependencies.flexbox
     implementation androidDependencies.flowLayout
+    implementation androidDependencies.chatKit
     implementation 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation 'com.daimajia.swipelayout:library:1.2.0@aar'

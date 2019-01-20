@@ -21,7 +21,10 @@ import okhttp3.Request
 import javax.inject.Named
 
 @Module
-class ChatModule(private val recipientEmail: String) {
+class ChatModule(
+    private val senderEmail: String,
+    private val recipientEmail: String
+) {
 
     private val lifecycle: StoppableLifecycle = StoppableLifecycle()
 
@@ -53,7 +56,7 @@ class ChatModule(private val recipientEmail: String) {
     fun provideChatRepository(
         chatService: ChatService,
         sessionManager: SessionManager
-    ) = ChatRepository(recipientEmail, chatService, sessionManager).apply {
+    ) = ChatRepository(senderEmail, recipientEmail, chatService, sessionManager).apply {
         onDisposeListener = { lifecycle.stop() }
     }
 
