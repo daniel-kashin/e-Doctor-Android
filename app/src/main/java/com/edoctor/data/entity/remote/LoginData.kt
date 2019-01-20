@@ -1,3 +1,3 @@
-package com.edoctor.data.remote.entity
+package com.edoctor.data.entity.remote
 
 data class LoginData(val email: String, val password: String)

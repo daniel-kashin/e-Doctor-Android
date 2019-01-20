@@ -1,8 +1,8 @@
 package com.edoctor.data.remote.api
 
-import com.edoctor.data.remote.entity.LoginData
-import com.edoctor.data.remote.entity.TokenResult
-import com.edoctor.data.remote.entity.UserResult
+import com.edoctor.data.entity.remote.LoginData
+import com.edoctor.data.entity.remote.TokenResult
+import com.edoctor.data.entity.remote.UserResult
 import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.Body

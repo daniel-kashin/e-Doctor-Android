@@ -1,6 +1,6 @@
 package com.edoctor.data.account
 
-import com.edoctor.data.remote.entity.UserResult
+import com.edoctor.data.entity.remote.UserResult
 import com.edoctor.utils.JavaTime
 import com.edoctor.utils.withHiddenPart
 import java.util.concurrent.TimeUnit

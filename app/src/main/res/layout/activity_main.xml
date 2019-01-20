@@ -7,6 +7,6 @@
     <fragment
             android:id="@+id/chat_fragment"
             android:layout_width="match_parent" android:layout_height="match_parent"
-              android:name="com.edoctor.presentation.app.view.ChatFragment"/>
+            android:name="com.edoctor.presentation.app.view.PickDoctorFragment"/>
 
 </FrameLayout>

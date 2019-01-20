@@ -29,7 +29,10 @@
 
         <activity android:name=".presentation.app.view.WelcomeActivity"/>
         <activity android:name=".presentation.app.view.MainActivity"/>
+        <activity android:name=".presentation.app.view.ChatActivity"/>
 
     </application>
+
+
 
 </manifest>

@@ -1,6 +1,7 @@
 package com.edoctor.data.injection
 
 import com.edoctor.EDoctor
+import com.edoctor.data.account.SessionManager
 import com.edoctor.data.injection.NetworkModule.Companion.AUTHORIZED_TAG
 import com.edoctor.data.injection.NetworkModule.Companion.EDOCTOR_WS_ENDPOINT
 import com.edoctor.data.remote.api.ChatService
@@ -17,7 +18,7 @@ import okhttp3.OkHttpClient
 import javax.inject.Named
 
 @Module
-class ChatModule {
+class ChatModule(val recipientEmail: String) {
 
     @Provides
     fun provideChatService(
@@ -35,6 +36,9 @@ class ChatModule {
             .create()
 
     @Provides
-    fun provideChatRepository(chatService: ChatService) = ChatRepository(chatService)
+    fun provideChatRepository(
+        chatService: ChatService,
+        sessionManager: SessionManager
+    ) = ChatRepository(recipientEmail, chatService, sessionManager)
 
 }

@@ -2,14 +2,13 @@ package com.edoctor.data.repository
 
 import com.edoctor.data.account.SessionInfo
 import com.edoctor.data.account.SessionManager
+import com.edoctor.data.entity.remote.LoginData
+import com.edoctor.data.entity.remote.TokenResult
+import com.edoctor.data.entity.remote.UserResult
 import com.edoctor.data.remote.api.AuthRestApi
-import com.edoctor.data.remote.entity.LoginData
-import com.edoctor.data.remote.entity.TokenResult
-import com.edoctor.data.remote.entity.UserResult
 import com.edoctor.utils.onErrorConvertRetrofitThrowable
 import com.edoctor.utils.unixTimeToJavaTime
 import io.reactivex.Completable
-import io.reactivex.Single
 import retrofit2.HttpException
 
 class AuthRepository(
@@ -36,8 +35,14 @@ class AuthRepository(
             .onErrorConvertRetrofitThrowable()
     }
 
-    fun login(loginData: LoginData): Single<UserResult> {
-        return authorizedApi.register(loginData)
+    fun login(loginData: LoginData): Completable {
+        return authorizedApi.login(loginData)
+            .flatMapCompletable { user ->
+                anonymousApi.getFreshestTokenByPassword(loginData.password, loginData.email)
+                    .flatMapCompletable { token ->
+                        sessionManager.open(getSessionInfo(user, token))
+                    }
+            }
             .onErrorConvertRetrofitThrowable()
     }
 
