@@ -35,6 +35,11 @@ class ChatPresenter @Inject constructor(
         chatRepository.sendMessage(message)
     }
 
+    override fun destroy() {
+        chatRepository.dispose()
+        super.destroy()
+    }
+
     private fun onEventReceived(event: ChatRepository.ChatEvent) {
         if (event is ChatRepository.ChatEvent.OnMessageReceived) {
             (event.message as? TextMessage)?.let {

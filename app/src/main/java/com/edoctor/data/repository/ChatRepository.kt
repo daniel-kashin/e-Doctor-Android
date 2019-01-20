@@ -9,8 +9,8 @@ import com.edoctor.utils.rx.RxExtensions.justOrEmptyFlowable
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tinder.scarlet.Message.Text
-import com.tinder.scarlet.ShutdownReason
-import com.tinder.scarlet.WebSocket
+import com.tinder.scarlet.websocket.ShutdownReason
+import com.tinder.scarlet.websocket.WebSocketEvent
 import io.reactivex.Flowable
 import java.util.*
 
@@ -19,6 +19,8 @@ class ChatRepository(
     val chatService: ChatService,
     val sessionManager: SessionManager
 ) {
+
+    var onDisposeListener: (() -> Unit)? = null
 
     fun observeEvents(): Flowable<ChatEvent> {
         return chatService.observeEvents()
@@ -41,9 +43,14 @@ class ChatRepository(
         }
     }
 
-    fun WebSocket.Event.toChatEvent(): ChatEvent? {
+    fun dispose() {
+        onDisposeListener?.invoke()
+    }
+
+
+    private fun WebSocketEvent.toChatEvent(): ChatEvent? {
         return when (this) {
-            is WebSocket.Event.OnMessageReceived -> {
+            is WebSocketEvent.OnMessageReceived -> {
                 sessionManager.runIfOpened { sessionInfo ->
                     val messageString = (this.message as? Text)?.value ?: return null
                     val textMessage = fromJsonSafely(messageString, TextMessage::class.java) ?: return null
@@ -54,10 +61,10 @@ class ChatRepository(
                     }
                 }
             }
-            is WebSocket.Event.OnConnectionClosed -> ChatEvent.OnConnectionClosed(this.shutdownReason)
-            is WebSocket.Event.OnConnectionClosing -> ChatEvent.OnConnectionClosing(this.shutdownReason)
-            is WebSocket.Event.OnConnectionOpened<*> -> ChatEvent.OnConnectionOpened()
-            is WebSocket.Event.OnConnectionFailed -> ChatEvent.OnConnectionFailed(this.throwable)
+            is WebSocketEvent.OnConnectionClosed -> ChatEvent.OnConnectionClosed(this.shutdownReason)
+            is WebSocketEvent.OnConnectionClosing -> ChatEvent.OnConnectionClosing(this.shutdownReason)
+            is WebSocketEvent.OnConnectionOpened -> ChatEvent.OnConnectionOpened()
+            is WebSocketEvent.OnConnectionFailed -> ChatEvent.OnConnectionFailed(this.throwable)
         }
     }
 
@@ -69,7 +76,7 @@ class ChatRepository(
         data class OnConnectionFailed(val throwable: Throwable) : ChatEvent()
     }
 
-    fun <T> fromJsonSafely(json: String, classOfT: Class<T>): T? {
+    private fun <T> fromJsonSafely(json: String, classOfT: Class<T>): T? {
         try {
             return Gson().fromJson(json, classOfT)
         } catch (e: JsonSyntaxException) {

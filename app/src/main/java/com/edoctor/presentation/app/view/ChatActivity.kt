@@ -53,6 +53,8 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatFragment
         clean.setOnClickListener {
             textView.text = ""
         }
+
+        lifecycle
     }
 
     override fun render(viewState: ViewState) {

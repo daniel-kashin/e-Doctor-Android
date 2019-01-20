@@ -27,5 +27,6 @@ interface ApplicationComponent {
 
     val welcomeComponent: WelcomeComponent
 
-    fun plus(chatModule: ChatModule): ChatComponent
+    fun plus(chatModule: ChatModule) : ChatComponent
+
 }
