@@ -37,6 +37,7 @@ class WelcomeActivity : BaseActivity<WelcomePresenter, ViewState, Event>("Welcom
     private val password by lazyFind<EditText>(R.id.password)
     private val authButton by lazyFind<Button>(R.id.auth_button)
     private val newAtEDoctor by lazyFind<TextView>(R.id.new_at_edoctor)
+    private val youAreDoctor by lazyFind<TextView>(R.id.you_are_doctor)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,16 +66,21 @@ class WelcomeActivity : BaseActivity<WelcomePresenter, ViewState, Event>("Welcom
         newAtEDoctor.setOnClickListener {
             presenter.changeAuthType()
         }
+
+        youAreDoctor.paintFlags = youAreDoctor.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        youAreDoctor.setOnClickListener {
+            presenter.changeUserType()
+        }
     }
 
     override fun render(viewState: ViewState) {
-        if (viewState.isLogin) {
-            newAtEDoctor.text = "Впервые у нас?"
-            authButton.text = "Войти"
-        } else {
-            newAtEDoctor.text = "Уже зарегистрированы?"
-            authButton.text = "Зарегистрироваться"
-        }
+        val currentUser = getString(if (viewState.isPatient) R.string.patient else R.string.doctor)
+        val oppositeUser = getString(if (viewState.isPatient) R.string.doctor else R.string.patient)
+        val currentAction = getString(if (viewState.isLogin) R.string.login_button else R.string.register)
+
+        newAtEDoctor.text = getString(if (viewState.isLogin) R.string.new_at_zighter else R.string.alteady_registered)
+        youAreDoctor.text = getString(R.string.you_are_user, oppositeUser)
+        authButton.text = getString(R.string.action_as_user, currentAction, currentUser)
     }
 
     override fun showEvent(event: Event) {

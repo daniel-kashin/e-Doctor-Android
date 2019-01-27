@@ -46,6 +46,11 @@
     <string name="welcome_back">Рады Вас видеть</string>
     <string name="enjoy_zighter">Добро пожаловать</string>
     <string name="new_at_zighter">Впервые у нас?</string>
+    <string name="alteady_registered">Уже зарегистрированы?</string>
+    <string name="you_are_user">Вы %1$s?</string>
+    <string name="patient">пациент</string>
+    <string name="doctor">доктор</string>
+    <string name="action_as_user">%1$s как %2$s</string>
     <string name="you_logged_in_as">Вы вошли как:</string>
     <string name="personal_recommendation">Рекомендация для Вас</string>
     <string name="default_sort">По умолчанию</string>

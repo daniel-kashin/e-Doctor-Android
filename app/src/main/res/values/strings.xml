@@ -53,6 +53,11 @@
     <string name="welcome_back">Welcome back</string>
     <string name="enjoy_zighter">Enjoy Zighter!</string>
     <string name="new_at_zighter">New at Zighter?</string>
+    <string name="alteady_registered">Already registered?</string>
+    <string name="you_are_user">Are you %1$s?</string>
+    <string name="patient">patient</string>
+    <string name="doctor">doctor</string>
+    <string name="action_as_user">%1$s as %2$s</string>
 
     <string name="your_guide">Your guide</string>
 

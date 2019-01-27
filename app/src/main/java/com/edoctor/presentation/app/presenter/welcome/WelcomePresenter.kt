@@ -28,16 +28,22 @@ class WelcomePresenter @Inject constructor(
         setViewState { copy(isLogin = !isLogin) }
     }
 
+    fun changeUserType() {
+        setViewState { copy(isPatient = !isPatient) }
+    }
+
     fun auth(email: String, password: String) {
-        if (viewStateSnapshot().isLogin) {
-            login(email, password)
-        } else {
-            register(email, password)
+        viewStateSnapshot().run {
+            if (isLogin) {
+                login(email, password, isPatient)
+            } else {
+                register(email, password, isPatient)
+            }
         }
     }
 
-    private fun login(email: String, password: String) {
-        disposables += authRepository.login(LoginData(email, password))
+    private fun login(email: String, password: String, isPatient: Boolean) {
+        disposables += authRepository.login(LoginData(email, password, isPatient))
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
@@ -55,8 +61,8 @@ class WelcomePresenter @Inject constructor(
             })
     }
 
-    private fun register(email: String, password: String) {
-        disposables += authRepository.register(LoginData(email, password))
+    private fun register(email: String, password: String, isPatient: Boolean) {
+        disposables += authRepository.register(LoginData(email, password, isPatient))
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
@@ -72,7 +78,7 @@ class WelcomePresenter @Inject constructor(
             })
     }
 
-    data class ViewState(val isLogin: Boolean = true) : Presenter.ViewState
+    data class ViewState(val isLogin: Boolean = true, val isPatient: Boolean = true) : Presenter.ViewState
 
     sealed class Event : Presenter.Event {
         object AuthSuccessEvent : Event()
