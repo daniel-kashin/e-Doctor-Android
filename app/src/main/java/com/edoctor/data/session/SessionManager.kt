@@ -1,4 +1,4 @@
-package com.edoctor.data.account
+package com.edoctor.data.session
 
 import com.edoctor.utils.SynchronizedDelegate
 import io.reactivex.Completable
@@ -19,7 +19,7 @@ class SessionManager @Inject constructor(
         get() = sessionInfo != null
 
     val info: SessionInfo
-        get() = sessionInfo ?: throw IllegalStateException("info: session must be opened")
+        get() = sessionInfo ?: throw SessionNotOpenedException()
 
     inline fun <R> runIfOpened(action: (SessionInfo) -> R): R? =
         if (isOpen) {
@@ -52,7 +52,7 @@ class SessionManager @Inject constructor(
     fun update(updateSessionFunc: (SessionInfo) -> SessionInfo): Completable =
         Single
             .fromCallable {
-                updateSessionFunc(sessionInfo ?: throw IllegalStateException("update(): session must be opened"))
+                updateSessionFunc(sessionInfo ?: throw SessionNotOpenedException())
             }
             .doOnSuccess { sessionInfo = it }
             .flatMapCompletable { sessionStorage.save(it) }
@@ -72,5 +72,7 @@ class SessionManager @Inject constructor(
                 }
         }
     }
+
+    class SessionNotOpenedException : Exception()
 
 }

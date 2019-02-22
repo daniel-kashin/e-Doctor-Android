@@ -1,7 +1,6 @@
-package com.bookmate.app.base
+package com.edoctor.presentation.architecture.presenter
 
 import android.util.Log
-import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.presentation.architecture.presenter.Presenter.Event
 import com.edoctor.presentation.architecture.presenter.Presenter.ViewState
 import com.edoctor.utils.ChangeType.*
@@ -16,29 +15,30 @@ abstract class BasePresenter<VS : ViewState, SE : Event>(protected val TAG: Stri
     protected fun isNetworkAvailable() = ConnectivityNotifier.lastValue!!
 
     protected inline fun subscribeToConnectivityChanges(
-            skipFirst: Boolean = true,
-            crossinline action: (isNetworkAvailable: Boolean) -> Unit) {
+        skipFirst: Boolean = true,
+        crossinline action: (isNetworkAvailable: Boolean) -> Unit
+    ) {
         subscriptions += ConnectivityNotifier.asObservable
-                .skip(if (skipFirst) 1 else 0)
-                .subscribe { action(it) }
+            .skip(if (skipFirst) 1 else 0)
+            .subscribe { action(it) }
     }
 
     protected inline fun <reified T : Any> subscribeToChanges(crossinline onChangeAction: (T) -> Unit) =
-            subscribeToChanges(T::class, onChangeAction)
+        subscribeToChanges(T::class, onChangeAction)
 
     protected inline fun <T : Any> subscribeToChanges(clazz: KClass<T>, crossinline onChangeAction: (T) -> Unit) {
         subscriptions += ChangesNotifier.observe(clazz.java, EDITED, this)
-                .subscribe { (value) -> onChangeAction(value) }
+            .subscribe { (value) -> onChangeAction(value) }
     }
 
     protected inline fun <reified T : Any> subscribeToCreating(crossinline onCreatedAction: (T) -> Unit) {
         subscriptions += ChangesNotifier.observe(T::class.java, CREATED, this)
-                .subscribe { (value) -> onCreatedAction(value) }
+            .subscribe { (value) -> onCreatedAction(value) }
     }
 
     protected inline fun <reified T : Any> subscribeToRemoving(crossinline onRemovedAction: (T) -> Unit) {
         subscriptions += ChangesNotifier.observe(T::class.java, REMOVED, this)
-                .subscribe { (value) -> onRemovedAction(value) }
+            .subscribe { (value) -> onRemovedAction(value) }
     }
 
     protected fun <T : Any> notifyCreated(value: T) = ChangesNotifier.notify(value, CREATED, this)
@@ -56,4 +56,5 @@ abstract class BasePresenter<VS : ViewState, SE : Event>(protected val TAG: Stri
             continueAction(value)
         }
     }
+
 }

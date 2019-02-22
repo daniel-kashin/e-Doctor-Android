@@ -1,4 +1,4 @@
-package com.edoctor.data.account
+package com.edoctor.data.session
 
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -19,4 +19,5 @@ class SessionStorage {
         Completable.fromAction {
             SessionPreferences.sessionInfo = null
         }
+
 }

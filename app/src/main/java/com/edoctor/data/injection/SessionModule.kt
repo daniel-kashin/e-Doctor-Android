@@ -1,6 +1,6 @@
 package com.edoctor.data.injection
 
-import com.edoctor.data.account.SessionStorage
+import com.edoctor.data.session.SessionStorage
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

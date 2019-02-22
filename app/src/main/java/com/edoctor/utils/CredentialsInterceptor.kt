@@ -2,8 +2,8 @@ package com.edoctor.utils
 
 import android.app.Application
 import com.edoctor.EDoctor
-import com.edoctor.data.account.SessionInfo
-import com.edoctor.data.account.SessionManager
+import com.edoctor.data.session.SessionInfo
+import com.edoctor.data.session.SessionManager
 import okhttp3.Interceptor
 import okhttp3.Response
 import retrofit2.HttpException

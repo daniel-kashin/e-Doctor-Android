@@ -1,4 +1,4 @@
-package com.edoctor.data.account
+package com.edoctor.data.session
 
 import com.edoctor.utils.AbstractPreferences
 

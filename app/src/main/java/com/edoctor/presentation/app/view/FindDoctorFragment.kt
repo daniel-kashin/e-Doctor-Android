@@ -7,24 +7,25 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
-import com.edoctor.EDoctor
 import com.edoctor.R
+import com.edoctor.utils.session
 
-class PickDoctorFragment : Fragment() {
+class FindDoctorFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_pick_doctor, container, false).also { view ->
             val editText = view.findViewById<EditText>(R.id.edit_text)
             val button = view.findViewById<Button>(R.id.button)
 
-            (activity?.application as? EDoctor)?.applicationComponent?.sessionManager?.runIfOpened { sessionInfo ->
-                button.setOnClickListener {
+            button.setOnClickListener {
+                context?.session?.runIfOpened { sessionInfo ->
                     ChatActivity.IntentBuilder(this)
                         .recipientEmail(editText.text.toString())
-                        .senderEmail(sessionInfo.profile.email)
+                        .senderEmail(sessionInfo.account.email)
                         .start()
                 }
             }
+
         }
     }
 

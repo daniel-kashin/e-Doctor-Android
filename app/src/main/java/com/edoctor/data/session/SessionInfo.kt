@@ -1,4 +1,4 @@
-package com.edoctor.data.account
+package com.edoctor.data.session
 
 import com.edoctor.data.entity.remote.UserResult
 import com.edoctor.utils.JavaTime
@@ -6,7 +6,7 @@ import com.edoctor.utils.withHiddenPart
 import java.util.concurrent.TimeUnit
 
 data class SessionInfo(
-    val profile: UserResult,
+    val account: UserResult,
     val refreshToken: RefreshToken,
     val accessToken: AccessToken? = null
 ) {

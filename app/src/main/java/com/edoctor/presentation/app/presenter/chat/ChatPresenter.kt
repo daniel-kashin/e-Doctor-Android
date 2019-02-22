@@ -1,10 +1,11 @@
 package com.edoctor.presentation.app.presenter.chat
 
-import com.bookmate.app.base.BasePresenter
 import com.edoctor.data.entity.remote.TextMessage
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.ChatRepository
+import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
+import com.edoctor.utils.SessionExceptionHelper.isSessionException
 import com.edoctor.utils.plusAssign
 import io.reactivex.Scheduler
 import javax.inject.Inject
@@ -30,8 +31,16 @@ class ChatPresenter @Inject constructor(
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe(
-                { onEventReceived(it) },
-                { sendEvent(Event.ShowChatError(it)) }
+                {
+                    onEventReceived(it)
+                },
+                {
+                    if (it.isSessionException()) {
+                        sendEvent(Event.ShowSessionException)
+                    } else {
+                        sendEvent(Event.ShowChatError(it))
+                    }
+                }
             )
     }
 
@@ -47,7 +56,7 @@ class ChatPresenter @Inject constructor(
     private fun onEventReceived(event: ChatRepository.ChatEvent) {
         if (event is ChatRepository.ChatEvent.OnMessageReceived) {
             (event.message as? TextMessage)?.let {
-                setViewState { copy(messages = (messages + it).sortedByDescending { it.sendingTimestamp } ) }
+                setViewState { copy(messages = (messages + it).sortedByDescending { it.sendingTimestamp }) }
             }
         }
     }
@@ -58,6 +67,7 @@ class ChatPresenter @Inject constructor(
 
     sealed class Event : Presenter.Event {
         class ShowChatError(val throwable: Throwable) : Event()
+        object ShowSessionException : Event()
     }
 
 }

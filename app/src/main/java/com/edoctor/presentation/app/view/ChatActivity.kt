@@ -15,12 +15,13 @@ import com.edoctor.presentation.app.presenter.chat.ChatPresenter.ViewState
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.utils.CheckedIntentBuilder
 import com.edoctor.utils.MessagesAdapter
+import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.lazyFind
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
 import javax.inject.Inject
 
-class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatFragment") {
+class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatsFragment") {
 
     companion object {
         // TODO: replace with id
@@ -64,8 +65,13 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatFragment
     }
 
     override fun showEvent(event: Event) {
-        if (event is Event.ShowChatError) {
-            Toast.makeText(this, event.throwable.toString(), Toast.LENGTH_LONG).show()
+        when (event) {
+            is Event.ShowChatError -> {
+                Toast.makeText(this, event.throwable.toString(), Toast.LENGTH_LONG).show()
+            }
+            is Event.ShowSessionException -> {
+                onSessionException()
+            }
         }
     }
 

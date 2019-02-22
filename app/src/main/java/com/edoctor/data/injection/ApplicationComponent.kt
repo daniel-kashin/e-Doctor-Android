@@ -1,7 +1,8 @@
 package com.edoctor.data.injection
 
-import com.edoctor.data.account.SessionManager
 import com.edoctor.data.repository.AuthRepository
+import com.edoctor.data.session.SessionManager
+import com.edoctor.presentation.app.presenter.account.AccountComponent
 import com.edoctor.presentation.app.presenter.chat.ChatComponent
 import com.edoctor.presentation.app.presenter.welcome.WelcomeComponent
 import dagger.Component
@@ -28,5 +29,7 @@ interface ApplicationComponent {
     val welcomeComponent: WelcomeComponent
 
     fun plus(chatModule: ChatModule) : ChatComponent
+
+    fun plus(accountModule: AccountModule) : AccountComponent
 
 }

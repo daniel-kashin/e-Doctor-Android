@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/action_account"
+            android:icon="@drawable/ic_account_black"
+            android:title="@string/btn_account" />
+    <item
+            android:id="@+id/action_medcard"
+            android:icon="@drawable/ic_content_black"
+            android:title="@string/btn_medcard" />
+    <item
+            android:id="@+id/action_find_doctor"
+            android:icon="@drawable/ic_search_black"
+            android:title="@string/btn_search" />
+
+    <item
+            android:id="@+id/action_chat"
+            android:icon="@drawable/ic_chat_black"
+            android:title="@string/btn_chat" />
+</menu>

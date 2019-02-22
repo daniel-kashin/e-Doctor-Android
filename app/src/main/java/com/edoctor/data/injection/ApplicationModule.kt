@@ -12,7 +12,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
-open class ApplicationModule(private val edoctor: Application) {
+class ApplicationModule(private val application: Application) {
 
     companion object {
         const val MAIN_THREAD_SCHEDULER = "observe"
@@ -21,19 +21,19 @@ open class ApplicationModule(private val edoctor: Application) {
 
     @Provides
     @Named(MAIN_THREAD_SCHEDULER)
-    internal open fun provideMainThreadScheduler(): Scheduler = AndroidSchedulers.mainThread()
+    internal fun provideMainThreadScheduler(): Scheduler = AndroidSchedulers.mainThread()
 
     @Provides
     @Named(IO_THREAD_SCHEDULER)
-    internal open fun provideSubscriptionScheduler(): Scheduler = Schedulers.io()
+    internal fun provideSubscriptionScheduler(): Scheduler = Schedulers.io()
 
     @Provides
     @Singleton
-    internal fun provideApp(): EDoctor = edoctor as EDoctor
+    internal fun provideApp(): EDoctor = application as EDoctor
 
     @Provides
     @Singleton
-    internal fun provideContext(): Context = edoctor
+    internal fun provideContext(): Context = application
 
 }
 

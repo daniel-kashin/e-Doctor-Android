@@ -6,7 +6,6 @@ import android.util.Log.d
 import com.edoctor.utils.NoConnectivityException
 import com.edoctor.utils.connectivityManager
 import com.edoctor.utils.isNetworkAvailable
-import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.squareup.moshi.KotlinJsonAdapterFactory
@@ -66,7 +65,6 @@ class NetworkModule(
     @Singleton
     fun provideGson(): Gson =
         GsonBuilder()
-            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .disableHtmlEscaping()
             .create()
 

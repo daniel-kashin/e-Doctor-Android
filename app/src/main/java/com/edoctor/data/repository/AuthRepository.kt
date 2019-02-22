@@ -1,11 +1,11 @@
 package com.edoctor.data.repository
 
-import com.edoctor.data.account.SessionInfo
-import com.edoctor.data.account.SessionManager
 import com.edoctor.data.entity.remote.LoginData
 import com.edoctor.data.entity.remote.TokenResult
 import com.edoctor.data.entity.remote.UserResult
 import com.edoctor.data.remote.api.AuthRestApi
+import com.edoctor.data.session.SessionInfo
+import com.edoctor.data.session.SessionManager
 import com.edoctor.utils.onErrorConvertRetrofitThrowable
 import com.edoctor.utils.unixTimeToJavaTime
 import io.reactivex.Completable
@@ -44,6 +44,10 @@ class AuthRepository(
                     }
             }
             .onErrorConvertRetrofitThrowable()
+    }
+
+    fun logOut(): Completable {
+        return sessionManager.close()
     }
 
     private fun getSessionInfo(userResult: UserResult, tokenResult: TokenResult): SessionInfo {

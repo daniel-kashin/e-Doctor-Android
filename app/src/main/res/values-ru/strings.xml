@@ -4,9 +4,9 @@
     <string name="map_and_media">Медиа</string>
     <string name="guide">Гид</string>
     <string name="your_guide">Ваш гид</string>
-    <string name="btn_interesting">Интересное</string>
-    <string name="btn_search">Поиск</string>
-    <string name="btn_my_excursions">Мои экскурсии</string>
+    <string name="btn_chat">Чаты</string>
+    <string name="btn_search">Поиск доктора</string>
+    <string name="btn_medcard">Медкарта</string>
     <string name="btn_account">Аккаунт</string>
     <string name="kilometers">км</string>
     <string name="meters">м</string>

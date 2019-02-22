@@ -1,6 +1,5 @@
 package com.edoctor.presentation.architecture.presenter
 
-import com.bookmate.app.base.BasePresenter
 import com.edoctor.presentation.architecture.presenter.BaseLoadablePresenter.SimpleLoadState.COMPLETED
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty

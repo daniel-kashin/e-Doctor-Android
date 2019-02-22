@@ -1,9 +1,9 @@
 package com.edoctor.data.repository
 
-import com.edoctor.data.account.SessionManager
 import com.edoctor.data.entity.remote.Message
 import com.edoctor.data.entity.remote.TextMessage
 import com.edoctor.data.remote.api.ChatService
+import com.edoctor.data.session.SessionManager
 import com.edoctor.utils.javaTimeToUnixTime
 import com.edoctor.utils.rx.RxExtensions.justOrEmptyFlowable
 import com.google.gson.Gson
@@ -46,14 +46,13 @@ class ChatRepository(
         onDisposeListener?.invoke()
     }
 
-
     private fun WebSocketEvent.toChatEvent(): ChatEvent? {
         return when (this) {
             is WebSocketEvent.OnMessageReceived -> {
                 sessionManager.runIfOpened { sessionInfo ->
                     val messageString = (this.message as? Text)?.value ?: return null
                     val textMessage = fromJsonSafely(messageString, TextMessage::class.java) ?: return null
-                    if (textMessage.senderEmail == sessionInfo.profile.email || textMessage.senderEmail == recipientEmail) {
+                    if (textMessage.senderEmail == sessionInfo.account.email || textMessage.senderEmail == recipientEmail) {
                         ChatEvent.OnMessageReceived(textMessage)
                     } else {
                         null

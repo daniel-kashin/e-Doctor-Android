@@ -6,11 +6,11 @@ import android.util.Log
 import androidx.annotation.CallSuper
 import com.edoctor.EDoctor
 import com.edoctor.data.injection.ApplicationComponent
-import com.edoctor.presentation.app.view.LaunchActivity
 import com.edoctor.presentation.architecture.SessionHelper
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.presentation.architecture.presenter.Presenter.Event
 import com.edoctor.presentation.architecture.presenter.Presenter.ViewState
+import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.session
 import rx.Observable
 import kotlin.LazyThreadSafetyMode.NONE
@@ -52,8 +52,7 @@ abstract class BaseActivity<P : Presenter<VS, EV>, VS : ViewState, EV : Event>(
     override fun onStart() {
         super.onStart()
         if (screenConfig.isOpenedSessionRequired && !session.isOpen) {
-            startActivity(LaunchActivity.authIntent(this))
-            finish()
+            onSessionException()
         }
     }
 

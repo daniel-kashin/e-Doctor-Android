@@ -1,9 +1,9 @@
 package com.edoctor.presentation.app.presenter.welcome
 
-import com.bookmate.app.base.BasePresenter
 import com.edoctor.data.entity.remote.LoginData
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.AuthRepository
+import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.isNoNetworkError
 import com.edoctor.utils.plusAssign
@@ -87,6 +87,7 @@ class WelcomePresenter @Inject constructor(
         object UserAlreadyExists : Event()
         object NoInternetExceptionEvent : Event()
         object UnknownExceptionEvent : Event()
+        object CloseActivityIntent : Event()
     }
 
 }
