@@ -1,6 +1,5 @@
-package com.edoctor.presentation.app.presenter.welcome
+package com.edoctor.presentation.app.welcome
 
-import com.edoctor.presentation.app.view.WelcomeActivity
 import dagger.Subcomponent
 
 @Subcomponent

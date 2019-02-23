@@ -5,7 +5,6 @@ import com.edoctor.data.injection.NetworkModule.Companion.AUTHORIZED_TAG
 import com.edoctor.data.injection.NetworkModule.Companion.EDOCTOR_WS_ENDPOINT
 import com.edoctor.data.remote.api.ChatService
 import com.edoctor.data.repository.ChatRepository
-import com.edoctor.data.session.SessionManager
 import com.edoctor.utils.StoppableLifecycle
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.Scarlet
@@ -22,7 +21,7 @@ import javax.inject.Named
 
 @Module
 class ChatModule(
-    private val senderEmail: String,
+    private val currentUserEmail: String,
     private val recipientEmail: String
 ) {
 
@@ -53,11 +52,8 @@ class ChatModule(
     }
 
     @Provides
-    fun provideChatRepository(
-        chatService: ChatService,
-        sessionManager: SessionManager
-    ) = ChatRepository(senderEmail, recipientEmail, chatService, sessionManager).apply {
-        onDisposeListener = { lifecycle.stop() }
-    }
+    fun provideChatRepository(chatService: ChatService) =
+        ChatRepository(currentUserEmail, recipientEmail, chatService)
+            .apply { onDisposeListener = { lifecycle.stop() } }
 
 }

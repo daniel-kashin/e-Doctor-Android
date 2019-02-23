@@ -1,4 +1,4 @@
-package com.edoctor.presentation.app.view
+package com.edoctor.presentation.app.medcatd
 
 import androidx.fragment.app.Fragment
 

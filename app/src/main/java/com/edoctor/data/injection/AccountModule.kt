@@ -23,5 +23,4 @@ class AccountModule {
         sessionManager: SessionManager
     ): AccountRepository = AccountRepository(api, sessionManager)
 
-
 }

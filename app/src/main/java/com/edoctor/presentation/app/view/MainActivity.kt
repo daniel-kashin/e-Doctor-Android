@@ -5,8 +5,14 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.edoctor.R
+import com.edoctor.presentation.app.account.AccountFragment
+import com.edoctor.presentation.app.conversations.ConversationsFragment
+import com.edoctor.presentation.app.findDoctor.FindDoctorFragment
+import com.edoctor.presentation.app.medcatd.MedcardFragment
+import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.disposableDelegate
 import com.edoctor.utils.lazyFind
+import com.edoctor.utils.session
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -54,8 +60,13 @@ class MainActivity : AppCompatActivity() {
                 FindDoctorFragment()
             }
             R.id.action_chat -> {
-                if (topFragment is ChatsFragment) return
-                ChatsFragment()
+                if (topFragment is ConversationsFragment) return
+                session.runIfOpened {
+                    ConversationsFragment.newInstance(it.account.email)
+                } ?: run {
+                    onSessionException()
+                    return
+                }
             }
             else -> throw IllegalStateException("Unknown navigation item id")
         }

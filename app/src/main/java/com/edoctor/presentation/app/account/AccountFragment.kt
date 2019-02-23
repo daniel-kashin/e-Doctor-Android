@@ -1,4 +1,4 @@
-package com.edoctor.presentation.app.view
+package com.edoctor.presentation.app.account
 
 import android.os.Bundle
 import android.view.View
@@ -8,9 +8,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.edoctor.R
 import com.edoctor.data.injection.AccountModule
 import com.edoctor.data.injection.ApplicationComponent
-import com.edoctor.presentation.app.presenter.account.AccountPresenter
-import com.edoctor.presentation.app.presenter.account.AccountPresenter.Event
-import com.edoctor.presentation.app.presenter.account.AccountPresenter.ViewState
+import com.edoctor.presentation.app.account.AccountPresenter.Event
+import com.edoctor.presentation.app.account.AccountPresenter.ViewState
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import javax.inject.Inject

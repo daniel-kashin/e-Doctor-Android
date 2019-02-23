@@ -1,7 +1,6 @@
-package com.edoctor.presentation.app.presenter.account
+package com.edoctor.presentation.app.account
 
 import com.edoctor.data.injection.AccountModule
-import com.edoctor.presentation.app.view.AccountFragment
 import dagger.Subcomponent
 
 @Subcomponent(modules = [AccountModule::class])

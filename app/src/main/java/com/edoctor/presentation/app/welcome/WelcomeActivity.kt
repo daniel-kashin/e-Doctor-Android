@@ -1,4 +1,4 @@
-package com.edoctor.presentation.app.view
+package com.edoctor.presentation.app.welcome
 
 import android.graphics.Paint
 import android.os.Bundle
@@ -7,9 +7,8 @@ import android.widget.EditText
 import android.widget.TextView
 import com.edoctor.R
 import com.edoctor.data.injection.ApplicationComponent
-import com.edoctor.presentation.app.presenter.welcome.WelcomePresenter
-import com.edoctor.presentation.app.presenter.welcome.WelcomePresenter.Event
-import com.edoctor.presentation.app.presenter.welcome.WelcomePresenter.ViewState
+import com.edoctor.presentation.app.welcome.WelcomePresenter.Event
+import com.edoctor.presentation.app.welcome.WelcomePresenter.ViewState
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.utils.lazyFind
 import com.edoctor.utils.toast
@@ -85,11 +84,11 @@ class WelcomeActivity : BaseActivity<WelcomePresenter, ViewState, Event>("Welcom
 
     override fun showEvent(event: Event) {
         when (event) {
-            Event.NoInternetExceptionEvent -> toast("Нет интернета")
+            Event.NoInternetException -> toast("Нет интернета")
             Event.PasswordIsWrong -> toast("Неверный пароль")
             Event.UserNotFound -> toast("Пользователь с данной почтой не найден")
             Event.UserAlreadyExists -> toast("Пользователь с данной почтой уже существует")
-            Event.UnknownExceptionEvent -> toast("Необычная ошибка")
+            Event.UnknownException -> toast("Необычная ошибка")
             Event.AuthSuccessEvent -> finish()
         }
     }

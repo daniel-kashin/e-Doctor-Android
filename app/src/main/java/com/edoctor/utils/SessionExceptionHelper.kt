@@ -1,5 +1,6 @@
 package com.edoctor.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import com.edoctor.data.session.SessionManager
 import com.edoctor.presentation.app.view.LaunchActivity
@@ -12,9 +13,14 @@ object SessionExceptionHelper {
                 this is HttpException && this.code() == 401
     }
 
+    @SuppressLint("CheckResult")
     fun Activity.onSessionException() {
-        startActivity(LaunchActivity.authIntent(this))
-        finish()
+        session
+            .close()
+            .subscribe {
+                startActivity(LaunchActivity.authIntent(this))
+                finish()
+            }
     }
 
 }

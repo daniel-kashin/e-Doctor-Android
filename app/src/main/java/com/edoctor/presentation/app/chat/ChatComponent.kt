@@ -1,7 +1,6 @@
-package com.edoctor.presentation.app.presenter.chat
+package com.edoctor.presentation.app.chat
 
 import com.edoctor.data.injection.ChatModule
-import com.edoctor.presentation.app.view.ChatActivity
 import dagger.Subcomponent
 
 @Subcomponent(modules = [ChatModule::class])

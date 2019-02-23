@@ -1,11 +1,11 @@
-package com.edoctor.presentation.app.presenter.account
+package com.edoctor.presentation.app.account
 
 import com.edoctor.data.entity.remote.UserResult
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.AccountRepository
 import com.edoctor.data.repository.AuthRepository
-import com.edoctor.presentation.app.presenter.account.AccountPresenter.Event
-import com.edoctor.presentation.app.presenter.account.AccountPresenter.ViewState
+import com.edoctor.presentation.app.account.AccountPresenter.Event
+import com.edoctor.presentation.app.account.AccountPresenter.ViewState
 import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.SessionExceptionHelper.isSessionException

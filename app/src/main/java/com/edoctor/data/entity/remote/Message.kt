@@ -1,8 +1,8 @@
 package com.edoctor.data.entity.remote
 
+import com.edoctor.data.entity.presentation.toUser
 import com.edoctor.utils.unixTimeToJavaTime
 import com.stfalcon.chatkit.commons.models.IMessage
-import com.stfalcon.chatkit.commons.models.IUser
 import java.util.*
 
 abstract class Message {
@@ -30,13 +30,8 @@ data class TextMessage(
 
     override fun getCreatedAt() = Date(sendingTimestamp.unixTimeToJavaTime())
 
-    override fun getUser(): IUser {
-        return object : IUser {
-            override fun getAvatar() = null
-            override fun getName() = senderEmail
-            override fun getId(): String = senderEmail
-        }
-    }
+    override fun getUser() = senderEmail.toUser()
 
     override fun getText() = text
+
 }

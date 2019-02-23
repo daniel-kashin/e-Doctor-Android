@@ -1,4 +1,4 @@
-package com.edoctor.presentation.app.presenter.welcome
+package com.edoctor.presentation.app.welcome
 
 import com.edoctor.data.entity.remote.LoginData
 import com.edoctor.data.injection.ApplicationModule
@@ -50,13 +50,13 @@ class WelcomePresenter @Inject constructor(
                 sendEvent(Event.AuthSuccessEvent)
             }, {
                 if (it.isNoNetworkError()) {
-                    sendEvent(Event.NoInternetExceptionEvent)
+                    sendEvent(Event.NoInternetException)
                 } else if (it is HttpException && it.code() == 400) {
                     sendEvent(Event.UserNotFound)
                 } else if (it is HttpException && it.code() == 409) {
                     sendEvent(Event.PasswordIsWrong)
                 } else {
-                    sendEvent(Event.UnknownExceptionEvent)
+                    sendEvent(Event.UnknownException)
                 }
             })
     }
@@ -69,11 +69,11 @@ class WelcomePresenter @Inject constructor(
                 sendEvent(Event.AuthSuccessEvent)
             }, {
                 if (it.isNoNetworkError()) {
-                    sendEvent(Event.NoInternetExceptionEvent)
+                    sendEvent(Event.NoInternetException)
                 } else if (it is HttpException && it.code() == 409) {
                     sendEvent(Event.UserAlreadyExists)
                 } else {
-                    sendEvent(Event.UnknownExceptionEvent)
+                    sendEvent(Event.UnknownException)
                 }
             })
     }
@@ -85,8 +85,8 @@ class WelcomePresenter @Inject constructor(
         object UserNotFound : Event()
         object PasswordIsWrong : Event()
         object UserAlreadyExists : Event()
-        object NoInternetExceptionEvent : Event()
-        object UnknownExceptionEvent : Event()
+        object NoInternetException : Event()
+        object UnknownException : Event()
         object CloseActivityIntent : Event()
     }
 

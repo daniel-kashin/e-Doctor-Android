@@ -1,4 +1,4 @@
-package com.edoctor.presentation.app.presenter.chat
+package com.edoctor.presentation.app.chat
 
 import com.edoctor.data.entity.remote.TextMessage
 import com.edoctor.data.injection.ApplicationModule
@@ -19,10 +19,10 @@ class ChatPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ChatPresenter.ViewState, ChatPresenter.Event>() {
 
-    lateinit var senderEmail: String
+    lateinit var currentUserEmail: String
 
-    fun init(senderEmail: String) {
-        this.senderEmail = senderEmail
+    fun init(currentUserEmail: String) {
+        this.currentUserEmail = currentUserEmail
 
         setViewState(ViewState())
 
@@ -38,7 +38,7 @@ class ChatPresenter @Inject constructor(
                     if (it.isSessionException()) {
                         sendEvent(Event.ShowSessionException)
                     } else {
-                        sendEvent(Event.ShowChatError(it))
+                        sendEvent(Event.ShowException(it))
                     }
                 }
             )
@@ -66,7 +66,7 @@ class ChatPresenter @Inject constructor(
     ) : Presenter.ViewState
 
     sealed class Event : Presenter.Event {
-        class ShowChatError(val throwable: Throwable) : Event()
+        class ShowException(val throwable: Throwable) : Event()
         object ShowSessionException : Event()
     }
 

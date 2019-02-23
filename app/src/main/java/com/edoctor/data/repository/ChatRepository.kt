@@ -3,7 +3,6 @@ package com.edoctor.data.repository
 import com.edoctor.data.entity.remote.Message
 import com.edoctor.data.entity.remote.TextMessage
 import com.edoctor.data.remote.api.ChatService
-import com.edoctor.data.session.SessionManager
 import com.edoctor.utils.javaTimeToUnixTime
 import com.edoctor.utils.rx.RxExtensions.justOrEmptyFlowable
 import com.google.gson.Gson
@@ -15,10 +14,9 @@ import io.reactivex.Flowable
 import java.util.*
 
 class ChatRepository(
-    val senderEmail: String,
-    val recipientEmail: String,
-    val chatService: ChatService,
-    val sessionManager: SessionManager
+    private val currentUserEmail: String,
+    private val recipientEmail: String,
+    private val chatService: ChatService
 ) {
 
     var onDisposeListener: (() -> Unit)? = null
@@ -34,7 +32,7 @@ class ChatRepository(
         chatService.sendMessage(
             TextMessage(
                 UUID.randomUUID().toString(),
-                senderEmail,
+                currentUserEmail,
                 recipientEmail,
                 System.currentTimeMillis().javaTimeToUnixTime(),
                 message
@@ -49,25 +47,26 @@ class ChatRepository(
     private fun WebSocketEvent.toChatEvent(): ChatEvent? {
         return when (this) {
             is WebSocketEvent.OnMessageReceived -> {
-                sessionManager.runIfOpened { sessionInfo ->
-                    val messageString = (this.message as? Text)?.value ?: return null
-                    val textMessage = fromJsonSafely(messageString, TextMessage::class.java) ?: return null
-                    if (textMessage.senderEmail == sessionInfo.account.email || textMessage.senderEmail == recipientEmail) {
-                        ChatEvent.OnMessageReceived(textMessage)
-                    } else {
-                        null
-                    }
+                val messageString = (this.message as? Text)?.value ?: return null
+                val textMessage = fromJsonSafely(messageString, TextMessage::class.java) ?: return null
+                if (
+                    textMessage.senderEmail == currentUserEmail && textMessage.recipientEmail == recipientEmail
+                    || textMessage.recipientEmail == currentUserEmail && textMessage.senderEmail == recipientEmail
+                ) {
+                    ChatEvent.OnMessageReceived(textMessage)
+                } else {
+                    null
                 }
             }
             is WebSocketEvent.OnConnectionClosed -> ChatEvent.OnConnectionClosed(this.shutdownReason)
             is WebSocketEvent.OnConnectionClosing -> ChatEvent.OnConnectionClosing(this.shutdownReason)
-            is WebSocketEvent.OnConnectionOpened -> ChatEvent.OnConnectionOpened()
+            is WebSocketEvent.OnConnectionOpened -> ChatEvent.OnConnectionOpened
             is WebSocketEvent.OnConnectionFailed -> ChatEvent.OnConnectionFailed(this.throwable)
         }
     }
 
     sealed class ChatEvent {
-        class OnConnectionOpened() : ChatEvent()
+        object OnConnectionOpened : ChatEvent()
         data class OnMessageReceived(val message: Message) : ChatEvent()
         data class OnConnectionClosing(val shutdownReason: ShutdownReason) : ChatEvent()
         data class OnConnectionClosed(val shutdownReason: ShutdownReason) : ChatEvent()
