@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (supportFragmentManager.findFragmentById(R.id.fragment_container) == null) {
-            bottomNavigationView.selectedItemId = R.id.action_medcard
+            bottomNavigationView.selectedItemId = R.id.action_account
         }
     }
 
