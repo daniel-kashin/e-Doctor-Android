@@ -57,6 +57,7 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
     }
 
     override fun render(viewState: ViewState) {
+        swipeRefreshLayout.isRefreshing = viewState.isLoading
         dialogsAdapter.setDialogs(viewState.conversations) {
             dialogsList.layoutManager?.scrollToPosition(0)
         }

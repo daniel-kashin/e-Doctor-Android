@@ -10,8 +10,8 @@ class ConversationsRepository(
 ) {
 
     fun getConversations(): Single<List<Conversation>> {
-        return api.getConversations().map { messages ->
-            messages.map { Conversation(currentUserEmail, it) }
+        return api.getConversations().map { result ->
+            result.lastMessages.map { Conversation(currentUserEmail, it) }
         }
     }
 

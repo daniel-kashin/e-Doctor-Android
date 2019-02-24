@@ -28,6 +28,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        session.runIfOpened {
+            if (!it.account.isPatient) {
+                bottomNavigationView.menu.removeItem(R.id.action_medcard)
+                bottomNavigationView.menu.removeItem(R.id.action_find_doctor)
+            }
+        } ?: run {
+            onSessionException()
+            return
+        }
+
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             openFragment(item.itemId)
             true
@@ -35,6 +45,13 @@ class MainActivity : AppCompatActivity() {
 
         if (supportFragmentManager.findFragmentById(R.id.fragment_container) == null) {
             bottomNavigationView.selectedItemId = R.id.action_medcard
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (!session.isOpen) {
+            onSessionException()
         }
     }
 
