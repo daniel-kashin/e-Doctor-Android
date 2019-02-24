@@ -10,7 +10,7 @@ class DialogsAdapter<DIALOG : IDialog<out IMessage>> : DialogsListAdapter<DIALOG
     fun setDialogs(dialogs: List<DIALOG>, afterSettingListener: (() -> Unit)? = null) {
         val oldItems = items
 
-        this.items = mutableListOf()
+        this.items = dialogs
 
         DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
