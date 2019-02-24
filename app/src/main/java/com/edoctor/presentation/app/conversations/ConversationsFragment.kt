@@ -7,11 +7,13 @@ import com.edoctor.R
 import com.edoctor.data.entity.presentation.Conversation
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ConversationsModule
+import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.presentation.app.conversations.ConversationsPresenter.Event
 import com.edoctor.presentation.app.conversations.ConversationsPresenter.ViewState
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.DialogsAdapter
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
+import com.edoctor.utils.session
 import com.edoctor.utils.toast
 import com.stfalcon.chatkit.dialogs.DialogsList
 import javax.inject.Inject
@@ -46,6 +48,18 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dialogsAdapter = DialogsAdapter()
+        dialogsAdapter.setOnDialogClickListener {
+            activity?.let { activity ->
+                activity.session.runIfOpened { sessionInfo ->
+                    ChatActivity.IntentBuilder(this)
+                        .recipientEmail(it.dialogName)
+                        .currentUserEmail(sessionInfo.account.email)
+                        .start()
+                } ?: run {
+                    activity.onSessionException()
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

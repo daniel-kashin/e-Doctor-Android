@@ -9,6 +9,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.edoctor.R
 import com.edoctor.presentation.app.chat.ChatActivity
+import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.session
 
 class FindDoctorFragment : Fragment() {
@@ -19,11 +20,15 @@ class FindDoctorFragment : Fragment() {
             val button = view.findViewById<Button>(R.id.button)
 
             button.setOnClickListener {
-                context?.session?.runIfOpened { sessionInfo ->
-                    ChatActivity.IntentBuilder(this)
-                        .recipientEmail(editText.text.toString())
-                        .currentUserEmail(sessionInfo.account.email)
-                        .start()
+                activity?.let { activity ->
+                    activity.session.runIfOpened { sessionInfo ->
+                        ChatActivity.IntentBuilder(this)
+                            .recipientEmail(editText.text.toString())
+                            .currentUserEmail(sessionInfo.account.email)
+                            .start()
+                    } ?: run {
+                        activity.onSessionException()
+                    }
                 }
             }
 
