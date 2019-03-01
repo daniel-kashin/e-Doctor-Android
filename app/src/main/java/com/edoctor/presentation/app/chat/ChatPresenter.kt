@@ -21,12 +21,16 @@ class ChatPresenter @Inject constructor(
 ) : BasePresenter<ChatPresenter.ViewState, ChatPresenter.Event>() {
 
     lateinit var currentUserEmail: String
+    lateinit var recipientEmail: String
 
     private var currentMessagesDisposable by disposableDelegate
     private var getMessagesDisposable by disposableDelegate
 
-    fun init(currentUserEmail: String) {
+    private var lastConnectionTimestamp: Long = -1
+
+    fun init(currentUserEmail: String, recipientEmail: String) {
         this.currentUserEmail = currentUserEmail
+        this.recipientEmail = recipientEmail
 
         setViewState(ViewState(MessagesStatus.WAITING_FOR_CONNECTION))
 
@@ -36,8 +40,18 @@ class ChatPresenter @Inject constructor(
                     setViewState { copy(messagesStatus = MessagesStatus.WAITING_FOR_CONNECTION) }
                 }
 
+                currentMessagesDisposable = if (isConnected) {
+                    chatRepository
+                        .observeEvents()
+                        .subscribeOn(subscribeScheduler)
+                        .observeOn(observeScheduler)
+                        .subscribe(this::onEventReceived, this::handleException)
+                } else {
+                    null
+                }
+
                 getMessagesDisposable = if (isConnected) {
-                    chatRepository.getMessages()
+                    chatRepository.getMessages(lastConnectionTimestamp - 10)
                         .doOnSubscribe { setViewState { copy(messagesStatus = MessagesStatus.UPDATING) } }
                         .subscribeOn(subscribeScheduler)
                         .observeOn(observeScheduler)
@@ -51,16 +65,6 @@ class ChatPresenter @Inject constructor(
                         }, {
                             handleException(it)
                         })
-                } else {
-                    null
-                }
-
-                currentMessagesDisposable = if (isConnected) {
-                    chatRepository
-                        .observeEvents()
-                        .subscribeOn(subscribeScheduler)
-                        .observeOn(observeScheduler)
-                        .subscribe(this::onEventReceived, this::handleException)
                 } else {
                     null
                 }
@@ -91,11 +95,14 @@ class ChatPresenter @Inject constructor(
     }
 
     private fun onEventReceived(event: ChatRepository.ChatEvent) {
-        if (event is ChatRepository.ChatEvent.OnMessageReceived) {
-            (event.message as? TextMessage)?.let { message ->
+        when (event) {
+            is ChatRepository.ChatEvent.OnMessageReceived -> (event.message as? TextMessage)?.let { message ->
                 setViewState {
                     copy(messages = messages.addWithSorting(listOf(message)))
                 }
+            }
+            is ChatRepository.ChatEvent.OnConnectionClosing -> {
+                lastConnectionTimestamp = currentUnixTime()
             }
         }
     }

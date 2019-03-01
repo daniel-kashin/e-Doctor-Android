@@ -3,10 +3,13 @@ package com.edoctor.data.remote.api
 import com.edoctor.data.entity.remote.TextMessage
 import io.reactivex.Single
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface ChatApi {
 
     @GET("/messages")
-    fun getMessages(): Single<List<TextMessage>>
+    fun getMessages(
+        @Query("fromTimestamp") fromTimestamp: Long
+    ): Single<List<TextMessage>>
 
 }

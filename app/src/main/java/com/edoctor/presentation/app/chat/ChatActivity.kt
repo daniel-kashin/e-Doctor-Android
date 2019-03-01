@@ -2,7 +2,9 @@ package com.edoctor.presentation.app.chat
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.edoctor.R
 import com.edoctor.data.entity.remote.TextMessage
@@ -32,6 +34,9 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
     override val layoutRes: Int = R.layout.activity_chat
 
+    private val toolbar by lazyFind<Toolbar>(R.id.toolbar)
+    private val toolbarPrimaryText by lazyFind<TextView>(R.id.toolbar_primary_text)
+    private val toolbarSecondaryText by lazyFind<TextView>(R.id.toolbar_secondary_text)
     private val messageInput by lazyFind<MessageInput>(R.id.message_input)
     private val messagesList by lazyFind<MessagesList>(R.id.messages_list)
 
@@ -41,11 +46,15 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         val recipientEmail = intent.getStringExtra(EXTRA_RECIPIENT_EMAIL)
         val currentUserEmail = intent.getStringExtra(EXTRA_CURRENT_USER_EMAIL)
         applicationComponent.plus(ChatModule(currentUserEmail, recipientEmail)).inject(this)
-        presenter.init(currentUserEmail)
+        presenter.init(currentUserEmail, recipientEmail)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbarPrimaryText.text = presenter.recipientEmail
 
         messageInput.setInputListener { input ->
             presenter.sendMessage(input.toString())
@@ -55,7 +64,17 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         messagesList.setAdapter(messagesAdapter)
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
     override fun render(viewState: ViewState) {
+        toolbarSecondaryText.text = when (viewState.messagesStatus){
+            ChatPresenter.MessagesStatus.WAITING_FOR_CONNECTION -> "Ожидание подключения..."
+            ChatPresenter.MessagesStatus.UPDATING -> "Обновление..."
+            ChatPresenter.MessagesStatus.UP_TO_DATE -> "Подключено"
+        }
         messagesAdapter.setMessages(viewState.messages) {
             messagesList.layoutManager?.scrollToPosition(0)
         }

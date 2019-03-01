@@ -32,8 +32,8 @@ class ChatRepository(
             }
     }
 
-    fun getMessages(): Single<List<TextMessage>> {
-        return chatApi.getMessages()
+    fun getMessages(fromTimestamp: Long): Single<List<TextMessage>> {
+        return chatApi.getMessages(fromTimestamp)
     }
 
     fun sendMessage(message: String) {

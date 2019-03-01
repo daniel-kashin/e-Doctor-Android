@@ -3,6 +3,7 @@ package com.edoctor.data.injection
 import com.edoctor.EDoctor
 import com.edoctor.data.injection.NetworkModule.Companion.AUTHORIZED_TAG
 import com.edoctor.data.injection.NetworkModule.Companion.EDOCTOR_WS_ENDPOINT
+import com.edoctor.data.remote.api.ChatApi
 import com.edoctor.data.remote.api.ChatService
 import com.edoctor.data.repository.ChatRepository
 import com.edoctor.utils.StoppableLifecycle
@@ -17,6 +18,7 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import retrofit2.Retrofit
 import javax.inject.Named
 
 @Module
@@ -52,8 +54,14 @@ class ChatModule(
     }
 
     @Provides
-    fun provideChatRepository(chatService: ChatService) =
-        ChatRepository(currentUserEmail, recipientEmail, chatService)
+    internal fun provideAuthorizedAuthRestApi(
+        @Named(AUTHORIZED_TAG)
+        builder: Retrofit.Builder
+    ): ChatApi = builder.build().create(ChatApi::class.java)
+
+    @Provides
+    fun provideChatRepository(chatService: ChatService, chatApi: ChatApi) =
+        ChatRepository(currentUserEmail, recipientEmail, chatApi, chatService)
             .apply { onDisposeListener = { lifecycle.stop() } }
 
 }
