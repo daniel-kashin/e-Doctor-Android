@@ -26,7 +26,7 @@ class ChatPresenter @Inject constructor(
     private var currentMessagesDisposable by disposableDelegate
     private var getMessagesDisposable by disposableDelegate
 
-    private var lastConnectionTimestamp: Long = -1
+    private var lastMessageUpdateTimestamp: Long = -1
 
     fun init(currentUserEmail: String, recipientEmail: String) {
         this.currentUserEmail = currentUserEmail
@@ -51,11 +51,15 @@ class ChatPresenter @Inject constructor(
                 }
 
                 getMessagesDisposable = if (isConnected) {
-                    chatRepository.getMessages(lastConnectionTimestamp - 10)
+                    val startMessageUpdateTimestamp = currentUnixTime()
+
+                    chatRepository
+                        .getMessages(lastMessageUpdateTimestamp - 10)
                         .doOnSubscribe { setViewState { copy(messagesStatus = MessagesStatus.UPDATING) } }
                         .subscribeOn(subscribeScheduler)
                         .observeOn(observeScheduler)
                         .subscribe({ newMessages ->
+                            lastMessageUpdateTimestamp = startMessageUpdateTimestamp
                             setViewState {
                                 copy(
                                     messages = messages.addWithSorting(newMessages),
@@ -100,9 +104,6 @@ class ChatPresenter @Inject constructor(
                 setViewState {
                     copy(messages = messages.addWithSorting(listOf(message)))
                 }
-            }
-            is ChatRepository.ChatEvent.OnConnectionClosing -> {
-                lastConnectionTimestamp = currentUnixTime()
             }
         }
     }
