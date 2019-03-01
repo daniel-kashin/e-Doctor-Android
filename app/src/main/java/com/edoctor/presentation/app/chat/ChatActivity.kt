@@ -23,8 +23,8 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
     companion object {
         // TODO: replace with id
-        private val EXTRA_CURRENT_USER_EMAIL = "SENDER_EMAIL"
-        private val EXTRA_RECIPIENT_EMAIL = "RECIPIENT_EMAIL"
+        private const val EXTRA_CURRENT_USER_EMAIL = "SENDER_EMAIL"
+        private const val EXTRA_RECIPIENT_EMAIL = "RECIPIENT_EMAIL"
     }
 
     @Inject
@@ -49,7 +49,6 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
         messageInput.setInputListener { input ->
             presenter.sendMessage(input.toString())
-            true
         }
 
         messagesAdapter = MessagesAdapter(presenter.currentUserEmail)

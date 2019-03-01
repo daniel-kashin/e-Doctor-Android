@@ -2,6 +2,7 @@ package com.edoctor.data.repository
 
 import com.edoctor.data.entity.remote.Message
 import com.edoctor.data.entity.remote.TextMessage
+import com.edoctor.data.remote.api.ChatApi
 import com.edoctor.data.remote.api.ChatService
 import com.edoctor.utils.javaTimeToUnixTime
 import com.edoctor.utils.rx.RxExtensions.justOrEmptyFlowable
@@ -11,11 +12,13 @@ import com.tinder.scarlet.Message.Text
 import com.tinder.scarlet.websocket.ShutdownReason
 import com.tinder.scarlet.websocket.WebSocketEvent
 import io.reactivex.Flowable
+import io.reactivex.Single
 import java.util.*
 
 class ChatRepository(
     private val currentUserEmail: String,
     private val recipientEmail: String,
+    private val chatApi: ChatApi,
     private val chatService: ChatService
 ) {
 
@@ -23,9 +26,14 @@ class ChatRepository(
 
     fun observeEvents(): Flowable<ChatEvent> {
         return chatService.observeEvents()
+            .doOnCancel { onDisposeListener?.invoke() }
             .flatMap {
                 justOrEmptyFlowable(it.toChatEvent())
             }
+    }
+
+    fun getMessages(): Single<List<TextMessage>> {
+        return chatApi.getMessages()
     }
 
     fun sendMessage(message: String) {
@@ -38,10 +46,6 @@ class ChatRepository(
                 message
             )
         )
-    }
-
-    fun dispose() {
-        onDisposeListener?.invoke()
     }
 
     private fun WebSocketEvent.toChatEvent(): ChatEvent? {
