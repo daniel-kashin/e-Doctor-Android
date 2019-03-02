@@ -113,7 +113,7 @@ class ChatPresenter @Inject constructor(
             .plus(newMessages)
             .asSequence()
             .distinctBy { it.uuid }
-            .sortedByDescending { it.sendingTimestamp }
+            .sortedBy { it.sendingTimestamp }
             .toList()
     }
 
