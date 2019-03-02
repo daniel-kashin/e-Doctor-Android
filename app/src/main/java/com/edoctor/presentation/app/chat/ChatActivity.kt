@@ -3,7 +3,6 @@ package com.edoctor.presentation.app.chat
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.edoctor.R
@@ -17,6 +16,7 @@ import com.edoctor.utils.CheckedIntentBuilder
 import com.edoctor.utils.MessagesAdapter
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.lazyFind
+import com.edoctor.utils.toast
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
 import javax.inject.Inject
@@ -82,12 +82,8 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
     override fun showEvent(event: Event) {
         when (event) {
-            is Event.ShowException -> {
-                Toast.makeText(this, event.throwable.toString(), Toast.LENGTH_LONG).show()
-            }
-            is Event.ShowSessionException -> {
-                onSessionException()
-            }
+            is Event.ShowException -> toast(event.throwable.toString())
+            is Event.ShowSessionException -> onSessionException()
         }
     }
 

@@ -9,7 +9,8 @@ interface ChatApi {
 
     @GET("/messages")
     fun getMessages(
-        @Query("fromTimestamp") fromTimestamp: Long
+        @Query("fromTimestamp") fromTimestamp: Long,
+        @Query("recipientEmail") recipientEmail: String
     ): Single<List<TextMessage>>
 
 }
