@@ -2,8 +2,8 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent" android:layout_height="match_parent"
         android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -24,7 +24,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
             <TextView
                     android:id="@+id/toolbar_primary_text"
@@ -34,15 +34,16 @@
                     android:background="@android:color/transparent"
                     android:maxLines="1"
                     android:singleLine="true"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintEnd_toStartOf="@+id/icon_clear"
                     app:layout_constraintBottom_toTopOf="@+id/toolbar_secondary_text"
                     android:textColor="@android:color/black"
-                    android:textSize="15sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
-                    android:paddingStart="16dp"/>
+                    android:paddingStart="16dp"
+                    tools:text="d@d.com"/>
 
             <TextView
                     android:id="@+id/toolbar_secondary_text"
@@ -53,13 +54,14 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintTop_toBottomOf="@+id/toolbar_primary_text"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/icon_clear"
+                    app:layout_constraintTop_toBottomOf="@+id/toolbar_primary_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/icon_clear"
                     android:textColor="@android:color/black"
-                    android:textSize="10sp"
-                    android:paddingStart="16dp"/>
+                    android:textSize="12sp"
+                    android:paddingStart="16dp"
+                    tools:text="Ожидание подключения..."/>
 
             <ImageView
                     android:id="@+id/icon_clear"

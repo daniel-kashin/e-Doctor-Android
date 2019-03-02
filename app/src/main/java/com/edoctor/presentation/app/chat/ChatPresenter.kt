@@ -23,6 +23,7 @@ class ChatPresenter @Inject constructor(
     lateinit var currentUserEmail: String
     lateinit var recipientEmail: String
 
+    private var connectivityDisposable by disposableDelegate
     private var currentMessagesDisposable by disposableDelegate
     private var getMessagesDisposable by disposableDelegate
 
@@ -32,12 +33,16 @@ class ChatPresenter @Inject constructor(
         this.currentUserEmail = currentUserEmail
         this.recipientEmail = recipientEmail
 
-        setViewState(ViewState(MessagesStatus.WAITING_FOR_CONNECTION))
+        setViewState(ViewState())
+    }
 
-        disposables += ConnectivityNotifier.asObservable.toV2()
+    fun openConnection() {
+        connectivityDisposable = ConnectivityNotifier.asObservable.toV2()
             .subscribe { isConnected ->
                 if (!isConnected) {
                     setViewState { copy(messagesStatus = MessagesStatus.WAITING_FOR_CONNECTION) }
+                } else {
+                    setViewState { copy(messagesStatus = MessagesStatus.UPDATING) }
                 }
 
                 currentMessagesDisposable = if (isConnected) {
@@ -53,9 +58,7 @@ class ChatPresenter @Inject constructor(
                 getMessagesDisposable = if (isConnected) {
                     val startMessageUpdateTimestamp = currentUnixTime()
 
-                    chatRepository
-                        .getMessages(lastMessageUpdateTimestamp - 10)
-                        .doOnSubscribe { setViewState { copy(messagesStatus = MessagesStatus.UPDATING) } }
+                    chatRepository.getMessages(lastMessageUpdateTimestamp)
                         .subscribeOn(subscribeScheduler)
                         .observeOn(observeScheduler)
                         .subscribe({ newMessages ->
@@ -73,6 +76,12 @@ class ChatPresenter @Inject constructor(
                     null
                 }
             }
+    }
+
+    fun closeConnection() {
+        connectivityDisposable = null
+        currentMessagesDisposable = null
+        getMessagesDisposable = null
     }
 
     fun sendMessage(message: String): Boolean {
@@ -113,13 +122,13 @@ class ChatPresenter @Inject constructor(
             .plus(newMessages)
             .asSequence()
             .distinctBy { it.uuid }
-            .sortedBy { it.sendingTimestamp }
+            .sortedByDescending { it.sendingTimestamp }
             .toList()
     }
 
 
     data class ViewState(
-        val messagesStatus: MessagesStatus,
+        val messagesStatus: MessagesStatus = MessagesStatus.WAITING_FOR_CONNECTION,
         val messages: List<TextMessage> = listOf()
     ) : Presenter.ViewState
 

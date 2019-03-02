@@ -69,6 +69,16 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         return true
     }
 
+    override fun onStart() {
+        super.onStart()
+        presenter.openConnection()
+    }
+
+    override fun onStop() {
+        presenter.closeConnection()
+        super.onStop()
+    }
+
     override fun render(viewState: ViewState) {
         toolbarSecondaryText.text = when (viewState.messagesStatus){
             ChatPresenter.MessagesStatus.WAITING_FOR_CONNECTION -> "Ожидание подключения..."
