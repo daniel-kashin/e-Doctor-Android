@@ -22,10 +22,14 @@ class ChatRepository(
     private val chatService: ChatService
 ) {
 
+    var onStartConnectionListener: (() -> Unit)? = null
     var onCloseConnectionListener: (() -> Unit)? = null
 
     fun observeEvents(): Flowable<ChatEvent> {
         return chatService.observeEvents()
+            .doOnSubscribe {
+                onStartConnectionListener?.invoke()
+            }
             .doOnCancel {
                 onCloseConnectionListener?.invoke()
             }
@@ -35,7 +39,7 @@ class ChatRepository(
     }
 
     fun getMessages(fromTimestamp: Long): Single<List<TextMessage>> {
-        return chatApi.getMessages(fromTimestamp, recipientEmail)
+        return chatApi.getMessages(fromTimestamp, recipientEmail).map { it.messages }
     }
 
     fun sendMessage(message: String) {

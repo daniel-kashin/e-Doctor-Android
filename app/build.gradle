@@ -78,6 +78,7 @@ dependencies {
     implementation androidDependencies.multidex
     implementation androidDependencies.constraintLayout
     implementation androidDependencies.glide
+    implementation androidDependencies.glideAnnotations
     implementation androidDependencies.glideOkHttp3
 
     // Dagger
@@ -112,6 +113,7 @@ dependencies {
     implementation 'com.twitter.sdk.android:twitter-core:3.0.0'
     implementation 'com.twitter.sdk.android:tweet-composer:3.0.0'
     implementation 'com.facebook.android:facebook-android-sdk:4.23.0'
+    implementation ('org.jitsi.react:jitsi-meet-sdk:+') { transitive = true }
 
     // Google play services
     def gcmVersion = '16.0.0'

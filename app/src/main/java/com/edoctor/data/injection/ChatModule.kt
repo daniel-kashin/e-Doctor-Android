@@ -62,6 +62,9 @@ class ChatModule(
     @Provides
     fun provideChatRepository(chatService: ChatService, chatApi: ChatApi) =
         ChatRepository(currentUserEmail, recipientEmail, chatApi, chatService)
-            .apply { onCloseConnectionListener = { lifecycle.stop() } }
+            .apply {
+                onStartConnectionListener = { lifecycle.start() }
+                onCloseConnectionListener = { lifecycle.stop() }
+            }
 
 }

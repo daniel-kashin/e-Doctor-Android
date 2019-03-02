@@ -8,7 +8,7 @@ class StoppableLifecycle constructor(
     private val lifecycleRegistry: LifecycleRegistry = LifecycleRegistry()
 ) : Lifecycle by lifecycleRegistry {
 
-    init {
+    fun start() {
         lifecycleRegistry.onNext(LifecycleState.Started)
     }
 
