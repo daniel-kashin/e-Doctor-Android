@@ -33,7 +33,7 @@ object MessageMapper {
 
     private fun toPresentation(callStatusMessage: CallStatusMessageResult): CallStatusMessage =
         callStatusMessage.run {
-            val callStatus = getCallStatus(callStatusValue)
+            val callStatus = getCallStatus(callStatus)
             val text = callStatus.toText()
             CallStatusMessage(uuid, senderEmail, recipientEmail, sendingTimestamp, callStatus, text)
         }

@@ -1,7 +1,5 @@
 package com.edoctor.data.entity.remote
 
-import com.google.gson.annotations.SerializedName
-
 abstract class MessageResult {
     abstract val uuid: String
     abstract val recipientEmail: String
@@ -20,8 +18,7 @@ data class CallStatusMessageResult(
     override val senderEmail: String,
     override val recipientEmail: String,
     override val sendingTimestamp: Long,
-    @SerializedName("callStatus")
-    val callStatusValue: Int
+    val callStatus: Int
 ) : UserMessageResult() {
 
     companion object {
