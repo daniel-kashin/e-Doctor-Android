@@ -70,9 +70,7 @@ class ChatPresenter @Inject constructor(
 
     override fun destroy() {
         super.destroy()
-        getMessagesDisposable = null
-        currentMessagesDisposable = null
-        connectivityDisposable = null
+        closeConnection()
     }
 
     private fun updateMessages() {
