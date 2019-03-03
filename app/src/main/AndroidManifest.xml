@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
             android:name=".EDoctor"
@@ -30,7 +31,6 @@
         <activity android:name="com.edoctor.presentation.app.welcome.WelcomeActivity"/>
         <activity android:name=".presentation.app.view.MainActivity"/>
         <activity android:name="com.edoctor.presentation.app.chat.ChatActivity"/>
-        <activity android:name=".presentation.app.view.CallActivity"/>
 
     </application>
 
