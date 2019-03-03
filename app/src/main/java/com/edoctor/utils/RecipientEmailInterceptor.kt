@@ -6,7 +6,7 @@ import okhttp3.Response
 open class RecipientEmailInterceptor(val recipientEmail: String) : Interceptor {
 
     companion object {
-        private const val RECIPIENT_EMAIL_HEADER = "RecipientEmail"
+        private const val RECIPIENT_EMAIL_HEADER = "recipient-email"
     }
 
     @Suppress("ReturnCount")

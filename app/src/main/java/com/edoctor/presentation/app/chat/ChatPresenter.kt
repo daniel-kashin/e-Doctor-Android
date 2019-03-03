@@ -37,6 +37,8 @@ class ChatPresenter @Inject constructor(
     }
 
     fun openConnection() {
+        setWaitingForConnectionState()
+
         connectivityDisposable = ConnectivityNotifier.asObservable.toV2()
             .subscribe { isConnected ->
                 currentMessagesDisposable = if (isConnected) {
@@ -46,6 +48,7 @@ class ChatPresenter @Inject constructor(
                         .observeOn(observeScheduler)
                         .doOnSubscribe { setWaitingForConnectionState() }
                         .doOnCancel { setWaitingForConnectionState() }
+                        .doOnError { setWaitingForConnectionState() }
                         .subscribe(this::onEventReceived, this::handleException)
                 } else {
                     null
