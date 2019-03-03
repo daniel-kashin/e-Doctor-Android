@@ -76,7 +76,7 @@ class ChatPresenter @Inject constructor(
 
     fun initiateCall() {
         if (viewStateSnapshot().messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION) {
-            chatRepository.sendCallStatusRequest(CallAction.ENTER)
+            chatRepository.sendCallStatusRequest(CallAction.INITIATE)
         } else {
             sendEvent(Event.ShowNetworkException)
         }

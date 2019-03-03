@@ -1,12 +1,12 @@
 package com.edoctor.data.mapper
 
 import com.edoctor.data.entity.presentation.*
-import com.edoctor.data.entity.presentation.CallAction.ENTER
-import com.edoctor.data.entity.presentation.CallAction.LEAVE
+import com.edoctor.data.entity.presentation.CallAction.*
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
 import com.edoctor.data.entity.remote.request.CallActionRequest
 import com.edoctor.data.entity.remote.request.CallActionRequest.Companion.CALL_ACTION_ENTER
+import com.edoctor.data.entity.remote.request.CallActionRequest.Companion.CALL_ACTION_INITIATE
 import com.edoctor.data.entity.remote.request.CallActionRequest.Companion.CALL_ACTION_LEAVE
 import com.edoctor.data.entity.remote.result.CallStatusMessageResult
 import com.edoctor.data.entity.remote.result.CallStatusMessageResult.Companion.CALL_STATUS_CANCELLED
@@ -49,6 +49,7 @@ object MessageMapper {
 
     private fun getValueFromCallAction(callAction: CallAction): Int {
         return when (callAction) {
+            INITIATE -> CALL_ACTION_INITIATE
             ENTER -> CALL_ACTION_ENTER
             LEAVE -> CALL_ACTION_LEAVE
         }
