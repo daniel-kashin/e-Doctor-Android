@@ -1,8 +1,8 @@
 package com.edoctor.data.repository
 
 import com.edoctor.data.entity.presentation.Message
-import com.edoctor.data.entity.presentation.TextMessage
 import com.edoctor.data.entity.remote.MessageWrapperResult
+import com.edoctor.data.entity.remote.TextMessageResult
 import com.edoctor.data.mapper.MessageMapper.toPresentation
 import com.edoctor.data.remote.api.ChatApi
 import com.edoctor.data.remote.api.ChatService
@@ -41,7 +41,7 @@ class ChatRepository(
 
     fun sendMessage(message: String) {
         chatService.sendMessage(
-            TextMessage(
+            TextMessageResult(
                 UUID.randomUUID().toString(),
                 currentUserEmail,
                 recipientEmail,
