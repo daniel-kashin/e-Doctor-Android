@@ -39,39 +39,14 @@ class ChatPresenter @Inject constructor(
     fun openConnection() {
         connectivityDisposable = ConnectivityNotifier.asObservable.toV2()
             .subscribe { isConnected ->
-                if (!isConnected) {
-                    setViewState { copy(messagesStatus = MessagesStatus.WAITING_FOR_CONNECTION) }
-                } else {
-                    setViewState { copy(messagesStatus = MessagesStatus.UPDATING) }
-                }
-
                 currentMessagesDisposable = if (isConnected) {
                     chatRepository
                         .observeEvents()
                         .subscribeOn(subscribeScheduler)
                         .observeOn(observeScheduler)
+                        .doOnSubscribe { setWaitingForConnectionState() }
+                        .doOnCancel { setWaitingForConnectionState() }
                         .subscribe(this::onEventReceived, this::handleException)
-                } else {
-                    null
-                }
-
-                getMessagesDisposable = if (isConnected) {
-                    val startMessageUpdateTimestamp = currentUnixTime()
-
-                    chatRepository.getMessages(lastMessageUpdateTimestamp)
-                        .subscribeOn(subscribeScheduler)
-                        .observeOn(observeScheduler)
-                        .subscribe({ newMessages ->
-                            lastMessageUpdateTimestamp = startMessageUpdateTimestamp
-                            setViewState {
-                                copy(
-                                    messages = messages.addWithSorting(newMessages),
-                                    messagesStatus = MessagesStatus.UP_TO_DATE
-                                )
-                            }
-                        }, {
-                            handleException(it)
-                        })
                 } else {
                     null
                 }
@@ -97,6 +72,32 @@ class ChatPresenter @Inject constructor(
         super.destroy()
         getMessagesDisposable = null
         currentMessagesDisposable = null
+        connectivityDisposable = null
+    }
+
+    private fun updateMessages() {
+        val startMessageUpdateTimestamp = currentUnixTime()
+
+        getMessagesDisposable = chatRepository.getMessages(lastMessageUpdateTimestamp)
+            .subscribeOn(subscribeScheduler)
+            .observeOn(observeScheduler)
+            .doOnSubscribe { setViewState { copy(messagesStatus = MessagesStatus.UPDATING) } }
+            .subscribe({ newMessages ->
+                lastMessageUpdateTimestamp = startMessageUpdateTimestamp
+                setViewState {
+                    copy(
+                        messages = messages.addWithSorting(newMessages),
+                        messagesStatus = MessagesStatus.UP_TO_DATE
+                    )
+                }
+            }, {
+                handleException(it)
+            })
+    }
+
+    private fun setWaitingForConnectionState() {
+        getMessagesDisposable = null
+        setViewState { copy(messagesStatus = MessagesStatus.WAITING_FOR_CONNECTION) }
     }
 
     private fun handleException(throwable: Throwable) {
@@ -109,6 +110,15 @@ class ChatPresenter @Inject constructor(
 
     private fun onEventReceived(event: ChatRepository.ChatEvent) {
         when (event) {
+            is ChatRepository.ChatEvent.OnConnectionOpened -> {
+                updateMessages()
+            }
+            is ChatRepository.ChatEvent.OnConnectionClosing -> {
+                setWaitingForConnectionState()
+            }
+            is ChatRepository.ChatEvent.OnConnectionFailed -> {
+                setWaitingForConnectionState()
+            }
             is ChatRepository.ChatEvent.OnMessageReceived -> (event.message as? TextMessage)?.let { message ->
                 setViewState {
                     copy(messages = messages.addWithSorting(listOf(message)))
@@ -125,7 +135,6 @@ class ChatPresenter @Inject constructor(
             .sortedByDescending { it.sendingTimestamp }
             .toList()
     }
-
 
     data class ViewState(
         val messagesStatus: MessagesStatus = MessagesStatus.WAITING_FOR_CONNECTION,
