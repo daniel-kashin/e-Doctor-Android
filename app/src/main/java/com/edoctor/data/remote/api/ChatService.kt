@@ -7,8 +7,11 @@ import com.tinder.scarlet.ws.Send
 import io.reactivex.Flowable
 
 interface ChatService {
+
     @Receive
     fun observeEvents(): Flowable<WebSocketEvent>
+
     @Send
     fun sendMessage(message: TextMessage)
+
 }
