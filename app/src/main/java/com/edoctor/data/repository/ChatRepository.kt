@@ -27,15 +27,9 @@ class ChatRepository(
 
     fun observeEvents(): Flowable<ChatEvent> {
         return chatService.observeEvents()
-            .doOnSubscribe {
-                onStartConnectionListener?.invoke()
-            }
-            .doOnCancel {
-                onCloseConnectionListener?.invoke()
-            }
-            .flatMap {
-                justOrEmptyFlowable(it.toChatEvent())
-            }
+            .doOnSubscribe { onStartConnectionListener?.invoke() }
+            .doOnCancel { onCloseConnectionListener?.invoke() }
+            .flatMap { justOrEmptyFlowable(it.toChatEvent()) }
     }
 
     fun getMessages(fromTimestamp: Long): Single<List<TextMessage>> {

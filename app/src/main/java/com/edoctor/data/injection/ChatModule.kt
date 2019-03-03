@@ -5,6 +5,7 @@ import com.edoctor.data.injection.NetworkModule.Companion.EDOCTOR_WS_ENDPOINT
 import com.edoctor.data.remote.api.ChatApi
 import com.edoctor.data.remote.api.ChatService
 import com.edoctor.data.repository.ChatRepository
+import com.edoctor.utils.RecipientEmailInterceptor
 import com.edoctor.utils.StoppableLifecycle
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.Scarlet
@@ -34,8 +35,10 @@ class ChatModule(
         moshi: Moshi
     ): ChatService {
         val protocol = OkHttpWebSocket(
-            okHttpClientBuilder.build(),
-            OkHttpWebSocket.SimpleRequestFactory(
+            okHttpClient = okHttpClientBuilder
+                .addInterceptor(RecipientEmailInterceptor(recipientEmail))
+                .build(),
+            requestFactory = OkHttpWebSocket.SimpleRequestFactory(
                 { Request.Builder().url("${EDOCTOR_WS_ENDPOINT}chat").build() },
                 { ShutdownReason.GRACEFUL }
             )
