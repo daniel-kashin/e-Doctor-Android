@@ -1,13 +1,10 @@
 package com.edoctor.data.mapper
 
-import com.edoctor.data.entity.presentation.CallAction
+import com.edoctor.data.entity.presentation.*
 import com.edoctor.data.entity.presentation.CallAction.ENTER
 import com.edoctor.data.entity.presentation.CallAction.LEAVE
-import com.edoctor.data.entity.presentation.CallStatusMessage
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
-import com.edoctor.data.entity.presentation.Message
-import com.edoctor.data.entity.presentation.TextMessage
 import com.edoctor.data.entity.remote.request.CallActionRequest
 import com.edoctor.data.entity.remote.request.CallActionRequest.Companion.CALL_ACTION_ENTER
 import com.edoctor.data.entity.remote.request.CallActionRequest.Companion.CALL_ACTION_LEAVE
@@ -25,7 +22,7 @@ object MessageMapper {
         messages.mapNotNull { toPresentation(it) }
     }
 
-    fun toPresentation(messageWrapperResult: MessageResultWrapper): Message? = messageWrapperResult.run {
+    fun toPresentation(messageWrapperResult: MessageResultWrapper): UserMessage? = messageWrapperResult.run {
         when {
             textMessage != null -> toPresentation(textMessage)
             callStatusMessage != null -> toPresentation(callStatusMessage)
