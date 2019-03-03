@@ -1,7 +1,9 @@
 package com.edoctor.data.repository
 
-import com.edoctor.data.entity.remote.Message
-import com.edoctor.data.entity.remote.TextMessage
+import com.edoctor.data.entity.presentation.Message
+import com.edoctor.data.entity.presentation.TextMessage
+import com.edoctor.data.entity.remote.MessageWrapperResult
+import com.edoctor.data.mapper.MessageMapper.toPresentation
 import com.edoctor.data.remote.api.ChatApi
 import com.edoctor.data.remote.api.ChatService
 import com.edoctor.utils.javaTimeToUnixTime
@@ -32,8 +34,9 @@ class ChatRepository(
             .flatMap { justOrEmptyFlowable(it.toChatEvent()) }
     }
 
-    fun getMessages(fromTimestamp: Long): Single<List<TextMessage>> {
-        return chatApi.getMessages(fromTimestamp, recipientEmail).map { it.messages }
+    fun getMessages(fromTimestamp: Long): Single<List<Message>> {
+        return chatApi.getMessages(fromTimestamp, recipientEmail)
+            .map { toPresentation(it) }
     }
 
     fun sendMessage(message: String) {
@@ -52,15 +55,11 @@ class ChatRepository(
         return when (this) {
             is WebSocketEvent.OnMessageReceived -> {
                 val messageString = (this.message as? Text)?.value ?: return null
-                val textMessage = fromJsonSafely(messageString, TextMessage::class.java) ?: return null
-                if (
-                    textMessage.senderEmail == currentUserEmail && textMessage.recipientEmail == recipientEmail
-                    || textMessage.recipientEmail == currentUserEmail && textMessage.senderEmail == recipientEmail
-                ) {
-                    ChatEvent.OnMessageReceived(textMessage)
-                } else {
-                    null
-                }
+                val textMessage = fromJsonSafely(messageString, MessageWrapperResult::class.java)
+                    ?.let { toPresentation(it) }
+                    ?: return null
+
+                ChatEvent.OnMessageReceived(textMessage)
             }
             is WebSocketEvent.OnConnectionClosed -> ChatEvent.OnConnectionClosed(this.shutdownReason)
             is WebSocketEvent.OnConnectionClosing -> ChatEvent.OnConnectionClosing(this.shutdownReason)
@@ -68,6 +67,7 @@ class ChatRepository(
             is WebSocketEvent.OnConnectionFailed -> ChatEvent.OnConnectionFailed(this.throwable)
         }
     }
+
 
     sealed class ChatEvent {
         object OnConnectionOpened : ChatEvent()
@@ -78,10 +78,10 @@ class ChatRepository(
     }
 
     private fun <T> fromJsonSafely(json: String, classOfT: Class<T>): T? {
-        try {
-            return Gson().fromJson(json, classOfT)
+        return try {
+            Gson().fromJson(json, classOfT)
         } catch (e: JsonSyntaxException) {
-            return null
+            null
         }
     }
 

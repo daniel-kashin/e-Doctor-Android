@@ -1,3 +1,3 @@
 package com.edoctor.data.entity.remote
 
-data class MessagesResult(val messages: List<TextMessage>)
+data class MessagesResult(val messages: List<MessageWrapperResult>)

@@ -1,6 +1,6 @@
 package com.edoctor.data.remote.api
 
-import com.edoctor.data.entity.remote.TextMessage
+import com.edoctor.data.entity.presentation.TextMessage
 import com.tinder.scarlet.websocket.WebSocketEvent
 import com.tinder.scarlet.ws.Receive
 import com.tinder.scarlet.ws.Send

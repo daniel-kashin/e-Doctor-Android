@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.edoctor.R
-import com.edoctor.data.entity.remote.TextMessage
+import com.edoctor.data.entity.presentation.Message
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ChatModule
 import com.edoctor.presentation.app.chat.ChatPresenter.Event
@@ -25,7 +25,6 @@ import org.jitsi.meet.sdk.JitsiMeetActivityInterface
 import org.jitsi.meet.sdk.JitsiMeetView
 import org.jitsi.meet.sdk.JitsiMeetViewAdapter
 import org.jitsi.meet.sdk.ReactActivityLifecycleCallbacks
-import java.net.URL
 import javax.inject.Inject
 
 class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity"), JitsiMeetActivityInterface {
@@ -50,7 +49,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
     private val messagesList by lazyFind<MessagesList>(R.id.messages_list)
     private lateinit var jitsiMeetView: JitsiMeetView
 
-    private lateinit var messagesAdapter: MessagesAdapter<TextMessage>
+    private lateinit var messagesAdapter: MessagesAdapter<Message>
 
     override fun init(applicationComponent: ApplicationComponent) {
         val recipientEmail = intent.getStringExtra(EXTRA_RECIPIENT_EMAIL)
@@ -67,8 +66,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         toolbarPrimaryText.text = presenter.recipientEmail
 
         iconCall.setOnClickListener {
-            jitsiMeetView.loadURL(URL("https://meet.jit.si/eDoctorTest"))
-            jitsiMeetView.show()
+            presenter.initiateCall()
         }
 
         messageInput.setInputListener { input ->
@@ -78,26 +76,28 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         messagesAdapter = MessagesAdapter(presenter.currentUserEmail)
         messagesList.setAdapter(messagesAdapter)
 
-        jitsiMeetView = JitsiMeetView(this).apply {
-            hide()
-            isPictureInPictureEnabled = false
-            isWelcomePageEnabled = false
-            loadURL(null)
-
-            listener = object : JitsiMeetViewAdapter() {
-                override fun onConferenceFailed(p0: MutableMap<String, Any>?) {
-                    jitsiMeetView.hide()
-                }
-
-                override fun onConferenceLeft(data: MutableMap<String, Any>?) {
-                    jitsiMeetView.hide()
-                }
-            }
-
-            activityRoot.addView(this, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-        }
+        jitsiMeetView = getMeetView()
 
         presenter.openConnection()
+    }
+
+    private fun getMeetView() = JitsiMeetView(this).apply {
+        hide()
+        isPictureInPictureEnabled = false
+        isWelcomePageEnabled = false
+        loadURL(null)
+
+        listener = object : JitsiMeetViewAdapter() {
+            override fun onConferenceFailed(p0: MutableMap<String, Any>?) {
+                jitsiMeetView.hide()
+            }
+
+            override fun onConferenceLeft(data: MutableMap<String, Any>?) {
+                jitsiMeetView.hide()
+            }
+        }
+
+        activityRoot.addView(this, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
     }
 
     override fun onResume() {
@@ -127,7 +127,14 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
     }
 
     override fun render(viewState: ViewState) {
-        toolbarSecondaryText.text = when (viewState.messagesStatus){
+        if (viewState.callUrl != null) {
+            jitsiMeetView.loadURL(viewState.callUrl)
+            jitsiMeetView.show()
+        } else {
+            jitsiMeetView.hide()
+        }
+
+        toolbarSecondaryText.text = when (viewState.messagesStatus) {
             ChatPresenter.MessagesStatus.WAITING_FOR_CONNECTION -> "Ожидание подключения..."
             ChatPresenter.MessagesStatus.UPDATING -> "Обновление..."
             ChatPresenter.MessagesStatus.UP_TO_DATE -> "Подключено"
@@ -144,6 +151,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
     override fun showEvent(event: Event) {
         when (event) {
             is Event.ShowException -> toast(event.throwable.toString())
+            is Event.ShowNetworkException -> toast("Ошибка соединения")
             is Event.ShowSessionException -> onSessionException()
         }
     }

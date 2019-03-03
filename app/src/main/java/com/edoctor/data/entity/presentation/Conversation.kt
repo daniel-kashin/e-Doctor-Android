@@ -1,9 +1,8 @@
 package com.edoctor.data.entity.presentation
 
-import com.edoctor.data.entity.remote.TextMessage
 import com.stfalcon.chatkit.commons.models.IDialog
 
-class Conversation(private val currentUserEmail: String, private var _lastMessage: TextMessage) : IDialog<TextMessage> {
+class Conversation(private val currentUserEmail: String, private var _lastMessage: UserMessage) : IDialog<UserMessage> {
 
     override fun getDialogPhoto() = null
 
@@ -17,7 +16,8 @@ class Conversation(private val currentUserEmail: String, private var _lastMessag
 
     override fun getDialogName() = _lastMessage.run { recipientEmail.takeIf { it != currentUserEmail } ?: senderEmail }
 
-    override fun setLastMessage(message: TextMessage) {
+    override fun setLastMessage(message: UserMessage) {
         _lastMessage = message
     }
+
 }

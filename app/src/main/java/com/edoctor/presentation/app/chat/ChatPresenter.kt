@@ -1,6 +1,6 @@
 package com.edoctor.presentation.app.chat
 
-import com.edoctor.data.entity.remote.TextMessage
+import com.edoctor.data.entity.presentation.Message
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.ChatRepository
 import com.edoctor.presentation.architecture.presenter.BasePresenter
@@ -9,6 +9,7 @@ import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.isSessionException
 import com.edoctor.utils.rx.toV2
 import io.reactivex.Scheduler
+import java.net.URL
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -67,9 +68,19 @@ class ChatPresenter @Inject constructor(
             chatRepository.sendMessage(message)
             true
         } else {
+            sendEvent(Event.ShowNetworkException)
             false
         }
     }
+
+    fun initiateCall() {
+        if (viewStateSnapshot().messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION) {
+
+        } else {
+            sendEvent(Event.ShowNetworkException)
+        }
+    }
+
 
     override fun destroy() {
         super.destroy()
@@ -120,15 +131,15 @@ class ChatPresenter @Inject constructor(
             is ChatRepository.ChatEvent.OnConnectionFailed -> {
                 setWaitingForConnectionState()
             }
-            is ChatRepository.ChatEvent.OnMessageReceived -> (event.message as? TextMessage)?.let { message ->
+            is ChatRepository.ChatEvent.OnMessageReceived -> {
                 setViewState {
-                    copy(messages = messages.addWithSorting(listOf(message)))
+                    copy(messages = messages.addWithSorting(listOf((event.message))))
                 }
             }
         }
     }
 
-    private fun List<TextMessage>.addWithSorting(newMessages: List<TextMessage>): List<TextMessage> {
+    private fun List<Message>.addWithSorting(newMessages: List<Message>): List<Message> {
         return asSequence()
             .plus(newMessages)
             .asSequence()
@@ -139,7 +150,8 @@ class ChatPresenter @Inject constructor(
 
     data class ViewState(
         val messagesStatus: MessagesStatus = MessagesStatus.WAITING_FOR_CONNECTION,
-        val messages: List<TextMessage> = listOf()
+        val messages: List<Message> = listOf(),
+        val callUrl: URL? = null
     ) : Presenter.ViewState
 
     enum class MessagesStatus {
@@ -150,6 +162,7 @@ class ChatPresenter @Inject constructor(
 
     sealed class Event : Presenter.Event {
         class ShowException(val throwable: Throwable) : Event()
+        object ShowNetworkException : Event()
         object ShowSessionException : Event()
     }
 
