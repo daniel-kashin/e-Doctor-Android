@@ -30,13 +30,14 @@ data class CallStatusMessage(
     private val _text: String
 ) : UserMessage() {
 
-    override fun getText() = _text
-
     enum class CallStatus {
         INITIATED,
         STARTED,
         CANCELLED;
     }
+
+    override fun getText() = _text
+
 }
 
 data class TextMessage(

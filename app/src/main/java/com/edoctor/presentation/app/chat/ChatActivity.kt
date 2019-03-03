@@ -89,6 +89,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
         listener = object : JitsiMeetViewAdapter() {
             override fun onConferenceFailed(p0: MutableMap<String, Any>?) {
+
                 jitsiMeetView.hide()
             }
 

@@ -1,6 +1,6 @@
 package com.edoctor.data.entity.remote
 
-data class MessageWrapperResult(
+data class MessageResultWrapper(
     val textMessage: TextMessageResult?,
     val callStatusMessage: CallStatusMessageResult?
 )

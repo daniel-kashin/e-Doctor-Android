@@ -1,8 +1,11 @@
 package com.edoctor.data.repository
 
+import com.edoctor.data.entity.presentation.CallAction
 import com.edoctor.data.entity.presentation.Message
-import com.edoctor.data.entity.remote.MessageWrapperResult
+import com.edoctor.data.entity.remote.MessageRequestWrapper
+import com.edoctor.data.entity.remote.MessageResultWrapper
 import com.edoctor.data.entity.remote.TextMessageResult
+import com.edoctor.data.mapper.MessageMapper.toNetwork
 import com.edoctor.data.mapper.MessageMapper.toPresentation
 import com.edoctor.data.remote.api.ChatApi
 import com.edoctor.data.remote.api.ChatService
@@ -41,12 +44,22 @@ class ChatRepository(
 
     fun sendMessage(message: String) {
         chatService.sendMessage(
-            TextMessageResult(
-                UUID.randomUUID().toString(),
-                currentUserEmail,
-                recipientEmail,
-                System.currentTimeMillis().javaTimeToUnixTime(),
-                message
+            MessageRequestWrapper(
+                textMessageResult = TextMessageResult(
+                    UUID.randomUUID().toString(),
+                    currentUserEmail,
+                    recipientEmail,
+                    System.currentTimeMillis().javaTimeToUnixTime(),
+                    message
+                )
+            )
+        )
+    }
+
+    fun sendCallStatusRequest(callAction: CallAction) {
+        chatService.sendMessage(
+            MessageRequestWrapper(
+                callActionRequest = toNetwork(callAction)
             )
         )
     }
@@ -55,7 +68,7 @@ class ChatRepository(
         return when (this) {
             is WebSocketEvent.OnMessageReceived -> {
                 val messageString = (this.message as? Text)?.value ?: return null
-                val textMessage = fromJsonSafely(messageString, MessageWrapperResult::class.java)
+                val textMessage = fromJsonSafely(messageString, MessageResultWrapper::class.java)
                     ?.let { toPresentation(it) }
                     ?: return null
 

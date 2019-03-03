@@ -1,5 +1,7 @@
 package com.edoctor.presentation.app.chat
 
+import com.edoctor.data.entity.presentation.CallAction
+import com.edoctor.data.entity.presentation.CallStatusMessage
 import com.edoctor.data.entity.presentation.Message
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.ChatRepository
@@ -9,7 +11,6 @@ import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.isSessionException
 import com.edoctor.utils.rx.toV2
 import io.reactivex.Scheduler
-import java.net.URL
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -75,7 +76,23 @@ class ChatPresenter @Inject constructor(
 
     fun initiateCall() {
         if (viewStateSnapshot().messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION) {
+            chatRepository.sendCallStatusRequest(CallAction.ENTER)
+        } else {
+            sendEvent(Event.ShowNetworkException)
+        }
+    }
 
+    fun acceptCall() {
+        if (viewStateSnapshot().messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION) {
+            chatRepository.sendCallStatusRequest(CallAction.ENTER)
+        } else {
+            sendEvent(Event.ShowNetworkException)
+        }
+    }
+
+    fun leaveCall() {
+        if (viewStateSnapshot().messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION) {
+            chatRepository.sendCallStatusRequest(CallAction.LEAVE)
         } else {
             sendEvent(Event.ShowNetworkException)
         }
@@ -151,7 +168,7 @@ class ChatPresenter @Inject constructor(
     data class ViewState(
         val messagesStatus: MessagesStatus = MessagesStatus.WAITING_FOR_CONNECTION,
         val messages: List<Message> = listOf(),
-        val callUrl: URL? = null
+        val callStatusMessage: CallStatusMessage? = null
     ) : Presenter.ViewState
 
     enum class MessagesStatus {
