@@ -1,6 +1,6 @@
 package com.edoctor.data.repository
 
-import com.edoctor.data.entity.remote.UserResult
+import com.edoctor.data.entity.remote.result.UserResult
 import com.edoctor.data.remote.api.AccountRestApi
 import com.edoctor.data.session.SessionManager
 import io.reactivex.Single

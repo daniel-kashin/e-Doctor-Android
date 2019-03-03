@@ -2,9 +2,9 @@ package com.edoctor.data.repository
 
 import com.edoctor.data.entity.presentation.CallAction
 import com.edoctor.data.entity.presentation.Message
-import com.edoctor.data.entity.remote.MessageRequestWrapper
-import com.edoctor.data.entity.remote.MessageResultWrapper
-import com.edoctor.data.entity.remote.TextMessageResult
+import com.edoctor.data.entity.remote.request.MessageRequestWrapper
+import com.edoctor.data.entity.remote.result.MessageResultWrapper
+import com.edoctor.data.entity.remote.result.TextMessageResult
 import com.edoctor.data.mapper.MessageMapper.toNetwork
 import com.edoctor.data.mapper.MessageMapper.toPresentation
 import com.edoctor.data.remote.api.ChatApi

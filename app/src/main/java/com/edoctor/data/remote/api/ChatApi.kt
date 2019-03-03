@@ -1,6 +1,6 @@
 package com.edoctor.data.remote.api
 
-import com.edoctor.data.entity.remote.MessagesResult
+import com.edoctor.data.entity.remote.result.MessagesResult
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query

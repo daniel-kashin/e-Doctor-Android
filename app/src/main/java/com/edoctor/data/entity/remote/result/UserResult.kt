@@ -1,3 +1,3 @@
-package com.edoctor.data.entity.remote
+package com.edoctor.data.entity.remote.result
 
 data class UserResult(val email: String, val isPatient: Boolean)

@@ -8,12 +8,16 @@ import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
 import com.edoctor.data.entity.presentation.Message
 import com.edoctor.data.entity.presentation.TextMessage
-import com.edoctor.data.entity.remote.*
-import com.edoctor.data.entity.remote.CallActionRequest.Companion.CALL_ACTION_ENTER
-import com.edoctor.data.entity.remote.CallActionRequest.Companion.CALL_ACTION_LEAVE
-import com.edoctor.data.entity.remote.CallStatusMessageResult.Companion.CALL_STATUS_CANCELLED
-import com.edoctor.data.entity.remote.CallStatusMessageResult.Companion.CALL_STATUS_INITIATED
-import com.edoctor.data.entity.remote.CallStatusMessageResult.Companion.CALL_STATUS_STARTED
+import com.edoctor.data.entity.remote.request.CallActionRequest
+import com.edoctor.data.entity.remote.request.CallActionRequest.Companion.CALL_ACTION_ENTER
+import com.edoctor.data.entity.remote.request.CallActionRequest.Companion.CALL_ACTION_LEAVE
+import com.edoctor.data.entity.remote.result.CallStatusMessageResult
+import com.edoctor.data.entity.remote.result.CallStatusMessageResult.Companion.CALL_STATUS_CANCELLED
+import com.edoctor.data.entity.remote.result.CallStatusMessageResult.Companion.CALL_STATUS_INITIATED
+import com.edoctor.data.entity.remote.result.CallStatusMessageResult.Companion.CALL_STATUS_STARTED
+import com.edoctor.data.entity.remote.result.MessageResultWrapper
+import com.edoctor.data.entity.remote.result.MessagesResult
+import com.edoctor.data.entity.remote.result.TextMessageResult
 
 object MessageMapper {
 

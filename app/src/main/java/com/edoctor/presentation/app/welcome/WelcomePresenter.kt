@@ -1,6 +1,6 @@
 package com.edoctor.presentation.app.welcome
 
-import com.edoctor.data.entity.remote.LoginData
+import com.edoctor.data.entity.remote.request.LoginDataRequest
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.AuthRepository
 import com.edoctor.presentation.architecture.presenter.BasePresenter
@@ -43,7 +43,13 @@ class WelcomePresenter @Inject constructor(
     }
 
     private fun login(email: String, password: String, isPatient: Boolean) {
-        disposables += authRepository.login(LoginData(email, password, isPatient))
+        disposables += authRepository.login(
+            LoginDataRequest(
+                email,
+                password,
+                isPatient
+            )
+        )
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
@@ -62,7 +68,13 @@ class WelcomePresenter @Inject constructor(
     }
 
     private fun register(email: String, password: String, isPatient: Boolean) {
-        disposables += authRepository.register(LoginData(email, password, isPatient))
+        disposables += authRepository.register(
+            LoginDataRequest(
+                email,
+                password,
+                isPatient
+            )
+        )
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({

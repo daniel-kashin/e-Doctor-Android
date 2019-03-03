@@ -1,6 +1,6 @@
 package com.edoctor.presentation.app.account
 
-import com.edoctor.data.entity.remote.UserResult
+import com.edoctor.data.entity.remote.result.UserResult
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.AccountRepository
 import com.edoctor.data.repository.AuthRepository

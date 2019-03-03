@@ -1,4 +1,4 @@
-package com.edoctor.data.entity.remote
+package com.edoctor.data.entity.remote.request
 
 data class CallActionRequest(val callStatus: Int) {
 

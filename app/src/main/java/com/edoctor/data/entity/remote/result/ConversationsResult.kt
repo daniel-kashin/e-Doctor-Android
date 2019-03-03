@@ -1,4 +1,4 @@
-package com.edoctor.data.entity.remote
+package com.edoctor.data.entity.remote.result
 
 import com.edoctor.data.entity.presentation.TextMessage
 

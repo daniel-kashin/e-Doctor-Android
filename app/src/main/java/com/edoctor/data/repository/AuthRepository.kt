@@ -1,8 +1,8 @@
 package com.edoctor.data.repository
 
-import com.edoctor.data.entity.remote.LoginData
-import com.edoctor.data.entity.remote.TokenResult
-import com.edoctor.data.entity.remote.UserResult
+import com.edoctor.data.entity.remote.request.LoginDataRequest
+import com.edoctor.data.entity.remote.result.TokenResult
+import com.edoctor.data.entity.remote.result.UserResult
 import com.edoctor.data.remote.api.AuthRestApi
 import com.edoctor.data.session.SessionInfo
 import com.edoctor.data.session.SessionManager
@@ -24,7 +24,7 @@ class AuthRepository(
         return result.body() ?: throw HttpException(result)
     }
 
-    fun register(loginData: LoginData): Completable {
+    fun register(loginData: LoginDataRequest): Completable {
         return authorizedApi.register(loginData)
             .flatMapCompletable { user ->
                 anonymousApi.getFreshestTokenByPassword(loginData.password, loginData.email)
@@ -35,7 +35,7 @@ class AuthRepository(
             .onErrorConvertRetrofitThrowable()
     }
 
-    fun login(loginData: LoginData): Completable {
+    fun login(loginData: LoginDataRequest): Completable {
         return authorizedApi.login(loginData)
             .flatMapCompletable { user ->
                 anonymousApi.getFreshestTokenByPassword(loginData.password, loginData.email)

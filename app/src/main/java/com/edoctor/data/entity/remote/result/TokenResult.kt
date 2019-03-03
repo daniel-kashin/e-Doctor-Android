@@ -1,4 +1,4 @@
-package com.edoctor.data.entity.remote
+package com.edoctor.data.entity.remote.result
 
 import com.google.gson.annotations.SerializedName
 

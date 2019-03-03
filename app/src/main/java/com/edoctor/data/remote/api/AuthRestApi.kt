@@ -1,8 +1,8 @@
 package com.edoctor.data.remote.api
 
-import com.edoctor.data.entity.remote.LoginData
-import com.edoctor.data.entity.remote.TokenResult
-import com.edoctor.data.entity.remote.UserResult
+import com.edoctor.data.entity.remote.request.LoginDataRequest
+import com.edoctor.data.entity.remote.result.TokenResult
+import com.edoctor.data.entity.remote.result.UserResult
 import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.Body
@@ -29,12 +29,12 @@ interface AuthRestApi {
 
     @POST("/register")
     fun register(
-       @Body loginData: LoginData
+       @Body loginData: LoginDataRequest
     ): Single<UserResult>
 
     @POST("/login")
     fun login(
-        @Body loginData: LoginData
+        @Body loginData: LoginDataRequest
     ): Single<UserResult>
 
 }
