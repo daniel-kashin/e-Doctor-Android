@@ -40,8 +40,8 @@
                 android:id="@+id/enable_audio_image_view"
                 android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
                 android:layout_gravity="center_vertical"/>
 
         <com.edoctor.presentation.views.CircleImageView
@@ -64,8 +64,8 @@
                 android:id="@+id/enable_video_image_view"
                 android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
                 android:layout_gravity="center_vertical"/>
 
 
