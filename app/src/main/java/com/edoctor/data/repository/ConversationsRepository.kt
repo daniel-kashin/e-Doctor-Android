@@ -13,7 +13,7 @@ class ConversationsRepository(
     fun getConversations(): Single<List<Conversation>> {
         return api.getConversations().map { result ->
             result.lastMessages
-                .mapNotNull { toPresentation(it) }
+                .mapNotNull { toPresentation(it, currentUserEmail) }
                 .map { Conversation(currentUserEmail, it) }
         }
     }

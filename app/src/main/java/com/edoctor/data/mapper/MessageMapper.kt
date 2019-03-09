@@ -19,14 +19,14 @@ import com.edoctor.data.entity.remote.response.TextMessageResponse
 
 object MessageMapper {
 
-    fun toPresentation(messagesResponse: MessagesResponse): List<Message> = messagesResponse.run {
-        messages.mapNotNull { toPresentation(it) }
+    fun toPresentation(messagesResponse: MessagesResponse, currentUserEmail: String): List<Message> = messagesResponse.run {
+        messages.mapNotNull { toPresentation(it, currentUserEmail) }
     }
 
-    fun toPresentation(messageWrapperResponse: MessageResponseWrapper): UserMessage? = messageWrapperResponse.run {
+    fun toPresentation(messageWrapperResponse: MessageResponseWrapper, currentUserEmail: String): UserMessage? = messageWrapperResponse.run {
         when {
-            textMessageResponse != null -> toPresentation(textMessageResponse)
-            callStatusMessageResponse != null -> toPresentation(callStatusMessageResponse)
+            textMessageResponse != null -> toPresentation(textMessageResponse, currentUserEmail)
+            callStatusMessageResponse != null -> toPresentation(callStatusMessageResponse, currentUserEmail)
             else -> null
         }
     }
@@ -37,15 +37,16 @@ object MessageMapper {
             callActionRequest.callUuid
         )
 
-    private fun toPresentation(textMessageResult: TextMessageResponse): TextMessage =
+    private fun toPresentation(textMessageResult: TextMessageResponse, currentUserEmail: String): TextMessage =
         textMessageResult.run {
             TextMessage(uuid, senderEmail, recipientEmail, sendingTimestamp, text)
         }
 
-    private fun toPresentation(callStatusMessage: CallStatusMessageResponse): CallStatusMessage =
+    private fun toPresentation(callStatusMessage: CallStatusMessageResponse, currentUserEmail: String): CallStatusMessage =
         callStatusMessage.run {
             val callStatus = getCallStatusFromValue(callStatus)
-            val text = callStatus.toText()
+            val isFromCurrentUser = currentUserEmail == senderEmail
+            val text = callStatus.toText(isFromCurrentUser)
             CallStatusMessage(uuid, senderEmail, recipientEmail, sendingTimestamp, callStatus, callUuid, text)
         }
 
@@ -67,9 +68,9 @@ object MessageMapper {
     }
 
     // TODO
-    private fun CallStatus.toText(): String =
+    private fun CallStatus.toText(isFromCurrentUser: Boolean): String =
         when (this) {
-            CallStatus.INITIATED -> "Разговор инициирован"
+            CallStatus.INITIATED -> if (isFromCurrentUser) "Исходящий вызов" else "Входящий вызов"
             CallStatus.STARTED -> "Разговор начат"
             CallStatus.CANCELLED -> "Разговор закончен"
         }

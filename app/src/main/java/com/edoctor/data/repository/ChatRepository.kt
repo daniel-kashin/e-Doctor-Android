@@ -37,7 +37,7 @@ class ChatRepository(
 
     fun getMessages(fromTimestamp: Long): Single<List<Message>> {
         return chatApi.getMessages(fromTimestamp, recipientEmail)
-            .map { toPresentation(it) }
+            .map { toPresentation(it, currentUserEmail) }
     }
 
     fun sendMessage(message: String) {
@@ -61,7 +61,7 @@ class ChatRepository(
             is WebSocketEvent.OnMessageReceived -> {
                 val messageString = (this.message as? Text)?.value ?: return null
                 val textMessage = fromJsonSafely(messageString, MessageResponseWrapper::class.java)
-                    ?.let { toPresentation(it) }
+                    ?.let { toPresentation(it, currentUserEmail) }
                     ?: return null
 
                 ChatEvent.OnMessageReceived(textMessage)

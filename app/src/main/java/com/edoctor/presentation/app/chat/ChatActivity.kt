@@ -18,6 +18,7 @@ import com.edoctor.data.injection.ChatModule
 import com.edoctor.presentation.app.chat.ChatPresenter.Event
 import com.edoctor.presentation.app.chat.ChatPresenter.ViewState
 import com.edoctor.presentation.architecture.activity.BaseActivity
+import com.edoctor.presentation.views.CallingView
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.facebook.react.modules.core.PermissionListener
@@ -50,6 +51,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
     private val iconCall by lazyFind<ImageView>(R.id.icon_call)
     private val messageInput by lazyFind<MessageInput>(R.id.message_input)
     private val messagesList by lazyFind<MessagesList>(R.id.messages_list)
+    private val callingView by lazyFind<CallingView>(R.id.calling_view)
     private lateinit var jitsiMeetView: JitsiMeetView
 
     private lateinit var messagesAdapter: MessagesAdapter<Message>
@@ -69,7 +71,9 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         toolbarPrimaryText.text = presenter.recipientEmail
 
         iconCall.setOnClickListener {
-            presenter.initiateCall()
+            callingView.show()
+            callingView.bind("Папа", CallingView.CallType.INCOMING)
+            //presenter.initiateCall()
         }
 
         messageInput.setInputListener { input ->
@@ -86,14 +90,23 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         }
 
         jitsiMeetView = getMeetView()
+    }
 
+    override fun onStart() {
+        super.onStart()
         presenter.openConnection()
     }
 
+    override fun onStop() {
+        presenter.closeConnection()
+        super.onStop()
+    }
+
     private fun getMeetView() = JitsiMeetView(this).apply {
-        hide()
+        invisible()
         isPictureInPictureEnabled = false
         isWelcomePageEnabled = false
+        defaultURL = null
         loadURL(null)
 
         listener = object : JitsiMeetViewAdapter() {
@@ -121,7 +134,6 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.closeConnection()
         jitsiMeetView.dispose()
         ReactActivityLifecycleCallbacks.onHostDestroy(this)
     }
@@ -139,17 +151,27 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         viewState.callStatusMessage.let { callStatusMessage ->
             when (callStatusMessage?.callStatus) {
                 STARTED -> {
-                    jitsiMeetView.loadURL(callStatusMessage.getCallUrl())
                     jitsiMeetView.show()
+                    val config = Bundle()
+                    config.putBoolean("startWithAudioMuted", false)
+                    config.putBoolean("startWithVideoMuted", true)
+                    val urlObject = Bundle()
+                    urlObject.putBundle("config", config)
+                    urlObject.putString("url", callStatusMessage.getCallUrl().toString())
+                    jitsiMeetView.loadURLObject(urlObject)
+//                    jitsiMeetView.loadURL(callStatusMessage.getCallUrl())
                 }
                 CANCELLED -> {
-                    jitsiMeetView.hide()
+                    jitsiMeetView.loadURL(null)
+                    jitsiMeetView.invisible()
                 }
                 INITIATED -> {
-                    jitsiMeetView.hide()
+                    jitsiMeetView.loadURL(null)
+                    jitsiMeetView.invisible()
                 }
                 null -> {
-                    jitsiMeetView.hide()
+                    jitsiMeetView.loadURL(null)
+                    jitsiMeetView.invisible()
                 }
             }
         }

@@ -99,12 +99,6 @@ class ChatPresenter @Inject constructor(
         }
     }
 
-
-    override fun destroy() {
-        super.destroy()
-        closeConnection()
-    }
-
     private fun updateMessages() {
         val startMessageUpdateTimestamp = currentUnixTime()
 
@@ -151,7 +145,10 @@ class ChatPresenter @Inject constructor(
             }
             is ChatRepository.ChatEvent.OnMessageReceived -> {
                 setViewState {
-                    copy(messages = messages.addWithSorting(listOf((event.message))))
+                    copy(
+                        messages = messages.addWithSorting(listOf((event.message))),
+                        callStatusMessage = if (event.message is CallStatusMessage) event.message else callStatusMessage
+                    )
                 }
             }
         }

@@ -20,13 +20,6 @@ inline fun <T> changesObservableDelegate(initialValue: T, crossinline onChanged:
         }
     }
 
-inline fun <T> changesObservable(initialValue: T, crossinline onChanged: (oldValue: T, newValue: T) -> Unit) =
-    Delegates.observable(initialValue) { _, oldValue, newValue ->
-        if (oldValue != newValue) {
-            onChanged(oldValue, newValue)
-        }
-    }
-
 inline fun <T : Any> nonNullChangesObservableDelegate(crossinline onChanged: (newValue: T) -> Unit) =
     NotNullObservableDelegate<T> { _, new ->
         if (new != null) onChanged(new)

@@ -54,7 +54,7 @@ class ChatModule(
     }
 
     @Provides
-    internal fun provideAuthorizedAuthRestApi(
+    internal fun provideAuthorizedChatApi(
         @Named(AUTHORIZED_TAG)
         builder: Retrofit.Builder
     ): ChatApi = builder.build().create(ChatApi::class.java)

@@ -98,4 +98,10 @@
 
     </LinearLayout>
 
+    <com.edoctor.presentation.views.CallingView
+            android:id="@+id/calling_view"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
 </FrameLayout>
