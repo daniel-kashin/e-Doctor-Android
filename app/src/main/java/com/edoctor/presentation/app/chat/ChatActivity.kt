@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.edoctor.R
+import com.edoctor.data.entity.presentation.CallStatusMessage
+import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
 import com.edoctor.data.entity.presentation.Message
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ChatModule
@@ -25,6 +27,7 @@ import org.jitsi.meet.sdk.JitsiMeetActivityInterface
 import org.jitsi.meet.sdk.JitsiMeetView
 import org.jitsi.meet.sdk.JitsiMeetViewAdapter
 import org.jitsi.meet.sdk.ReactActivityLifecycleCallbacks
+import java.net.URL
 import javax.inject.Inject
 
 class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity"), JitsiMeetActivityInterface {
@@ -76,6 +79,12 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         messagesAdapter = MessagesAdapter(presenter.currentUserEmail)
         messagesList.setAdapter(messagesAdapter)
 
+        messagesAdapter.setOnMessageClickListener {
+            if (it is CallStatusMessage && it.callStatus == INITIATED) {
+                presenter.acceptCall()
+            }
+        }
+
         jitsiMeetView = getMeetView()
 
         presenter.openConnection()
@@ -89,12 +98,11 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
         listener = object : JitsiMeetViewAdapter() {
             override fun onConferenceFailed(p0: MutableMap<String, Any>?) {
-
-                jitsiMeetView.hide()
+                presenter.leaveCall()
             }
 
             override fun onConferenceLeft(data: MutableMap<String, Any>?) {
-                jitsiMeetView.hide()
+                presenter.leaveCall()
             }
         }
 
@@ -128,11 +136,22 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
     }
 
     override fun render(viewState: ViewState) {
-        if (viewState.callUrl != null) {
-            jitsiMeetView.loadURL(viewState.callUrl)
-            jitsiMeetView.show()
-        } else {
-            jitsiMeetView.hide()
+        viewState.callStatusMessage.let { callStatusMessage ->
+            when (callStatusMessage?.callStatus) {
+                STARTED -> {
+                    jitsiMeetView.loadURL(callStatusMessage.getCallUrl())
+                    jitsiMeetView.show()
+                }
+                CANCELLED -> {
+                    jitsiMeetView.hide()
+                }
+                INITIATED -> {
+                    jitsiMeetView.hide()
+                }
+                null -> {
+                    jitsiMeetView.hide()
+                }
+            }
         }
 
         toolbarSecondaryText.text = when (viewState.messagesStatus) {
@@ -140,6 +159,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             ChatPresenter.MessagesStatus.UPDATING -> "Обновление..."
             ChatPresenter.MessagesStatus.UP_TO_DATE -> "Подключено"
         }
+
         messagesAdapter.setMessages(viewState.messages) {
             messagesList.layoutManager?.scrollToPosition(0)
         }
@@ -156,6 +176,8 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             is Event.ShowSessionException -> onSessionException()
         }
     }
+
+    private fun CallStatusMessage.getCallUrl() = URL("https://meet.jit.si/$callUuid")
 
     class IntentBuilder(fragment: Fragment) : CheckedIntentBuilder(fragment) {
 

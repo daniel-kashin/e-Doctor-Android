@@ -1,7 +1,14 @@
 package com.edoctor.data.entity.presentation
 
-enum class CallAction {
-    INITIATE,
-    ENTER,
-    LEAVE
+data class CallActionRequest(
+    val callAction: CallAction,
+    val callUuid: String
+) {
+
+    enum class CallAction {
+        INITIATE,
+        ENTER,
+        LEAVE
+    }
+
 }

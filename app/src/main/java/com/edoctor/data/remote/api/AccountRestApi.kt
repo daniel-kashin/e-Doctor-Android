@@ -1,16 +1,16 @@
 package com.edoctor.data.remote.api
 
-import com.edoctor.data.entity.remote.result.UserResult
+import com.edoctor.data.entity.remote.response.UserResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 
 interface AccountRestApi {
 
     @GET("/account")
-    fun getAccount() : Single<UserResult>
+    fun getAccount() : Single<UserResponse>
 
 //    TODO
 //    @POST("/account")
-//    fun updateAccount(userResult: UserResult)
+//    fun updateAccount(userResult: UserResponse)
 
 }

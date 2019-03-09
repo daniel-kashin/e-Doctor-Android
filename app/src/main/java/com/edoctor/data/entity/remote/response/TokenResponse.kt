@@ -1,8 +1,8 @@
-package com.edoctor.data.entity.remote.result
+package com.edoctor.data.entity.remote.response
 
 import com.google.gson.annotations.SerializedName
 
-data class TokenResult(
+data class TokenResponse(
     @SerializedName("access_token")
     val accessToken: String,
     @SerializedName("token_type")
@@ -15,6 +15,6 @@ data class TokenResult(
     val scope: String
 ) {
     companion object {
-        val EMPTY = TokenResult("", "", "", -1, "")
+        val EMPTY = TokenResponse("", "", "", -1, "")
     }
 }

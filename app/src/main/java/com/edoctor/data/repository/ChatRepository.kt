@@ -1,15 +1,14 @@
 package com.edoctor.data.repository
 
-import com.edoctor.data.entity.presentation.CallAction
+import com.edoctor.data.entity.presentation.CallActionRequest
 import com.edoctor.data.entity.presentation.Message
 import com.edoctor.data.entity.remote.request.MessageRequestWrapper
-import com.edoctor.data.entity.remote.result.MessageResultWrapper
-import com.edoctor.data.entity.remote.result.TextMessageResult
+import com.edoctor.data.entity.remote.request.TextMessageRequest
+import com.edoctor.data.entity.remote.response.MessageResponseWrapper
 import com.edoctor.data.mapper.MessageMapper.toNetwork
 import com.edoctor.data.mapper.MessageMapper.toPresentation
 import com.edoctor.data.remote.api.ChatApi
 import com.edoctor.data.remote.api.ChatService
-import com.edoctor.utils.javaTimeToUnixTime
 import com.edoctor.utils.rx.RxExtensions.justOrEmptyFlowable
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -18,7 +17,6 @@ import com.tinder.scarlet.websocket.ShutdownReason
 import com.tinder.scarlet.websocket.WebSocketEvent
 import io.reactivex.Flowable
 import io.reactivex.Single
-import java.util.*
 
 class ChatRepository(
     private val currentUserEmail: String,
@@ -45,21 +43,15 @@ class ChatRepository(
     fun sendMessage(message: String) {
         chatService.sendMessage(
             MessageRequestWrapper(
-                textMessageResult = TextMessageResult(
-                    UUID.randomUUID().toString(),
-                    currentUserEmail,
-                    recipientEmail,
-                    System.currentTimeMillis().javaTimeToUnixTime(),
-                    message
-                )
+                textMessageRequest = TextMessageRequest(message)
             )
         )
     }
 
-    fun sendCallStatusRequest(callAction: CallAction) {
+    fun sendCallStatusRequest(callActionRequest: CallActionRequest) {
         chatService.sendMessage(
             MessageRequestWrapper(
-                callActionRequest = toNetwork(callAction)
+                callActionMessageRequest = toNetwork(callActionRequest)
             )
         )
     }
@@ -68,7 +60,7 @@ class ChatRepository(
         return when (this) {
             is WebSocketEvent.OnMessageReceived -> {
                 val messageString = (this.message as? Text)?.value ?: return null
-                val textMessage = fromJsonSafely(messageString, MessageResultWrapper::class.java)
+                val textMessage = fromJsonSafely(messageString, MessageResponseWrapper::class.java)
                     ?.let { toPresentation(it) }
                     ?: return null
 

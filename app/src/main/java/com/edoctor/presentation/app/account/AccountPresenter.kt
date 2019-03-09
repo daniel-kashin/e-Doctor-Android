@@ -1,6 +1,6 @@
 package com.edoctor.presentation.app.account
 
-import com.edoctor.data.entity.remote.result.UserResult
+import com.edoctor.data.entity.remote.response.UserResponse
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.AccountRepository
 import com.edoctor.data.repository.AuthRepository
@@ -52,7 +52,7 @@ class AccountPresenter @Inject constructor(
             }
     }
 
-    data class ViewState(val account: UserResult?, val isLoading: Boolean) : Presenter.ViewState {
+    data class ViewState(val account: UserResponse?, val isLoading: Boolean) : Presenter.ViewState {
         companion object {
             val EMPTY = ViewState(null, true)
         }

@@ -1,25 +1,26 @@
-package com.edoctor.data.entity.remote.result
+package com.edoctor.data.entity.remote.response
 
-abstract class MessageResult {
+abstract class MessageResponse {
     abstract val uuid: String
     abstract val recipientEmail: String
     abstract val sendingTimestamp: Long
 }
 
-abstract class SystemMessageResult : MessageResult()
+abstract class SystemMessageResponse : MessageResponse()
 
-abstract class UserMessageResult : MessageResult() {
+abstract class UserMessageResponse : MessageResponse() {
     abstract val senderEmail: String
 }
 
 
-data class CallStatusMessageResult(
+data class CallStatusMessageResponse(
     override val uuid: String,
     override val senderEmail: String,
     override val recipientEmail: String,
     override val sendingTimestamp: Long,
-    val callStatus: Int
-) : UserMessageResult() {
+    val callStatus: Int,
+    val callUuid: String
+) : UserMessageResponse() {
 
     companion object {
         const val CALL_STATUS_INITIATED = 1
@@ -29,10 +30,10 @@ data class CallStatusMessageResult(
 
 }
 
-data class TextMessageResult(
+data class TextMessageResponse(
     override val uuid: String,
     override val senderEmail: String,
     override val recipientEmail: String,
     override val sendingTimestamp: Long,
     val text: String
-) : UserMessageResult()
+) : UserMessageResponse()

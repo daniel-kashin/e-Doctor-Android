@@ -1,6 +1,7 @@
 package com.edoctor.presentation.app.chat
 
-import com.edoctor.data.entity.presentation.CallAction
+import com.edoctor.data.entity.presentation.CallActionRequest
+import com.edoctor.data.entity.presentation.CallActionRequest.CallAction.*
 import com.edoctor.data.entity.presentation.CallStatusMessage
 import com.edoctor.data.entity.presentation.Message
 import com.edoctor.data.injection.ApplicationModule
@@ -74,25 +75,25 @@ class ChatPresenter @Inject constructor(
         }
     }
 
-    fun initiateCall() {
-        if (viewStateSnapshot().messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION) {
-            chatRepository.sendCallStatusRequest(CallAction.INITIATE)
+    fun initiateCall(): Unit = viewStateSnapshot().run {
+        if (messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION) {
+            chatRepository.sendCallStatusRequest(CallActionRequest(INITIATE, ""))
         } else {
             sendEvent(Event.ShowNetworkException)
         }
     }
 
-    fun acceptCall() {
-        if (viewStateSnapshot().messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION) {
-            chatRepository.sendCallStatusRequest(CallAction.ENTER)
+    fun acceptCall(): Unit = viewStateSnapshot().run {
+        if (messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION && callStatusMessage != null) {
+            chatRepository.sendCallStatusRequest(CallActionRequest(ENTER, callStatusMessage.callUuid))
         } else {
             sendEvent(Event.ShowNetworkException)
         }
     }
 
-    fun leaveCall() {
-        if (viewStateSnapshot().messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION) {
-            chatRepository.sendCallStatusRequest(CallAction.LEAVE)
+    fun leaveCall(): Unit = viewStateSnapshot().run {
+        if (messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION && callStatusMessage != null) {
+            chatRepository.sendCallStatusRequest(CallActionRequest(LEAVE, callStatusMessage.callUuid))
         } else {
             sendEvent(Event.ShowNetworkException)
         }
@@ -126,7 +127,7 @@ class ChatPresenter @Inject constructor(
 
     private fun setWaitingForConnectionState() {
         getMessagesDisposable = null
-        setViewState { copy(messagesStatus = MessagesStatus.WAITING_FOR_CONNECTION) }
+        setViewState { copy(messagesStatus = MessagesStatus.WAITING_FOR_CONNECTION, callStatusMessage = null) }
     }
 
     private fun handleException(throwable: Throwable) {

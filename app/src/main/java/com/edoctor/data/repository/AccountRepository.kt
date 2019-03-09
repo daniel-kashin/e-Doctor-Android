@@ -1,6 +1,6 @@
 package com.edoctor.data.repository
 
-import com.edoctor.data.entity.remote.result.UserResult
+import com.edoctor.data.entity.remote.response.UserResponse
 import com.edoctor.data.remote.api.AccountRestApi
 import com.edoctor.data.session.SessionManager
 import io.reactivex.Single
@@ -10,7 +10,7 @@ class AccountRepository(
     val sessionManager: SessionManager
 ) {
 
-    fun getCurrentAccount(refresh: Boolean = false): Single<UserResult> {
+    fun getCurrentAccount(refresh: Boolean = false): Single<UserResponse> {
         return when {
             !sessionManager.isOpen -> {
                 Single.error(SessionManager.SessionNotOpenedException())

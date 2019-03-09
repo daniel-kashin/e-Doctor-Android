@@ -1,12 +1,12 @@
 package com.edoctor.data.session
 
-import com.edoctor.data.entity.remote.result.UserResult
+import com.edoctor.data.entity.remote.response.UserResponse
 import com.edoctor.utils.JavaTime
 import com.edoctor.utils.withHiddenPart
 import java.util.concurrent.TimeUnit
 
 data class SessionInfo(
-    val account: UserResult,
+    val account: UserResponse,
     val refreshToken: RefreshToken,
     val accessToken: AccessToken? = null
 ) {

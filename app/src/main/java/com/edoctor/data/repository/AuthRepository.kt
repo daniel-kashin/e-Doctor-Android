@@ -1,8 +1,8 @@
 package com.edoctor.data.repository
 
 import com.edoctor.data.entity.remote.request.LoginDataRequest
-import com.edoctor.data.entity.remote.result.TokenResult
-import com.edoctor.data.entity.remote.result.UserResult
+import com.edoctor.data.entity.remote.response.TokenResponse
+import com.edoctor.data.entity.remote.response.UserResponse
 import com.edoctor.data.remote.api.AuthRestApi
 import com.edoctor.data.session.SessionInfo
 import com.edoctor.data.session.SessionManager
@@ -17,7 +17,7 @@ class AuthRepository(
     private val sessionManager: SessionManager
 ) {
 
-    fun getFreshestTokenByRequestToken(refreshToken: String): TokenResult {
+    fun getFreshestTokenByRequestToken(refreshToken: String): TokenResponse {
         val result =  anonymousApi.getFreshestTokenByRefreshToken(refreshToken)
             .execute()
 
@@ -50,16 +50,16 @@ class AuthRepository(
         return sessionManager.close()
     }
 
-    private fun getSessionInfo(userResult: UserResult, tokenResult: TokenResult): SessionInfo {
+    private fun getSessionInfo(userResponse: UserResponse, tokenResponse: TokenResponse): SessionInfo {
         return SessionInfo(
-            userResult,
+            userResponse,
             SessionInfo.RefreshToken(
-                tokenResult.refreshToken
+                tokenResponse.refreshToken
             ),
             SessionInfo.AccessToken(
-                tokenResult.tokenType,
-                tokenResult.accessToken,
-                tokenResult.expiresIn.unixTimeToJavaTime() + System.currentTimeMillis()
+                tokenResponse.tokenType,
+                tokenResponse.accessToken,
+                tokenResponse.expiresIn.unixTimeToJavaTime() + System.currentTimeMillis()
             )
         )
     }

@@ -26,7 +26,8 @@ data class CallStatusMessage(
     override val senderEmail: String,
     override val recipientEmail: String,
     override val sendingTimestamp: Long,
-    private val callStatus: CallStatus,
+    val callStatus: CallStatus,
+    val callUuid: String,
     private val _text: String
 ) : UserMessage() {
 

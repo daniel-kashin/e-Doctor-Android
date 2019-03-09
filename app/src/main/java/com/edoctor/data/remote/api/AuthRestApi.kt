@@ -1,8 +1,8 @@
 package com.edoctor.data.remote.api
 
 import com.edoctor.data.entity.remote.request.LoginDataRequest
-import com.edoctor.data.entity.remote.result.TokenResult
-import com.edoctor.data.entity.remote.result.UserResult
+import com.edoctor.data.entity.remote.response.TokenResponse
+import com.edoctor.data.entity.remote.response.UserResponse
 import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.Body
@@ -17,7 +17,7 @@ interface AuthRestApi {
     fun getFreshestTokenByRefreshToken(
         @Field("refresh_token") refreshToken: String,
         @Field("grant_type") grantType: String = "refresh_token"
-    ): Call<TokenResult>
+    ): Call<TokenResponse>
 
     @FormUrlEncoded
     @POST("/oauth/token")
@@ -25,16 +25,16 @@ interface AuthRestApi {
         @Field("password") password: String,
         @Field("username") email: String,
         @Field("grant_type") grantType: String = "password"
-    ): Single<TokenResult>
+    ): Single<TokenResponse>
 
     @POST("/register")
     fun register(
        @Body loginData: LoginDataRequest
-    ): Single<UserResult>
+    ): Single<UserResponse>
 
     @POST("/login")
     fun login(
         @Body loginData: LoginDataRequest
-    ): Single<UserResult>
+    ): Single<UserResponse>
 
 }

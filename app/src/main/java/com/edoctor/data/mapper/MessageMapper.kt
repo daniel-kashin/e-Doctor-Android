@@ -1,50 +1,52 @@
 package com.edoctor.data.mapper
 
 import com.edoctor.data.entity.presentation.*
-import com.edoctor.data.entity.presentation.CallAction.*
+import com.edoctor.data.entity.presentation.CallActionRequest.CallAction
+import com.edoctor.data.entity.presentation.CallActionRequest.CallAction.*
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
-import com.edoctor.data.entity.remote.request.CallActionRequest
-import com.edoctor.data.entity.remote.request.CallActionRequest.Companion.CALL_ACTION_ENTER
-import com.edoctor.data.entity.remote.request.CallActionRequest.Companion.CALL_ACTION_INITIATE
-import com.edoctor.data.entity.remote.request.CallActionRequest.Companion.CALL_ACTION_LEAVE
-import com.edoctor.data.entity.remote.result.CallStatusMessageResult
-import com.edoctor.data.entity.remote.result.CallStatusMessageResult.Companion.CALL_STATUS_CANCELLED
-import com.edoctor.data.entity.remote.result.CallStatusMessageResult.Companion.CALL_STATUS_INITIATED
-import com.edoctor.data.entity.remote.result.CallStatusMessageResult.Companion.CALL_STATUS_STARTED
-import com.edoctor.data.entity.remote.result.MessageResultWrapper
-import com.edoctor.data.entity.remote.result.MessagesResult
-import com.edoctor.data.entity.remote.result.TextMessageResult
+import com.edoctor.data.entity.remote.request.CallActionMessageRequest
+import com.edoctor.data.entity.remote.request.CallActionMessageRequest.Companion.CALL_ACTION_ENTER
+import com.edoctor.data.entity.remote.request.CallActionMessageRequest.Companion.CALL_ACTION_INITIATE
+import com.edoctor.data.entity.remote.request.CallActionMessageRequest.Companion.CALL_ACTION_LEAVE
+import com.edoctor.data.entity.remote.response.CallStatusMessageResponse
+import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Companion.CALL_STATUS_CANCELLED
+import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Companion.CALL_STATUS_INITIATED
+import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Companion.CALL_STATUS_STARTED
+import com.edoctor.data.entity.remote.response.MessageResponseWrapper
+import com.edoctor.data.entity.remote.response.MessagesResponse
+import com.edoctor.data.entity.remote.response.TextMessageResponse
 
 object MessageMapper {
 
-    fun toPresentation(messagesResult: MessagesResult): List<Message> = messagesResult.run {
+    fun toPresentation(messagesResponse: MessagesResponse): List<Message> = messagesResponse.run {
         messages.mapNotNull { toPresentation(it) }
     }
 
-    fun toPresentation(messageWrapperResult: MessageResultWrapper): UserMessage? = messageWrapperResult.run {
+    fun toPresentation(messageWrapperResponse: MessageResponseWrapper): UserMessage? = messageWrapperResponse.run {
         when {
-            textMessage != null -> toPresentation(textMessage)
-            callStatusMessage != null -> toPresentation(callStatusMessage)
+            textMessageResponse != null -> toPresentation(textMessageResponse)
+            callStatusMessageResponse != null -> toPresentation(callStatusMessageResponse)
             else -> null
         }
     }
 
-    fun toNetwork(callAction: CallAction) =
-        CallActionRequest(
-            getValueFromCallAction(callAction)
+    fun toNetwork(callActionRequest: CallActionRequest) =
+        CallActionMessageRequest(
+            getValueFromCallAction(callActionRequest.callAction),
+            callActionRequest.callUuid
         )
 
-    private fun toPresentation(textMessageResult: TextMessageResult): TextMessage =
+    private fun toPresentation(textMessageResult: TextMessageResponse): TextMessage =
         textMessageResult.run {
             TextMessage(uuid, senderEmail, recipientEmail, sendingTimestamp, text)
         }
 
-    private fun toPresentation(callStatusMessage: CallStatusMessageResult): CallStatusMessage =
+    private fun toPresentation(callStatusMessage: CallStatusMessageResponse): CallStatusMessage =
         callStatusMessage.run {
             val callStatus = getCallStatusFromValue(callStatus)
             val text = callStatus.toText()
-            CallStatusMessage(uuid, senderEmail, recipientEmail, sendingTimestamp, callStatus, text)
+            CallStatusMessage(uuid, senderEmail, recipientEmail, sendingTimestamp, callStatus, callUuid, text)
         }
 
     private fun getValueFromCallAction(callAction: CallAction): Int {
