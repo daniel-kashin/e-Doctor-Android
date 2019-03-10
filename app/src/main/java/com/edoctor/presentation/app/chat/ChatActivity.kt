@@ -18,18 +18,25 @@ import com.edoctor.data.injection.ChatModule
 import com.edoctor.presentation.app.chat.ChatPresenter.Event
 import com.edoctor.presentation.app.chat.ChatPresenter.ViewState
 import com.edoctor.presentation.architecture.activity.BaseActivity
+import com.edoctor.presentation.views.CallMessageContentChecker
+import com.edoctor.presentation.views.CallMessageContentChecker.Companion.CONTENT_TYPE_CALL
 import com.edoctor.presentation.views.CallingView
+import com.edoctor.presentation.views.CallingView.CallType.INCOMING
+import com.edoctor.presentation.views.CallingView.CallType.OUTCOMING
+import com.edoctor.presentation.views.IncomingCallMessageViewHolder
+import com.edoctor.presentation.views.OutcomingCallMessageViewHolder
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.facebook.react.modules.core.PermissionListener
+import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
 import org.jitsi.meet.sdk.JitsiMeetActivityInterface
 import org.jitsi.meet.sdk.JitsiMeetView
 import org.jitsi.meet.sdk.JitsiMeetViewAdapter
 import org.jitsi.meet.sdk.ReactActivityLifecycleCallbacks
-import java.net.URL
 import javax.inject.Inject
+
 
 class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity"), JitsiMeetActivityInterface {
 
@@ -71,23 +78,32 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         toolbarPrimaryText.text = presenter.recipientEmail
 
         iconCall.setOnClickListener {
-            callingView.show()
-            callingView.bind("Папа", CallingView.CallType.INCOMING)
-            //presenter.initiateCall()
+            presenter.initiateCall()
+        }
+
+        callingView.onCallAcceptedListener = {
+            presenter.acceptCall()
+        }
+
+        callingView.onCallDeclinedListener = {
+            presenter.leaveCall()
         }
 
         messageInput.setInputListener { input ->
             presenter.sendMessage(input.toString())
         }
 
-        messagesAdapter = MessagesAdapter(presenter.currentUserEmail)
+        val holdersConfig = MessageHolders()
+            .setIncomingTextLayout(R.layout.item_incoming_text_message)
+            .setOutcomingTextLayout(R.layout.item_outcoming_text_message)
+            .registerContentType(
+                CONTENT_TYPE_CALL,
+                IncomingCallMessageViewHolder::class.java, R.layout.item_incoming_call_message,
+                OutcomingCallMessageViewHolder::class.java, R.layout.item_outcoming_call_message,
+                CallMessageContentChecker()
+            )
+        messagesAdapter = MessagesAdapter(presenter.currentUserEmail, holdersConfig)
         messagesList.setAdapter(messagesAdapter)
-
-        messagesAdapter.setOnMessageClickListener {
-            if (it is CallStatusMessage && it.callStatus == INITIATED) {
-                presenter.acceptCall()
-            }
-        }
 
         jitsiMeetView = getMeetView()
     }
@@ -151,27 +167,20 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         viewState.callStatusMessage.let { callStatusMessage ->
             when (callStatusMessage?.callStatus) {
                 STARTED -> {
-                    jitsiMeetView.show()
-                    val config = Bundle()
-                    config.putBoolean("startWithAudioMuted", false)
-                    config.putBoolean("startWithVideoMuted", true)
-                    val urlObject = Bundle()
-                    urlObject.putBundle("config", config)
-                    urlObject.putString("url", callStatusMessage.getCallUrl().toString())
-                    jitsiMeetView.loadURLObject(urlObject)
-//                    jitsiMeetView.loadURL(callStatusMessage.getCallUrl())
-                }
-                CANCELLED -> {
-                    jitsiMeetView.loadURL(null)
-                    jitsiMeetView.invisible()
+                    callingView.hide()
+                    showJitsiMeetView(callStatusMessage)
                 }
                 INITIATED -> {
-                    jitsiMeetView.loadURL(null)
-                    jitsiMeetView.invisible()
+                    hideJitsiMeetView()
+                    callingView.bind(
+                        presenter.recipientEmail,
+                        if (callStatusMessage.isFromCurrentUser) OUTCOMING else INCOMING
+                    )
+                    callingView.show()
                 }
-                null -> {
-                    jitsiMeetView.loadURL(null)
-                    jitsiMeetView.invisible()
+                CANCELLED, null -> {
+                    callingView.hide()
+                    hideJitsiMeetView()
                 }
             }
         }
@@ -187,6 +196,23 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         }
     }
 
+    private fun showJitsiMeetView(callStatusMessage: CallStatusMessage) {
+        val urlObject = Bundle().apply {
+            putBundle("config", Bundle().apply {
+                putBoolean("startWithAudioMuted", !callingView.isAudioEnabled)
+                putBoolean("startWithVideoMuted", !callingView.isVideoEnabled)
+            })
+            putString("url", callStatusMessage.getCallUrl())
+        }
+        jitsiMeetView.loadURLObject(urlObject)
+        jitsiMeetView.show()
+    }
+
+    private fun hideJitsiMeetView() {
+        jitsiMeetView.loadURL(null)
+        jitsiMeetView.invisible()
+    }
+
     override fun requestPermissions(permissions: Array<out String>?, requestCode: Int, listener: PermissionListener?) {
         ReactActivityLifecycleCallbacks.requestPermissions(this, permissions, requestCode, listener)
     }
@@ -199,7 +225,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         }
     }
 
-    private fun CallStatusMessage.getCallUrl() = URL("https://meet.jit.si/$callUuid")
+    private fun CallStatusMessage.getCallUrl() = "https://meet.jit.si/$callUuid"
 
     class IntentBuilder(fragment: Fragment) : CheckedIntentBuilder(fragment) {
 

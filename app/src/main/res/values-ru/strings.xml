@@ -17,11 +17,10 @@
     <string name="yes">ДА</string>
     <string name="no">НЕТ</string>
     <string name="try_again">Попробовать еще раз</string>
-    <string name="network_error_message">Ошибка загрузки данных. Пожалуйста, проверьте соединение с интернетом.</string>
-    <string name="server_error_message">Ошибка на стороне сервера. Пожалуйста, повторите попытку позже.</string>
+    <string name="network_error_message">Пожалуйста, проверьте соединение с интернетом</string>
     <string name="media_upload_error_message">Невозможно загрузить</string>
-    <string name="empty_bought_excursions">Купленные экскурсии будут отображены здесь.</string>
-    <string name="unhandled_error_message">Что-то пошло не так.</string>
+    <string name="empty_bought_excursions">Купленные экскурсии будут отображены здесь</string>
+    <string name="unhandled_error_message">Что-то пошло не так</string>
     <string name="server_login_error_message">Введена неверная пара логин-пароль.</string>
     <string name="server_registration_error_message">Введенные данные неверны.</string>
     <string name="loading_map">Загрузка карты...</string>
@@ -30,9 +29,9 @@
     <string name="loading">Загрузка...</string>
     <string name="cancel">Остановить</string>
     <string name="download_excursion">Скачать экскурсию</string>
-    <string name="search_excursions">Адрес или ключевая фраза</string>
-    <string name="type_search_excursions">Найдите экскурсию по адресу или ключевой фразе</string>
-    <string name="nothing_was_found">Ничего не найдено. Пожалуйста, измените поисковый запрос.</string>
+    <string name="search_excursions">Имя или почта</string>
+    <string name="type_search_excursions">Найдите доктора по имени или электронной почте</string>
+    <string name="nothing_was_found">Ничего не найдено. Попробуйте изменить поисковый запрос</string>
     <string name="username_error">Как минимум 1 символ</string>
     <string name="password_hint">Пароль</string>
     <string name="password_error">Как минимум 1 символ</string>

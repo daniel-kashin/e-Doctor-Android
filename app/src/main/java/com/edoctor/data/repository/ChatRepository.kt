@@ -7,7 +7,7 @@ import com.edoctor.data.entity.remote.request.TextMessageRequest
 import com.edoctor.data.entity.remote.response.MessageResponseWrapper
 import com.edoctor.data.mapper.MessageMapper.toNetwork
 import com.edoctor.data.mapper.MessageMapper.toPresentation
-import com.edoctor.data.remote.api.ChatApi
+import com.edoctor.data.remote.api.ChatRestApi
 import com.edoctor.data.remote.api.ChatService
 import com.edoctor.utils.rx.RxExtensions.justOrEmptyFlowable
 import com.google.gson.Gson
@@ -21,7 +21,7 @@ import io.reactivex.Single
 class ChatRepository(
     private val currentUserEmail: String,
     private val recipientEmail: String,
-    private val chatApi: ChatApi,
+    private val chatRestApi: ChatRestApi,
     private val chatService: ChatService
 ) {
 
@@ -36,7 +36,7 @@ class ChatRepository(
     }
 
     fun getMessages(fromTimestamp: Long): Single<List<Message>> {
-        return chatApi.getMessages(fromTimestamp, recipientEmail)
+        return chatRestApi.getMessages(fromTimestamp, recipientEmail)
             .map { toPresentation(it, currentUserEmail) }
     }
 

@@ -9,6 +9,10 @@ open class RecipientEmailInterceptor(val recipientEmail: String) : Interceptor {
         private const val RECIPIENT_EMAIL_HEADER = "recipient-email"
     }
 
+    init {
+        recipientEmail
+    }
+
     @Suppress("ReturnCount")
     override fun intercept(chain: Interceptor.Chain): Response {
         return chain.proceed(

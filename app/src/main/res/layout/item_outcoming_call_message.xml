@@ -1,0 +1,64 @@
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="6dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@id/bubble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/message_outcoming_bubble_margin_left"
+            android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@id/messageText"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <ImageView
+                android:id="@+id/image_arrow"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/messageText"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+                android:id="@id/messageTime"
+                app:layout_constraintStart_toEndOf="@id/image_arrow"
+                app:layout_constraintBottom_toBottomOf="@id/image_arrow"
+                app:layout_constraintTop_toTopOf="@id/image_arrow"
+                app:layout_goneMarginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/messageText"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                app:layout_alignSelf="center"/>
+
+        <ImageView
+                android:id="@+id/image_phone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/messageText"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="5dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

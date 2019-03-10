@@ -2,9 +2,13 @@ package com.edoctor.utils
 
 import androidx.recyclerview.widget.DiffUtil
 import com.stfalcon.chatkit.commons.models.IMessage
+import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 
-class MessagesAdapter<MESSAGE : IMessage>(senderId: String) : MessagesListAdapter<MESSAGE>(senderId, null) {
+class MessagesAdapter<MESSAGE : IMessage>(
+    senderId: String,
+    holders: MessageHolders
+) : MessagesListAdapter<MESSAGE>(senderId, holders, null) {
 
     fun setMessages(messages: List<MESSAGE>, afterSettingListener: (() -> Unit)? = null) {
         val oldItems = items

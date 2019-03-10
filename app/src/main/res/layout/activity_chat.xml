@@ -89,7 +89,25 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@color/lightHintText"/>
+                android:background="@color/lightHintText"
+                app:incomingTextSize="16sp"
+                app:outcomingTextSize="16sp"
+                app:incomingTimeTextColor="@color/hintText"
+                app:outcomingTimeTextColor="@color/hintText"
+                app:outcomingDefaultBubbleColor="@color/outcoming_bubble_color"
+                app:outcomingDefaultBubblePressedColor="@color/outcoming_bubble_color"
+                app:outcomingDefaultBubbleSelectedColor="@color/outcoming_bubble_color"
+                app:outcomingTextColor="@android:color/black"
+                app:incomingBubblePaddingBottom="10dp"
+                app:incomingBubblePaddingLeft="10dp"
+                app:incomingBubblePaddingRight="10dp"
+                app:incomingBubblePaddingTop="10dp"
+                app:outcomingBubblePaddingBottom="10dp"
+                app:outcomingBubblePaddingLeft="10dp"
+                app:outcomingBubblePaddingRight="10dp"
+                app:outcomingBubblePaddingTop="10dp"
+                app:incomingTimeTextSize="14sp"
+                app:outcomingTimeTextSize="14sp"/>
 
         <com.stfalcon.chatkit.messages.MessageInput
                 android:id="@+id/message_input"

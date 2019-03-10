@@ -144,11 +144,13 @@ class ChatPresenter @Inject constructor(
                 setWaitingForConnectionState()
             }
             is ChatRepository.ChatEvent.OnMessageReceived -> {
-                setViewState {
-                    copy(
-                        messages = messages.addWithSorting(listOf((event.message))),
-                        callStatusMessage = if (event.message is CallStatusMessage) event.message else callStatusMessage
-                    )
+                event.message.let { message ->
+                    setViewState {
+                        copy(
+                            messages = if (message.shouldBeShown()) messages.addWithSorting(listOf((message))) else messages,
+                            callStatusMessage = if (message is CallStatusMessage) message else callStatusMessage
+                        )
+                    }
                 }
             }
         }
@@ -159,8 +161,13 @@ class ChatPresenter @Inject constructor(
             .plus(newMessages)
             .asSequence()
             .distinctBy { it.uuid }
+            .filter { it.shouldBeShown() }
             .sortedByDescending { it.sendingTimestamp }
             .toList()
+    }
+
+    private fun Message.shouldBeShown(): Boolean {
+        return !(this is CallStatusMessage && this.callStatus == CallStatusMessage.CallStatus.STARTED)
     }
 
     data class ViewState(

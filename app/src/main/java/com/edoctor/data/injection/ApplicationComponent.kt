@@ -5,6 +5,7 @@ import com.edoctor.data.session.SessionManager
 import com.edoctor.presentation.app.account.AccountComponent
 import com.edoctor.presentation.app.chat.ChatComponent
 import com.edoctor.presentation.app.conversations.ConversationsComponent
+import com.edoctor.presentation.app.findDoctor.FindDoctorComponent
 import com.edoctor.presentation.app.welcome.WelcomeComponent
 import dagger.Component
 import javax.inject.Singleton
@@ -34,5 +35,7 @@ interface ApplicationComponent {
     fun plus(accountModule: AccountModule) : AccountComponent
 
     fun plus(conversationsModule: ConversationsModule) : ConversationsComponent
+
+    fun plus(findDoctorModule: FindDoctorModule) : FindDoctorComponent
 
 }

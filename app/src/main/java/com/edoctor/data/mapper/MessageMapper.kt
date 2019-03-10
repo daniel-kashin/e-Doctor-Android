@@ -47,7 +47,14 @@ object MessageMapper {
             val callStatus = getCallStatusFromValue(callStatus)
             val isFromCurrentUser = currentUserEmail == senderEmail
             val text = callStatus.toText(isFromCurrentUser)
-            CallStatusMessage(uuid, senderEmail, recipientEmail, sendingTimestamp, callStatus, callUuid, text)
+            CallStatusMessage(
+                uuid,
+                senderEmail, recipientEmail,
+                sendingTimestamp,
+                callStatus, callUuid,
+                isFromCurrentUser,
+                text
+            )
         }
 
     private fun getValueFromCallAction(callAction: CallAction): Int {

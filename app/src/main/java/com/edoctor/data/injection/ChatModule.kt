@@ -2,7 +2,7 @@ package com.edoctor.data.injection
 
 import com.edoctor.data.injection.NetworkModule.Companion.AUTHORIZED_TAG
 import com.edoctor.data.injection.NetworkModule.Companion.EDOCTOR_WS_ENDPOINT
-import com.edoctor.data.remote.api.ChatApi
+import com.edoctor.data.remote.api.ChatRestApi
 import com.edoctor.data.remote.api.ChatService
 import com.edoctor.data.repository.ChatRepository
 import com.edoctor.utils.RecipientEmailInterceptor
@@ -57,11 +57,11 @@ class ChatModule(
     internal fun provideAuthorizedChatApi(
         @Named(AUTHORIZED_TAG)
         builder: Retrofit.Builder
-    ): ChatApi = builder.build().create(ChatApi::class.java)
+    ): ChatRestApi = builder.build().create(ChatRestApi::class.java)
 
     @Provides
-    fun provideChatRepository(chatService: ChatService, chatApi: ChatApi) =
-        ChatRepository(currentUserEmail, recipientEmail, chatApi, chatService)
+    fun provideChatRepository(chatService: ChatService, chatRestApi: ChatRestApi) =
+        ChatRepository(currentUserEmail, recipientEmail, chatRestApi, chatService)
             .apply {
                 onStartConnectionListener = { lifecycle.start() }
                 onCloseConnectionListener = { lifecycle.stop() }

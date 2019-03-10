@@ -23,7 +23,7 @@
     <string name="server_error_message">An error on the server side. Please, try again later.</string>
     <string name="media_upload_error_message">Unable to upload</string>
     <string name="empty_bought_excursions">Bought excursions will be shown here</string>
-    <string name="unhandled_error_message">Something gone wrong.</string>
+    <string name="unhandled_error_message">Something went wrong.</string>
     <string name="server_login_error_message">Either login or password is incorrect.</string>
     <string name="server_registration_error_message">The data you typed is invalid.</string>
 
@@ -36,9 +36,9 @@
 
     <string name="download_excursion">Download excursion</string>
 
-    <string name="search_excursions">Search request</string>
-    <string name="type_search_excursions">Find excursions by address or key phrase</string>
-    <string name="nothing_was_found">There were found nothing. Please, try to change your request.</string>
+    <string name="search_excursions">Name or email</string>
+    <string name="type_search_excursions">Find doctor by name or email</string>
+    <string name="nothing_was_found">There were found nothing. Try to change your request</string>
 
     <string name="username_error">At least 1 character</string>
     <string name="password_hint">Password</string>

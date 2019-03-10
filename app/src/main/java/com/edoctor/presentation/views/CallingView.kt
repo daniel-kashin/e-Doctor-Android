@@ -43,9 +43,9 @@ class CallingView(context: Context, attrs: AttributeSet) : FrameLayout(context, 
         }
     }
 
-    val onCallAcceptedListener: (() -> Unit)? = null
+    var onCallAcceptedListener: (() -> Unit)? = null
 
-    val onCallDeclinedListener: (() -> Unit)? = null
+    var onCallDeclinedListener: (() -> Unit)? = null
 
     init {
         View.inflate(context, R.layout.view_calling, this)

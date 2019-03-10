@@ -2,6 +2,7 @@ package com.edoctor.data.entity.presentation
 
 import com.edoctor.utils.unixTimeToJavaTime
 import com.stfalcon.chatkit.commons.models.IMessage
+import com.stfalcon.chatkit.commons.models.MessageContentType
 import java.util.*
 
 abstract class Message : IMessage {
@@ -28,8 +29,9 @@ data class CallStatusMessage(
     override val sendingTimestamp: Long,
     val callStatus: CallStatus,
     val callUuid: String,
+    val isFromCurrentUser: Boolean,
     private val _text: String
-) : UserMessage() {
+) : UserMessage(), MessageContentType {
 
     enum class CallStatus {
         INITIATED,

@@ -23,5 +23,7 @@
     <color name="decline_call">#D00000</color>
     <color name="accept_call">#46BC4E</color>
 
+    <color name="outcoming_bubble_color">#EFFEDD</color>
+
     <color name="navigationBlue">#2e61b4</color>
 </resources>
