@@ -76,7 +76,6 @@ class NetworkModule(
             .build()
 
     @Provides
-    @Singleton
     @Named(AUTHORIZED_TAG)
     fun provideAuthorizedBookmateOkHttpClientBuilder(context: Context): OkHttpClient.Builder =
         OkHttpClient.Builder()
@@ -86,7 +85,6 @@ class NetworkModule(
             .addInterceptor(createLoggingInterceptor())
 
     @Provides
-    @Singleton
     @Named(ANONYMOUS_TAG)
     fun provideAnonymousBookmateOkHttpClientBuilder(context: Context): OkHttpClient.Builder =
         OkHttpClient.Builder()
