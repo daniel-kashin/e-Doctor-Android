@@ -43,13 +43,14 @@ class WelcomePresenter @Inject constructor(
     }
 
     private fun login(email: String, password: String, isPatient: Boolean) {
-        disposables += authRepository.login(
-            LoginDataRequest(
-                email,
-                password,
-                isPatient
+        disposables += authRepository
+            .login(
+                LoginDataRequest(
+                    email,
+                    password,
+                    isPatient
+                )
             )
-        )
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
@@ -68,13 +69,14 @@ class WelcomePresenter @Inject constructor(
     }
 
     private fun register(email: String, password: String, isPatient: Boolean) {
-        disposables += authRepository.register(
-            LoginDataRequest(
-                email,
-                password,
-                isPatient
+        disposables += authRepository
+            .register(
+                LoginDataRequest(
+                    email,
+                    password,
+                    isPatient
+                )
             )
-        )
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({

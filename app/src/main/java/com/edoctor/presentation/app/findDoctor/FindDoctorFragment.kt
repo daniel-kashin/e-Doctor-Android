@@ -99,7 +99,7 @@ class FindDoctorFragment : BaseFragment<FindDoctorPresenter, ViewState, Event>("
 
     private fun initializeToolbar() {
         toolbarSearch.afterTextChangeEvents()
-            .map { editable -> editable.toString().trim() }
+            .map { event -> event.editable.toString().trim() }
             .doOnNext { string ->
                 if (string.isEmpty()) {
                     presenter.onSearchTyped(string)
