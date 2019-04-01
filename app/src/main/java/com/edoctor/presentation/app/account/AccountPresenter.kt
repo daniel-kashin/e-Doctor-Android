@@ -61,7 +61,7 @@ class AccountPresenter @Inject constructor(
         disposables += accountRepository.updateAccount(newAccount)
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
-            .doOnSubscribe { setViewState { copy(isLoading = true) } }
+            .doOnSubscribe { setViewState { copy(account = newAccount, isLoading = true) } }
             .subscribe({
                 setViewState { copy(account = it, isLoading = false) }
             }, { throwable ->
