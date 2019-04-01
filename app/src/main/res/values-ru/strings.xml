@@ -66,4 +66,7 @@
     <string name="register">Зарегистрироваться</string>
     <string name="save_changes">Сохранить изменения</string>
     <string name="date_of_birth_hint">Дата рождения</string>
+    <string name="gender_hint">Пол</string>
+    <string name="male">Мужской</string>
+    <string name="female">Женский</string>
 </resources>

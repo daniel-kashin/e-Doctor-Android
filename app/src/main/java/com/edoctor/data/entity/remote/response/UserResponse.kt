@@ -5,4 +5,5 @@ abstract class UserResponse {
     abstract val fullName: String?
     abstract val city: String?
     abstract val dateOfBirthTimestamp: Long?
+    abstract val isMale: Boolean?
 }

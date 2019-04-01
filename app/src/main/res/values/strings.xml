@@ -47,6 +47,7 @@
     <string name="email_error">At least 5 characters</string>
     <string name="full_name_hint">Full name</string>
     <string name="city_hint">City</string>
+    <string name="gender_hint">Gender</string>
     <string name="date_of_birth_hint">Date of birth</string>
     <string name="first_name_error">At least 1 character</string>
     <string name="second_name_hint">Last name</string>
@@ -87,4 +88,7 @@
     <string name="register">Register</string>
 
     <string name="save_changes">Save changes</string>
+
+    <string name="male">Male</string>
+    <string name="female">Female</string>
 </resources>
