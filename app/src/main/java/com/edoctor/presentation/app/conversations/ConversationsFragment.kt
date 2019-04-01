@@ -7,6 +7,7 @@ import com.edoctor.R
 import com.edoctor.data.entity.presentation.Conversation
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ConversationsModule
+import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.presentation.app.conversations.ConversationsPresenter.Event
 import com.edoctor.presentation.app.conversations.ConversationsPresenter.ViewState
@@ -53,7 +54,7 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
                 activity.session.runIfOpened { sessionInfo ->
                     ChatActivity.IntentBuilder(this)
                         .recipientEmail(it.dialogName)
-                        .currentUserEmail(sessionInfo.account.email)
+                        .currentUserEmail(unwrapResponse(sessionInfo.account).email)
                         .start()
                 } ?: run {
                     activity.onSessionException()

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.edoctor.R
 import com.edoctor.data.entity.remote.response.PatientResponse
+import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.presentation.app.account.AccountFragment
 import com.edoctor.presentation.app.conversations.ConversationsFragment
 import com.edoctor.presentation.app.findDoctor.FindDoctorFragment
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         session.runIfOpened {
-            if (it.account !is PatientResponse) {
+            if (unwrapResponse(it.account) !is PatientResponse) {
                 bottomNavigationView.menu.removeItem(R.id.action_medcard)
                 bottomNavigationView.menu.removeItem(R.id.action_find_doctor)
             }
@@ -80,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_chat -> {
                 if (topFragment is ConversationsFragment) return
                 session.runIfOpened {
-                    ConversationsFragment.newInstance(it.account.email)
+                    ConversationsFragment.newInstance(unwrapResponse(it.account).email)
                 } ?: run {
                     onSessionException()
                     return

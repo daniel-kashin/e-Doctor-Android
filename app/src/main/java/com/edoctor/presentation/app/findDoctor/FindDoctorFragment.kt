@@ -15,6 +15,7 @@ import com.edoctor.R
 import com.edoctor.data.entity.remote.response.DoctorResponse
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.FindDoctorModule
+import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.presentation.app.findDoctor.FindDoctorPresenter.Event
 import com.edoctor.presentation.app.findDoctor.FindDoctorPresenter.Event.ShowSessionException
@@ -183,7 +184,7 @@ class FindDoctorFragment : BaseFragment<FindDoctorPresenter, ViewState, Event>("
             activity.session.runIfOpened { sessionInfo ->
                 ChatActivity.IntentBuilder(this)
                     .recipientEmail(doctorEmail)
-                    .currentUserEmail(sessionInfo.account.email)
+                    .currentUserEmail(unwrapResponse(sessionInfo.account).email)
                     .start()
             } ?: run {
                 activity.onSessionException()
