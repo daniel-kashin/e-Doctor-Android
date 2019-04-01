@@ -24,7 +24,7 @@ import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.SimpleDividerItemDecoration
 import com.edoctor.utils.invisible
 import com.edoctor.utils.session
-import com.jakewharton.rxbinding2.widget.RxTextView
+import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -98,7 +98,7 @@ class FindDoctorFragment : BaseFragment<FindDoctorPresenter, ViewState, Event>("
     }
 
     private fun initializeToolbar() {
-        RxTextView.textChanges(toolbarSearch)
+        toolbarSearch.afterTextChangeEvents()
             .map { editable -> editable.toString().trim() }
             .doOnNext { string ->
                 if (string.isEmpty()) {

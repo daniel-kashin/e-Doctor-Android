@@ -94,7 +94,7 @@ dependencies {
     implementation javaDependencies.rxRelay2
     implementation androidDependencies.rxAndroid
     implementation androidDependencies.rxAndroid2
-    implementation androidDependencies.rxBinding2
+    implementation androidDependencies.rxBinding3
     implementation 'com.tbruyelle.rxpermissions:rxpermissions:0.8.2@aar'
     implementation 'com.cantrowitz:rxbroadcast:2.0.0'
 
