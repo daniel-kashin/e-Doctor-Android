@@ -12,6 +12,7 @@ import com.edoctor.presentation.app.account.AccountPresenter.Event
 import com.edoctor.presentation.app.account.AccountPresenter.ViewState
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
+import com.edoctor.utils.hide
 import com.edoctor.utils.show
 import com.edoctor.utils.toast
 import com.google.android.material.textfield.TextInputEditText
@@ -53,18 +54,25 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     }
 
     override fun render(viewState: ViewState) {
-        contentLayout.show(viewState.account != null)
-
         swipeRefreshLayout.isRefreshing = viewState.isLoading
 
         saveButton.setOnClickListener {
-            if (!viewState.isLoading) {
+            if (!viewState.isLoading && viewState.account != null) {
                 presenter.updateAccount(
                     fullName = fullNameEditText.text?.toString() ?: "",
                     city = cityEditText.text?.toString() ?: ""
                 )
             }
         }
+
+        if (viewState.account != null) {
+            contentLayout.show()
+            fullNameEditText.setText(viewState.account.fullName)
+            cityEditText.setText(viewState.account.city)
+        } else {
+            contentLayout.hide()
+        }
+
     }
 
     override fun showEvent(event: Event) {
