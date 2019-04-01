@@ -15,16 +15,16 @@ class AccountRepository(
     fun getCurrentAccount(refresh: Boolean = false): Single<UserResponse> {
         val fromSessionManager = Single
             .fromCallable {
-                sessionManager.info.account
+                unwrapResponse(sessionManager.info.account)
             }
 
         val fromNetwork = api.getAccount()
-            .map { unwrapResponse(it) }
-            .flatMap { userResult ->
+            .flatMap { userResponseWrapper ->
                 sessionManager
-                    .update { it.copy(account = userResult) }
-                    .toSingleDefault(userResult)
+                    .update { it.copy(account = userResponseWrapper ) }
+                    .toSingleDefault(userResponseWrapper )
             }
+            .map { unwrapResponse(it) }
 
         return if (refresh) {
             fromNetwork
@@ -36,6 +36,11 @@ class AccountRepository(
     fun updateAccount(userResponse: UserResponse): Single<UserResponse> {
         return api
             .updateAccount(wrapRequest(userResponse))
+            .flatMap { userResponseWrapper ->
+                sessionManager
+                    .update { it.copy(account = userResponseWrapper) }
+                    .toSingleDefault(userResponseWrapper)
+            }
             .map { unwrapResponse(it) }
     }
 

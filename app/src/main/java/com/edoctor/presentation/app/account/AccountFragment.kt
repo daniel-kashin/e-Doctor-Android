@@ -16,6 +16,7 @@ import com.edoctor.utils.hide
 import com.edoctor.utils.show
 import com.edoctor.utils.toast
 import com.google.android.material.textfield.TextInputEditText
+import java.util.*
 import javax.inject.Inject
 
 class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("AccountFragment") {
@@ -25,10 +26,13 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
 
     override val layoutRes: Int = R.layout.fragment_account
 
+    private val displayedCalendar: Calendar? = null
+
     private lateinit var contentLayout: ConstraintLayout
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var cityEditText: TextInputEditText
     private lateinit var fullNameEditText: TextInputEditText
+    private lateinit var dateOfBirthEditText: TextInputEditText
     private lateinit var logOutButton: Button
     private lateinit var saveButton: Button
 
@@ -41,6 +45,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         contentLayout = view.findViewById(R.id.content_layout)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         fullNameEditText = view.findViewById(R.id.full_name)
+        dateOfBirthEditText = view.findViewById(R.id.date_of_birth)
         cityEditText = view.findViewById(R.id.city)
         logOutButton = view.findViewById(R.id.log_out_button)
         saveButton = view.findViewById(R.id.save_button)
@@ -51,6 +56,10 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
 
         swipeRefreshLayout.setOnRefreshListener {
             presenter.refreshAccount()
+        }
+
+        dateOfBirthEditText.setOnClickListener {
+
         }
     }
 

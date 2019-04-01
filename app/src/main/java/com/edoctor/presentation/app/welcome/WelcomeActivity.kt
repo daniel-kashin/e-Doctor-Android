@@ -77,7 +77,7 @@ class WelcomeActivity : BaseActivity<WelcomePresenter, ViewState, Event>("Welcom
         val oppositeUser = getString(if (viewState.isPatient) R.string.doctor else R.string.patient)
         val currentAction = getString(if (viewState.isLogin) R.string.login_button else R.string.register)
 
-        newAtEDoctor.text = getString(if (viewState.isLogin) R.string.new_at_zighter else R.string.alteady_registered)
+        newAtEDoctor.text = getString(if (viewState.isLogin) R.string.new_at_edoctor else R.string.alteady_registered)
         youAreDoctor.text = getString(R.string.you_are_user, oppositeUser)
         authButton.text = getString(R.string.action_as_user, currentAction, currentUser)
     }

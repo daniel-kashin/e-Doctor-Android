@@ -47,13 +47,14 @@
     <string name="email_error">At least 5 characters</string>
     <string name="full_name_hint">Full name</string>
     <string name="city_hint">City</string>
+    <string name="date_of_birth_hint">Date of birth</string>
     <string name="first_name_error">At least 1 character</string>
     <string name="second_name_hint">Last name</string>
     <string name="login_button">Log in</string>
     <string name="log_out_button">Log out</string>
     <string name="welcome_back">Welcome back</string>
     <string name="enjoy_zighter">Enjoy Zighter!</string>
-    <string name="new_at_zighter">New at Zighter?</string>
+    <string name="new_at_edoctor">New at eDoctor?</string>
     <string name="alteady_registered">Already registered?</string>
     <string name="you_are_user">Are you %1$s?</string>
     <string name="patient">patient</string>

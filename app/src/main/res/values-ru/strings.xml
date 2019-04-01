@@ -45,7 +45,7 @@
     <string name="log_out_button">"Выйти "</string>
     <string name="welcome_back">Рады Вас видеть</string>
     <string name="enjoy_zighter">Добро пожаловать</string>
-    <string name="new_at_zighter">Впервые у нас?</string>
+    <string name="new_at_edoctor">Впервые у нас?</string>
     <string name="alteady_registered">Уже зарегистрированы?</string>
     <string name="you_are_user">Вы %1$s?</string>
     <string name="patient">пациент</string>
@@ -65,4 +65,5 @@
     <string name="adding_exception">Невозможно добавить маршрут. Пожалуйста, выберите другой маршрут и попробуйте заново.</string>
     <string name="register">Зарегистрироваться</string>
     <string name="save_changes">Сохранить изменения</string>
+    <string name="date_of_birth_hint">Дата рождения</string>
 </resources>

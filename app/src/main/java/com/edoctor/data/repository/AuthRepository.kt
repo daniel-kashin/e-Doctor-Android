@@ -2,8 +2,7 @@ package com.edoctor.data.repository
 
 import com.edoctor.data.entity.remote.request.LoginDataRequest
 import com.edoctor.data.entity.remote.response.TokenResponse
-import com.edoctor.data.entity.remote.response.UserResponse
-import com.edoctor.data.mapper.UserMapper.unwrapResponse
+import com.edoctor.data.entity.remote.response.UserResponseWrapper
 import com.edoctor.data.remote.api.AuthRestApi
 import com.edoctor.data.session.SessionInfo
 import com.edoctor.data.session.SessionManager
@@ -27,11 +26,10 @@ class AuthRepository(
 
     fun register(loginData: LoginDataRequest): Completable {
         return authorizedApi.register(loginData)
-            .map { unwrapResponse(it) }
-            .flatMapCompletable { user ->
+            .flatMapCompletable { userResponseWrapper ->
                 anonymousApi.getFreshestTokenByPassword(loginData.password, loginData.email)
                     .flatMapCompletable { token ->
-                        sessionManager.open(getSessionInfo(user, token))
+                        sessionManager.open(getSessionInfo(userResponseWrapper, token))
                     }
             }
             .onErrorConvertRetrofitThrowable()
@@ -39,11 +37,10 @@ class AuthRepository(
 
     fun login(loginData: LoginDataRequest): Completable {
         return authorizedApi.login(loginData)
-            .map { unwrapResponse(it) }
-            .flatMapCompletable { user ->
+            .flatMapCompletable { userResponseWrapper ->
                 anonymousApi.getFreshestTokenByPassword(loginData.password, loginData.email)
                     .flatMapCompletable { token ->
-                        sessionManager.open(getSessionInfo(user, token))
+                        sessionManager.open(getSessionInfo(userResponseWrapper, token))
                     }
             }
             .onErrorConvertRetrofitThrowable()
@@ -53,9 +50,9 @@ class AuthRepository(
         return sessionManager.close()
     }
 
-    private fun getSessionInfo(userResponse: UserResponse, tokenResponse: TokenResponse): SessionInfo {
+    private fun getSessionInfo(userResponseWrapper: UserResponseWrapper, tokenResponse: TokenResponse): SessionInfo {
         return SessionInfo(
-            userResponse,
+            userResponseWrapper,
             SessionInfo.RefreshToken(
                 tokenResponse.refreshToken
             ),
