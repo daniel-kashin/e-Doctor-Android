@@ -37,7 +37,8 @@
     <string name="password_error">Как минимум 1 символ</string>
     <string name="email_hint">Email</string>
     <string name="email_error">Как минимум 5 символов</string>
-    <string name="first_name_hint">Имя</string>
+    <string name="full_name_hint">Имя и фамилия</string>
+    <string name="city_hint">Город</string>
     <string name="first_name_error">Как минимум 5 символов</string>
     <string name="second_name_hint">Фамилия</string>
     <string name="login_button">Войти</string>
@@ -63,4 +64,5 @@
     <string name="adding_route">Маршрут добавляется...</string>
     <string name="adding_exception">Невозможно добавить маршрут. Пожалуйста, выберите другой маршрут и попробуйте заново.</string>
     <string name="register">Зарегистрироваться</string>
+    <string name="save_changes">Сохранить изменения</string>
 </resources>

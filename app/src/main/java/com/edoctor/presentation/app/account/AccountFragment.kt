@@ -3,7 +3,7 @@ package com.edoctor.presentation.app.account
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.edoctor.R
 import com.edoctor.data.injection.AccountModule
@@ -12,6 +12,9 @@ import com.edoctor.presentation.app.account.AccountPresenter.Event
 import com.edoctor.presentation.app.account.AccountPresenter.ViewState
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
+import com.edoctor.utils.show
+import com.edoctor.utils.toast
+import com.google.android.material.textfield.TextInputEditText
 import javax.inject.Inject
 
 class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("AccountFragment") {
@@ -21,9 +24,12 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
 
     override val layoutRes: Int = R.layout.fragment_account
 
+    private lateinit var contentLayout: ConstraintLayout
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var textViewInfo: TextView
-    private lateinit var buttonLogOut: Button
+    private lateinit var cityEditText: TextInputEditText
+    private lateinit var fullNameEditText: TextInputEditText
+    private lateinit var logOutButton: Button
+    private lateinit var saveButton: Button
 
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.plus(AccountModule()).inject(this)
@@ -32,24 +38,39 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        textViewInfo = view.findViewById(R.id.text_view_info)
-        buttonLogOut = view.findViewById(R.id.button_log_out)
+        fullNameEditText = view.findViewById(R.id.full_name)
+        cityEditText = view.findViewById(R.id.city)
+        logOutButton = view.findViewById(R.id.log_out_button)
+        saveButton = view.findViewById(R.id.save_button)
 
-        buttonLogOut.setOnClickListener {
+        logOutButton.setOnClickListener {
             presenter.logOut()
+        }
+
+        swipeRefreshLayout.setOnRefreshListener {
+            presenter.refreshAccount()
         }
     }
 
     override fun render(viewState: ViewState) {
+        contentLayout.show(viewState.account != null)
+
         swipeRefreshLayout.isRefreshing = viewState.isLoading
-        textViewInfo.text = viewState.account?.run {
-            "email = $email \n${if (isPatient) "пациент" else "доктор"}"
+
+        saveButton.setOnClickListener {
+            if (!viewState.isLoading) {
+                presenter.updateAccount(
+                    fullName = fullNameEditText.text?.toString() ?: "",
+                    city = cityEditText.text?.toString() ?: ""
+                )
+            }
         }
     }
 
     override fun showEvent(event: Event) {
         when (event) {
             is Event.ShowSessionException -> activity?.onSessionException()
+            is Event.ShowNoNetworkException -> context.toast(getString(R.string.network_error_message))
         }
     }
 

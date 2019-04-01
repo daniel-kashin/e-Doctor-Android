@@ -80,7 +80,7 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
     override fun showEvent(event: Event) {
         when (event) {
             is Event.ShowUnknownException -> context.toast(event.throwable.toString())
-            is Event.ShowNoNetworkException -> context.toast("Нет интернета")
+            is Event.ShowNoNetworkException -> context.toast(getString(R.string.network_error_message))
             is Event.ShowSessionException -> activity?.onSessionException()
         }
     }

@@ -45,7 +45,8 @@
     <string name="password_error">At least 1 character</string>
     <string name="email_hint">Email</string>
     <string name="email_error">At least 5 characters</string>
-    <string name="first_name_hint">First name</string>
+    <string name="full_name_hint">Full name</string>
+    <string name="city_hint">City</string>
     <string name="first_name_error">At least 1 character</string>
     <string name="second_name_hint">Last name</string>
     <string name="login_button">Log in</string>
@@ -83,4 +84,6 @@
     <string name="adding_route">Adding route...</string>
     <string name="adding_exception">Unable to add route. Please, choose another route and try again.</string>
     <string name="register">Register</string>
+
+    <string name="save_changes">Save changes</string>
 </resources>

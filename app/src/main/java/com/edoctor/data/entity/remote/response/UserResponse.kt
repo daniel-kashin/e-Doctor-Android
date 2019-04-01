@@ -1,6 +1,7 @@
 package com.edoctor.data.entity.remote.response
 
-data class UserResponse(
-    val email: String,
-    val isPatient: Boolean
-)
+abstract class UserResponse {
+    abstract val email: String
+    abstract val fullName: String
+    abstract val city: String
+}

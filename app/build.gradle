@@ -56,6 +56,14 @@ android {
     }
 }
 
+repositories {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+}
+
 dependencies {
     implementation javaDependencies.kotlin
     compileOnly javaDependencies.javaxAnnotation

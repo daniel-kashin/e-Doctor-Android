@@ -3,6 +3,7 @@ package com.edoctor.data.repository
 import com.edoctor.data.entity.remote.request.LoginDataRequest
 import com.edoctor.data.entity.remote.response.TokenResponse
 import com.edoctor.data.entity.remote.response.UserResponse
+import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.data.remote.api.AuthRestApi
 import com.edoctor.data.session.SessionInfo
 import com.edoctor.data.session.SessionManager
@@ -26,6 +27,7 @@ class AuthRepository(
 
     fun register(loginData: LoginDataRequest): Completable {
         return authorizedApi.register(loginData)
+            .map { unwrapResponse(it) }
             .flatMapCompletable { user ->
                 anonymousApi.getFreshestTokenByPassword(loginData.password, loginData.email)
                     .flatMapCompletable { token ->
@@ -37,6 +39,7 @@ class AuthRepository(
 
     fun login(loginData: LoginDataRequest): Completable {
         return authorizedApi.login(loginData)
+            .map { unwrapResponse(it) }
             .flatMapCompletable { user ->
                 anonymousApi.getFreshestTokenByPassword(loginData.password, loginData.email)
                     .flatMapCompletable { token ->

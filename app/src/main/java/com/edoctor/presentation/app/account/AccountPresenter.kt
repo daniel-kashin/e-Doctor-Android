@@ -1,5 +1,7 @@
 package com.edoctor.presentation.app.account
 
+import com.edoctor.data.entity.remote.response.DoctorResponse
+import com.edoctor.data.entity.remote.response.PatientResponse
 import com.edoctor.data.entity.remote.response.UserResponse
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.AccountRepository
@@ -27,20 +29,46 @@ class AccountPresenter @Inject constructor(
     init {
         setViewState(ViewState.EMPTY)
 
-        disposables += accountRepository.getCurrentAccount()
+        refreshAccount()
+    }
+
+    fun refreshAccount() {
+        disposables += accountRepository.getCurrentAccount(refresh = true)
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
+            .doOnSubscribe { setViewState { copy(isLoading = true) } }
+            .doOnTerminate { setViewState { copy(isLoading = false) } }
+            .subscribe({
+                setViewState { copy(account = it) }
+            }, { throwable ->
+                when {
+                    throwable.isSessionException() -> sendEvent(Event.ShowSessionException)
+                    throwable.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
+                }
+            })
+    }
+
+    fun updateAccount(fullName: String, city: String) {
+        val viewState = viewStateSnapshot()
+        val newAccount = when (viewState.account) {
+            is PatientResponse -> viewState.account.copy(fullName = fullName, city = city)
+            is DoctorResponse -> viewState.account.copy(fullName = fullName, city = city)
+            else -> return
+        }
+
+        disposables += accountRepository.updateAccount(newAccount)
+            .subscribeOn(subscribeScheduler)
+            .observeOn(observeScheduler)
+            .doOnSubscribe { setViewState { copy(isLoading = true) } }
             .subscribe({
                 setViewState { copy(account = it, isLoading = false) }
             }, { throwable ->
                 setViewState { copy(isLoading = false) }
-                if (throwable.isSessionException()) {
-                    sendEvent(Event.ShowSessionException)
-                } else if (throwable.isNoNetworkError()) {
-                    // TODO
+                when {
+                    throwable.isSessionException() -> sendEvent(Event.ShowSessionException)
+                    throwable.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
                 }
             })
-
     }
 
     fun logOut() {
@@ -60,6 +88,7 @@ class AccountPresenter @Inject constructor(
 
     sealed class Event : Presenter.Event {
         object ShowSessionException : Event()
+        object ShowNoNetworkException : Event()
     }
 
 }
