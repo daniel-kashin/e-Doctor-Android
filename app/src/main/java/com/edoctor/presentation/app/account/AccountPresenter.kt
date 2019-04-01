@@ -55,13 +55,13 @@ class AccountPresenter @Inject constructor(
             })
     }
 
-    fun updateAccount(fullName: String, city: String) {
+    fun updateAccount(fullName: String?, city: String?, dateOfBirthTimestamp: Long?) {
         val viewState = viewStateSnapshot()
         val oldAccount = viewState.account
 
         val newAccount = when (oldAccount) {
-            is PatientResponse -> oldAccount.copy(fullName = fullName, city = city)
-            is DoctorResponse -> oldAccount.copy(fullName = fullName, city = city)
+            is PatientResponse -> oldAccount.copy(fullName = fullName, city = city, dateOfBirthTimestamp = dateOfBirthTimestamp)
+            is DoctorResponse -> oldAccount.copy(fullName = fullName, city = city, dateOfBirthTimestamp = dateOfBirthTimestamp)
             else -> return
         }
 

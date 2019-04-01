@@ -93,11 +93,11 @@
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/date_of_birth"
-                    android:inputType="date"
+                    android:inputType="datetime"
                     android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/city_hint"/>
+                    android:hint="@string/date_of_birth_hint"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

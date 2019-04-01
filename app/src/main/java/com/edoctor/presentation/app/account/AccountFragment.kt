@@ -1,5 +1,7 @@
 package com.edoctor.presentation.app.account
 
+import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -11,22 +13,26 @@ import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.account.AccountPresenter.Event
 import com.edoctor.presentation.app.account.AccountPresenter.ViewState
 import com.edoctor.presentation.architecture.fragment.BaseFragment
+import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
-import com.edoctor.utils.hide
-import com.edoctor.utils.show
-import com.edoctor.utils.toast
 import com.google.android.material.textfield.TextInputEditText
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
+
 class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("AccountFragment") {
+
+    companion object {
+        const val DATE_OF_BIRTH_TIMESTAMP_PARAM = "date_of_birth_timestamp"
+    }
 
     @Inject
     override lateinit var presenter: AccountPresenter
 
     override val layoutRes: Int = R.layout.fragment_account
 
-    private val displayedCalendar: Calendar? = null
+    private var dateOfBirthTimestamp: Long? = null
 
     private lateinit var contentLayout: ConstraintLayout
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -40,6 +46,12 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         applicationComponent.plus(AccountModule()).inject(this)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        dateOfBirthTimestamp = savedInstanceState?.get(DATE_OF_BIRTH_TIMESTAMP_PARAM) as? Long
+    }
+
+    @SuppressLint("SimpleDateFormat")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         contentLayout = view.findViewById(R.id.content_layout)
@@ -59,7 +71,22 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         }
 
         dateOfBirthEditText.setOnClickListener {
+            val nowCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
+            DatePickerDialog(
+                view.context,
+                { _, year, month, dayOfMonth ->
+                    nowCalendar.set(year, month, dayOfMonth, 0, 0, 0)
+                    dateOfBirthTimestamp = nowCalendar.timeInMillis.javaTimeToUnixTime()
+                    dateOfBirthEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(nowCalendar.time))
+                },
+                nowCalendar.get(Calendar.YEAR) - 20,
+                nowCalendar.get(Calendar.MONTH),
+                nowCalendar.get(Calendar.DAY_OF_MONTH)
+            ).apply {
+                datePicker.maxDate = nowCalendar.timeInMillis
+                show()
+            }
         }
     }
 
@@ -69,8 +96,9 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         saveButton.setOnClickListener {
             if (!viewState.isLoading && viewState.account != null) {
                 presenter.updateAccount(
-                    fullName = fullNameEditText.text?.toString() ?: "",
-                    city = cityEditText.text?.toString() ?: ""
+                    fullName = fullNameEditText.text?.toString()?.takeIfNotEmpty(),
+                    city = cityEditText.text?.toString()?.takeIfNotEmpty(),
+                    dateOfBirthTimestamp = dateOfBirthTimestamp
                 )
             }
         }
@@ -90,6 +118,11 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             is Event.ShowSessionException -> activity?.onSessionException()
             is Event.ShowNoNetworkException -> context.toast(getString(R.string.network_error_message))
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.put(DATE_OF_BIRTH_TIMESTAMP_PARAM, dateOfBirthTimestamp)
+        super.onSaveInstanceState(outState)
     }
 
 }
