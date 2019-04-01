@@ -38,6 +38,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        contentLayout = view.findViewById(R.id.content_layout)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         fullNameEditText = view.findViewById(R.id.full_name)
         cityEditText = view.findViewById(R.id.city)

@@ -50,9 +50,11 @@ class AccountPresenter @Inject constructor(
 
     fun updateAccount(fullName: String, city: String) {
         val viewState = viewStateSnapshot()
-        val newAccount = when (viewState.account) {
-            is PatientResponse -> viewState.account.copy(fullName = fullName, city = city)
-            is DoctorResponse -> viewState.account.copy(fullName = fullName, city = city)
+        val oldAccount = viewState.account
+
+        val newAccount = when (oldAccount) {
+            is PatientResponse -> oldAccount.copy(fullName = fullName, city = city)
+            is DoctorResponse -> oldAccount.copy(fullName = fullName, city = city)
             else -> return
         }
 
@@ -63,7 +65,7 @@ class AccountPresenter @Inject constructor(
             .subscribe({
                 setViewState { copy(account = it, isLoading = false) }
             }, { throwable ->
-                setViewState { copy(isLoading = false) }
+                setViewState { copy(account = oldAccount, isLoading = false) }
                 when {
                     throwable.isSessionException() -> sendEvent(Event.ShowSessionException)
                     throwable.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
