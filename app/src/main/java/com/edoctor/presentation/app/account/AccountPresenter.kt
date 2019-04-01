@@ -33,14 +33,21 @@ class AccountPresenter @Inject constructor(
     }
 
     fun refreshAccount() {
-        disposables += accountRepository.getCurrentAccount(refresh = true)
+        disposables += accountRepository.getCurrentAccount(refresh = false)
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .doOnSubscribe { setViewState { copy(isLoading = true) } }
-            .doOnTerminate { setViewState { copy(isLoading = false) } }
+            .doOnSuccess { setViewState { copy(account = it) } }
+
+            .flatMap {
+                accountRepository.getCurrentAccount(refresh = true)
+                    .subscribeOn(subscribeScheduler)
+                    .observeOn(observeScheduler)
+            }
             .subscribe({
-                setViewState { copy(account = it) }
+                setViewState { copy(account = it, isLoading = false) }
             }, { throwable ->
+                setViewState { copy(isLoading = false) }
                 when {
                     throwable.isSessionException() -> sendEvent(Event.ShowSessionException)
                     throwable.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)

@@ -5,7 +5,6 @@ import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.data.mapper.UserMapper.wrapRequest
 import com.edoctor.data.remote.api.AccountRestApi
 import com.edoctor.data.session.SessionManager
-import io.reactivex.Observable
 import io.reactivex.Single
 
 class AccountRepository(
@@ -13,8 +12,8 @@ class AccountRepository(
     private val sessionManager: SessionManager
 ) {
 
-    fun getCurrentAccount(refresh: Boolean = false): Observable<UserResponse> {
-        val fromSessionManager = Observable
+    fun getCurrentAccount(refresh: Boolean = false): Single<UserResponse> {
+        val fromSessionManager = Single
             .fromCallable {
                 sessionManager.info.account
             }
@@ -28,7 +27,7 @@ class AccountRepository(
             }
 
         return if (refresh) {
-            fromSessionManager.concatWith(fromNetwork)
+            fromNetwork
         } else {
             fromSessionManager
         }

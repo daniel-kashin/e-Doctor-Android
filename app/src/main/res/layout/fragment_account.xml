@@ -53,6 +53,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/full_name"
+                    android:inputType="textNoSuggestions|text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/full_name_hint"/>
@@ -72,6 +73,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/city"
+                    android:inputType="textNoSuggestions|text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/city_hint"/>
