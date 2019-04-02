@@ -31,8 +31,8 @@ class NetworkModule(
 ) {
 
     companion object {
-        const val EDOCTOR_HTTP_ENDPOINT = "http://localhost:9095/"
-        const val EDOCTOR_WS_ENDPOINT = "ws://localhost:9095/"
+        const val EDOCTOR_HTTP_ENDPOINT = "http://localhost:9095"
+        const val EDOCTOR_WS_ENDPOINT = "ws://localhost:9095"
 
         const val NETWORK_LOG_TAG = "Retrofit"
 

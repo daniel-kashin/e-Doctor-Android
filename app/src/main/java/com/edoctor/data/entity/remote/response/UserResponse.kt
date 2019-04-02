@@ -6,4 +6,5 @@ abstract class UserResponse {
     abstract val city: String?
     abstract val dateOfBirthTimestamp: Long?
     abstract val isMale: Boolean?
+    abstract val relativeImageUrl: String?
 }

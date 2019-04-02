@@ -169,7 +169,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                 .into(imageView)
         } else {
             Glide.with(imageView.context)
-                .load(null as String?)
+                .load(viewState.account?.relativeImageUrl)
                 .apply(
                     RequestOptions()
                         .centerCrop()
@@ -181,7 +181,6 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         }
 
         if (viewState.account != null) {
-            contentLayout.show()
             fullNameEditText.setText(viewState.account.fullName)
             cityEditText.setText(viewState.account.city)
             gender.setText(
@@ -200,6 +199,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                     null
                 }
             )
+
+            contentLayout.show()
         } else {
             contentLayout.hide()
         }

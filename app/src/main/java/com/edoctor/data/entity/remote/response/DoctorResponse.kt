@@ -5,5 +5,6 @@ data class DoctorResponse(
     override val fullName: String?,
     override val city: String?,
     override val dateOfBirthTimestamp: Long?,
-    override val isMale: Boolean?
+    override val isMale: Boolean?,
+    override val relativeImageUrl: String?
 ) : UserResponse()
