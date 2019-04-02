@@ -2,19 +2,22 @@ package com.edoctor.data.remote.api
 
 import com.edoctor.data.entity.remote.response.UserResponseWrapper
 import io.reactivex.Single
-import retrofit2.http.Body
+import okhttp3.MultipartBody
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 
 interface AccountRestApi {
 
     @GET("/account")
     fun getAccount(): Single<UserResponseWrapper>
 
-    //    TODO
+    @Multipart
     @POST("/account")
     fun updateAccount(
-        @Body userRequest: UserResponseWrapper
+        @Part("userRequest") userRequest: UserResponseWrapper,
+        @Part image: MultipartBody.Part?
     ): Single<UserResponseWrapper>
 
 }

@@ -60,6 +60,7 @@ class AccountPresenter @Inject constructor(
                 when {
                     throwable.isSessionException() -> sendEvent(Event.ShowSessionException)
                     throwable.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
+                    else -> sendEvent(Event.ShowUnknownException)
                 }
             })
     }
@@ -89,7 +90,7 @@ class AccountPresenter @Inject constructor(
             else -> return
         }
 
-        disposables += accountRepository.updateAccount(newAccount)
+        disposables += accountRepository.updateAccount(newAccount, viewState.selectedAvatar)
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .doOnSubscribe { setViewState { copy(account = newAccount, isLoading = true) } }
@@ -100,6 +101,7 @@ class AccountPresenter @Inject constructor(
                 when {
                     throwable.isSessionException() -> sendEvent(Event.ShowSessionException)
                     throwable.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
+                    else -> sendEvent(Event.ShowUnknownException)
                 }
             })
     }
@@ -139,6 +141,7 @@ class AccountPresenter @Inject constructor(
         object ShowSessionException : Event()
         object ShowNoNetworkException : Event()
         object ShowImageUploadException : Event()
+        object ShowUnknownException : Event()
     }
 
 }
