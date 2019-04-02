@@ -72,4 +72,6 @@
     <string name="female">Женский</string>
     <string name="take_photo">Сделать фотографию</string>
     <string name="pick_from_gallery">Выбрать из галереи</string>
+    <string name="main_information">Основная информация</string>
+    <string name="career">Карьера</string>
 </resources>
