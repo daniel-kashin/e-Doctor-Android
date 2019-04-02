@@ -1,5 +1,6 @@
 package com.edoctor.presentation.app.account
 
+import android.graphics.Bitmap
 import com.edoctor.data.entity.remote.response.DoctorResponse
 import com.edoctor.data.entity.remote.response.PatientResponse
 import com.edoctor.data.entity.remote.response.UserResponse
@@ -13,7 +14,11 @@ import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.SessionExceptionHelper.isSessionException
 import com.edoctor.utils.isNoNetworkError
 import com.edoctor.utils.plusAssign
+import com.edoctor.utils.writeToFile
 import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -26,6 +31,10 @@ class AccountPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ViewState, Event>() {
 
+    companion object {
+        private const val USERPIC_FILE_NAME = "userpic.tmp"
+    }
+
     init {
         setViewState(ViewState.EMPTY)
 
@@ -37,7 +46,7 @@ class AccountPresenter @Inject constructor(
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .doOnSubscribe { setViewState { copy(isLoading = true) } }
-            .doOnSuccess { setViewState { copy(account = it) } }
+            .doOnSuccess { setViewState { copy(account = it, selectedAvatar = null) } }
 
             .flatMap {
                 accountRepository.getCurrentAccount(refresh = true)
@@ -45,7 +54,7 @@ class AccountPresenter @Inject constructor(
                     .observeOn(observeScheduler)
             }
             .subscribe({
-                setViewState { copy(account = it, isLoading = false) }
+                setViewState { copy(account = it, selectedAvatar = null, isLoading = false) }
             }, { throwable ->
                 setViewState { copy(isLoading = false) }
                 when {
@@ -85,7 +94,7 @@ class AccountPresenter @Inject constructor(
             .observeOn(observeScheduler)
             .doOnSubscribe { setViewState { copy(account = newAccount, isLoading = true) } }
             .subscribe({
-                setViewState { copy(account = it, isLoading = false) }
+                setViewState { copy(account = it, selectedAvatar = null, isLoading = false) }
             }, { throwable ->
                 setViewState { copy(account = oldAccount, isLoading = false) }
                 when {
@@ -93,6 +102,18 @@ class AccountPresenter @Inject constructor(
                     throwable.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
                 }
             })
+    }
+
+    fun onImageSelected(bitmap: Bitmap, cacheDirectory: File) {
+        disposables += Single
+            .fromCallable {
+                bitmap.writeToFile(File(cacheDirectory, USERPIC_FILE_NAME))
+            }
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                { setViewState { copy(selectedAvatar = it) } },
+                { sendEvent(Event.ShowImageUploadException) }
+            )
     }
 
     fun logOut() {
@@ -104,15 +125,20 @@ class AccountPresenter @Inject constructor(
             }
     }
 
-    data class ViewState(val account: UserResponse?, val isLoading: Boolean) : Presenter.ViewState {
+    data class ViewState(
+        val account: UserResponse?,
+        val selectedAvatar: File?,
+        val isLoading: Boolean
+    ) : Presenter.ViewState {
         companion object {
-            val EMPTY = ViewState(null, true)
+            val EMPTY = ViewState(null, null, true)
         }
     }
 
     sealed class Event : Presenter.Event {
         object ShowSessionException : Event()
         object ShowNoNetworkException : Event()
+        object ShowImageUploadException : Event()
     }
 
 }

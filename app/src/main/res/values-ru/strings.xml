@@ -18,6 +18,7 @@
     <string name="no">НЕТ</string>
     <string name="try_again">Попробовать еще раз</string>
     <string name="network_error_message">Пожалуйста, проверьте соединение с интернетом</string>
+    <string name="image_upload_error_message">Ошибка загрузки изображения</string>
     <string name="media_upload_error_message">Невозможно загрузить</string>
     <string name="empty_bought_excursions">Купленные экскурсии будут отображены здесь</string>
     <string name="unhandled_error_message">Что-то пошло не так</string>
@@ -69,4 +70,6 @@
     <string name="gender_hint">Пол</string>
     <string name="male">Мужской</string>
     <string name="female">Женский</string>
+    <string name="take_photo">Сделать фотографию</string>
+    <string name="pick_from_gallery">Выбрать из галереи</string>
 </resources>

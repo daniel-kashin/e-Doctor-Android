@@ -1,13 +1,22 @@
 package com.edoctor.presentation.app.account
 
+import android.Manifest.permission.CAMERA
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
 import com.edoctor.data.injection.AccountModule
 import com.edoctor.data.injection.ApplicationComponent
@@ -17,6 +26,7 @@ import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.google.android.material.textfield.TextInputEditText
+import com.tbruyelle.rxpermissions.RxPermissions
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -27,6 +37,9 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     companion object {
         const val DATE_OF_BIRTH_TIMESTAMP_PARAM = "date_of_birth_timestamp"
         const val IS_MALE_PARAM = "is_male"
+
+        private const val REQUEST_CAMERA = 10135
+        private const val REQUEST_GALLERY = 10136
     }
 
     @Inject
@@ -37,8 +50,10 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     private var dateOfBirthTimestamp: Long? = null
     private var isMale: Boolean? = null
 
-    private lateinit var contentLayout: ConstraintLayout
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var contentLayout: ConstraintLayout
+    private lateinit var imageView: ImageView
+    private lateinit var imageViewPlaceholder: ImageView
     private lateinit var cityEditText: TextInputEditText
     private lateinit var fullNameEditText: TextInputEditText
     private lateinit var dateOfBirthEditText: TextInputEditText
@@ -62,6 +77,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
 
         contentLayout = view.findViewById(R.id.content_layout)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        imageView = view.findViewById(R.id.image_view)
+        imageViewPlaceholder = view.findViewById(R.id.image_view_placeholder)
         fullNameEditText = view.findViewById(R.id.full_name)
         dateOfBirthEditText = view.findViewById(R.id.date_of_birth)
         gender = view.findViewById(R.id.gender)
@@ -71,12 +88,16 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
 
         contentLayout.hide()
 
-        logOutButton.setOnClickListener {
-            presenter.logOut()
-        }
-
         swipeRefreshLayout.setOnRefreshListener {
             presenter.refreshAccount()
+        }
+
+        imageView.setOnClickListener {
+            showImagePickerOptions()
+        }
+
+        imageViewPlaceholder.setOnClickListener {
+            showImagePickerOptions()
         }
 
         dateOfBirthEditText.setOnClickListener {
@@ -109,6 +130,11 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                 show()
             }
         }
+
+
+        logOutButton.setOnClickListener {
+            presenter.logOut()
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -127,6 +153,31 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                     isMale = isMale
                 )
             }
+        }
+
+        if (viewState.selectedAvatar != null) {
+            Glide.with(imageView.context)
+                .load(viewState.selectedAvatar)
+                .apply(
+                    RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.color.lightLightGrey)
+                        .dontAnimate()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                )
+                .into(imageView)
+        } else {
+            Glide.with(imageView.context)
+                .load(null as String?)
+                .apply(
+                    RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.color.lightLightGrey)
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                )
+                .into(imageView)
         }
 
         if (viewState.account != null) {
@@ -158,6 +209,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         when (event) {
             is Event.ShowSessionException -> activity?.onSessionException()
             is Event.ShowNoNetworkException -> context.toast(getString(R.string.network_error_message))
+            is Event.ShowImageUploadException -> context.toast(R.string.image_upload_error_message)
         }
     }
 
@@ -165,6 +217,58 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         outState.put(DATE_OF_BIRTH_TIMESTAMP_PARAM, dateOfBirthTimestamp)
         outState.put(IS_MALE_PARAM, isMale)
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val activity = activity
+        if (resultCode == Activity.RESULT_OK && activity != null) {
+            when (requestCode) {
+                REQUEST_CAMERA -> {
+                    (data?.extras?.get("data") as? Bitmap)?.let {
+                        presenter.onImageSelected(it, activity.cacheDir)
+                    }
+                }
+                REQUEST_GALLERY -> {
+                    MediaStore.Images.Media.getBitmap(activity.contentResolver, data?.data)?.let {
+                        presenter.onImageSelected(it, activity.cacheDir)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showImagePickerOptions() {
+        PopupMenu(imageView.context, imageView).apply {
+            menuInflater.inflate(R.menu.image_picker, menu)
+            setOnMenuItemClickListener { item ->
+                val activity = activity
+                if (activity != null) {
+                    when (item.itemId) {
+                        R.id.gallery -> {
+                            val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
+                            galleryIntent.type = Constants.PICK_IMAGE_INTENT_TYPE
+                            startActivityForResult(Intent.createChooser(galleryIntent, null), REQUEST_GALLERY)
+                        }
+                        R.id.camera -> {
+                            RxPermissions.getInstance(activity)
+                                .request(CAMERA)
+                                .onErrorReturn { false }
+                                .subscribe { granted ->
+                                    if (granted) {
+                                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                                        if (cameraIntent.resolveActivity(activity.packageManager) != null) {
+                                            startActivityForResult(cameraIntent, REQUEST_CAMERA)
+                                        }
+                                    }
+                                }
+                        }
+                    }
+                }
+                true
+            }
+            show()
+        }
     }
 
 }

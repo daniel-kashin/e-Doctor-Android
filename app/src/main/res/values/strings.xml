@@ -72,7 +72,8 @@
     <string name="map">Route</string>
     <string name="map_and_media">Media</string>
     <string name="guide">Guide</string>
-    <string name="network_error_message">An error while trying to download data. Please, check your connection.</string>
+    <string name="network_error_message">An error while downloading data. Please, check your connection.</string>
+    <string name="image_upload_error_message">An error while uploading image</string>
     <string name="personal_recommendation">Your personal recommendation</string>
     <string name="default_sort">Default</string>
     <string name="cheapest_sort">From cheapest</string>
@@ -91,4 +92,7 @@
 
     <string name="male">Male</string>
     <string name="female">Female</string>
+
+    <string name="take_photo">Take photo</string>
+    <string name="pick_from_gallery">Pick from gallery</string>
 </resources>
