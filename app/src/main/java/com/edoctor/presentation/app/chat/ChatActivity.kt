@@ -31,8 +31,8 @@ import com.facebook.react.modules.core.PermissionListener
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
-import org.jitsi.meet.sdk.JitsiMeetActivityInterface
-import org.jitsi.meet.sdk.JitsiMeetView
+import org.jitsi.meet.sdk.*
+import java.net.URL
 import javax.inject.Inject
 
 
@@ -118,19 +118,13 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
     private fun getMeetView() = JitsiMeetView(this).apply {
         invisible()
-        isPictureInPictureEnabled = false
-        isWelcomePageEnabled = false
-        defaultURL = null
-        loadURL(null)
 
-        listener = object : JitsiMeetViewAdapter() {
-            override fun onConferenceFailed(p0: MutableMap<String, Any>?) {
+        listener = object : JitsiMeetViewListener {
+            override fun onConferenceTerminated(p0: MutableMap<String, Any>?) {
                 presenter.leaveCall()
             }
-
-            override fun onConferenceLeft(data: MutableMap<String, Any>?) {
-                presenter.leaveCall()
-            }
+            override fun onConferenceJoined(p0: MutableMap<String, Any>?) {}
+            override fun onConferenceWillJoin(p0: MutableMap<String, Any>?) {}
         }
 
         activityRoot.addView(this, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
@@ -138,22 +132,22 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
     override fun onResume() {
         super.onResume()
-        ReactActivityLifecycleCallbacks.onHostResume(this)
+        JitsiMeetActivityDelegate.onHostResume(this)
     }
 
     public override fun onPause() {
         super.onPause()
-        ReactActivityLifecycleCallbacks.onHostPause(this)
+        JitsiMeetActivityDelegate.onHostPause(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         jitsiMeetView.dispose()
-        ReactActivityLifecycleCallbacks.onHostDestroy(this)
+        JitsiMeetActivityDelegate.onHostDestroy(this)
     }
 
     override fun onBackPressed() {
-        ReactActivityLifecycleCallbacks.onBackPressed()
+        JitsiMeetActivityDelegate.onBackPressed()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -195,24 +189,29 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
     }
 
     private fun showJitsiMeetView(callStatusMessage: CallStatusMessage) {
-        val urlObject = Bundle().apply {
-            putBundle("config", Bundle().apply {
-                putBoolean("startWithAudioMuted", !callingView.isAudioEnabled)
-                putBoolean("startWithVideoMuted", !callingView.isVideoEnabled)
-            })
-            putString("url", callStatusMessage.getCallUrl())
-        }
-        jitsiMeetView.loadURLObject(urlObject)
+        jitsiMeetView.join(
+            JitsiMeetConferenceOptions.Builder()
+                .setAudioMuted(!callingView.isAudioEnabled)
+                .setVideoMuted(!callingView.isVideoEnabled)
+                .setServerURL(URL("https://meet.jit.si"))
+                .setRoom(callStatusMessage.callUuid)
+                .setWelcomePageEnabled(false)
+                .build()
+        )
         jitsiMeetView.show()
     }
 
     private fun hideJitsiMeetView() {
-        jitsiMeetView.loadURL(null)
+        jitsiMeetView.leave()
         jitsiMeetView.invisible()
     }
 
     override fun requestPermissions(permissions: Array<out String>?, requestCode: Int, listener: PermissionListener?) {
-        ReactActivityLifecycleCallbacks.requestPermissions(this, permissions, requestCode, listener)
+        JitsiMeetActivityDelegate.requestPermissions(this, permissions, requestCode, listener)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        JitsiMeetActivityDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun showEvent(event: Event) {
@@ -222,8 +221,6 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             is Event.ShowSessionException -> onSessionException()
         }
     }
-
-    private fun CallStatusMessage.getCallUrl() = "https://meet.jit.si/$callUuid"
 
     class IntentBuilder(fragment: Fragment) : CheckedIntentBuilder(fragment) {
 
