@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
+import com.edoctor.data.entity.remote.response.DoctorResponse
 import com.edoctor.data.injection.AccountModule
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.account.AccountPresenter.Event
@@ -54,12 +55,15 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var contentLayout: ConstraintLayout
+
     private lateinit var imageView: ImageView
     private lateinit var imageViewPlaceholder: ImageView
     private lateinit var cityEditText: TextInputEditText
     private lateinit var fullNameEditText: TextInputEditText
     private lateinit var dateOfBirthEditText: TextInputEditText
     private lateinit var genderEditText: TextInputEditText
+
+    private lateinit var labelCareer: ImageView
     private lateinit var yearsOfExperienceEditText: TextInputEditText
     private lateinit var categoryEditText: TextInputEditText
     private lateinit var specializationEditText: TextInputEditText
@@ -67,8 +71,16 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     private lateinit var educationEditText: TextInputEditText
     private lateinit var workExperienceEditText: TextInputEditText
     private lateinit var trainingsEditText: TextInputEditText
+
     private lateinit var logOutButton: Button
     private lateinit var saveButton: Button
+
+    private val doctorViews by lazy {
+        listOf(
+            labelCareer, yearsOfExperienceEditText, categoryEditText, specializationEditText, clinicalInterestsEditText,
+            educationEditText, workExperienceEditText, trainingsEditText
+        )
+    }
 
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.plus(AccountModule()).inject(this)
@@ -93,6 +105,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             dateOfBirthEditText = findViewById(R.id.date_of_birth)
             genderEditText = findViewById(R.id.gender)
             cityEditText = findViewById(R.id.city)
+            labelCareer = findViewById(R.id.label_career)
             yearsOfExperienceEditText = findViewById(R.id.years_of_experience)
             categoryEditText = findViewById(R.id.category)
             specializationEditText = findViewById(R.id.specialization)
@@ -179,7 +192,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     override fun render(viewState: ViewState) {
         isMale = viewState.account?.isMale
         dateOfBirthTimestamp = viewState.account?.dateOfBirthTimestamp
-        categoryNumber = null // TODO
+        categoryNumber = (viewState.account as? DoctorResponse)?.category
 
         swipeRefreshLayout.isRefreshing = viewState.isLoading
 
@@ -245,6 +258,24 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                     null
                 }
             )
+
+            if (viewState.account is DoctorResponse) {
+                doctorViews.forEach { it.show() }
+                yearsOfExperienceEditText.setText(viewState.account.yearsOfExperience.toString())
+                categoryEditText.setText(when (viewState.account.category) {
+                    0 -> getString(R.string.highest_category)
+                    1 -> getString(R.string.first_category)
+                    2 -> getString(R.string.second_category)
+                    else -> null
+                })
+                specializationEditText.setText(viewState.account.specialization)
+                clinicalInterestsEditText.setText(viewState.account.clinicalInterests)
+                educationEditText.setText(viewState.account.education)
+                workExperienceEditText.setText(viewState.account.workExperience)
+                trainingsEditText.setText(viewState.account.trainings)
+            } else {
+                doctorViews.forEach { it.hide() }
+            }
 
             contentLayout.show()
         } else {
