@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -63,7 +64,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     private lateinit var dateOfBirthEditText: TextInputEditText
     private lateinit var genderEditText: TextInputEditText
 
-    private lateinit var labelCareer: ImageView
+    private lateinit var labelCareer: TextView
     private lateinit var yearsOfExperienceEditText: TextInputEditText
     private lateinit var categoryEditText: TextInputEditText
     private lateinit var specializationEditText: TextInputEditText
@@ -75,9 +76,9 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     private lateinit var logOutButton: Button
     private lateinit var saveButton: Button
 
-    private val doctorViews by lazy {
+    private val doctorEditTexts by lazy {
         listOf(
-            labelCareer, yearsOfExperienceEditText, categoryEditText, specializationEditText, clinicalInterestsEditText,
+            yearsOfExperienceEditText, categoryEditText, specializationEditText, clinicalInterestsEditText,
             educationEditText, workExperienceEditText, trainingsEditText
         )
     }
@@ -260,8 +261,9 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             )
 
             if (viewState.account is DoctorResponse) {
-                doctorViews.forEach { it.show() }
-                yearsOfExperienceEditText.setText(viewState.account.yearsOfExperience.toString())
+                labelCareer.show()
+                doctorEditTexts.forEach { (it.parent as View).show() }
+                yearsOfExperienceEditText.setText(viewState.account.yearsOfExperience?.toString())
                 categoryEditText.setText(when (viewState.account.category) {
                     0 -> getString(R.string.highest_category)
                     1 -> getString(R.string.first_category)
@@ -274,7 +276,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                 workExperienceEditText.setText(viewState.account.workExperience)
                 trainingsEditText.setText(viewState.account.trainings)
             } else {
-                doctorViews.forEach { it.hide() }
+                labelCareer.hide()
+                doctorEditTexts.forEach { (it.parent as View).hide() }
             }
 
             contentLayout.show()
