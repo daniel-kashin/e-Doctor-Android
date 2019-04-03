@@ -16,10 +16,10 @@ class SessionManager @Inject constructor(
     private val isSessionClosingInProgress = AtomicBoolean()
 
     val isOpen: Boolean
-        get() = sessionInfo != null
+        get() = sessionInfo?.takeIf { it.isValid } != null
 
     val info: SessionInfo
-        get() = sessionInfo ?: throw SessionNotOpenedException()
+        get() = sessionInfo?.takeIf { it.isValid } ?: throw SessionNotOpenedException()
 
     inline fun <R> runIfOpened(action: (SessionInfo) -> R): R? =
         if (isOpen) {
@@ -32,6 +32,7 @@ class SessionManager @Inject constructor(
         sessionInfo?.let { return Single.just(true) }
 
         return sessionStorage.get()
+            .filter { it.isValid }
             .doOnSuccess { info -> sessionInfo = info }
             .map { true }
             .toSingle(false)
