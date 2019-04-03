@@ -110,4 +110,9 @@
 
     <string name="main_information">Main information</string>
     <string name="career">Career</string>
+
+    <string name="incoming_call">Incoming call</string>
+    <string name="outcoming_call">Outcoming call</string>
+    <string name="call_started">Call started</string>
+    <string name="call_ended">Call ended</string>
 </resources>

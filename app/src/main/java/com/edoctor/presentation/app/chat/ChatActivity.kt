@@ -33,8 +33,6 @@ import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
 import org.jitsi.meet.sdk.JitsiMeetActivityInterface
 import org.jitsi.meet.sdk.JitsiMeetView
-import org.jitsi.meet.sdk.JitsiMeetViewAdapter
-import org.jitsi.meet.sdk.ReactActivityLifecycleCallbacks
 import javax.inject.Inject
 
 
@@ -220,7 +218,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
     override fun showEvent(event: Event) {
         when (event) {
             is Event.ShowException -> toast(event.throwable.toString())
-            is Event.ShowNetworkException -> toast("Ошибка соединения")
+            is Event.ShowNetworkException -> toast(getString(R.string.network_error_message))
             is Event.ShowSessionException -> onSessionException()
         }
     }

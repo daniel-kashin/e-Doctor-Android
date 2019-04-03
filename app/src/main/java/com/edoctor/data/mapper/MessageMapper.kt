@@ -1,5 +1,7 @@
 package com.edoctor.data.mapper
 
+import android.content.Context
+import com.edoctor.R
 import com.edoctor.data.entity.presentation.*
 import com.edoctor.data.entity.presentation.CallActionRequest.CallAction
 import com.edoctor.data.entity.presentation.CallActionRequest.CallAction.*
@@ -17,19 +19,25 @@ import com.edoctor.data.entity.remote.response.MessageResponseWrapper
 import com.edoctor.data.entity.remote.response.MessagesResponse
 import com.edoctor.data.entity.remote.response.TextMessageResponse
 
-object MessageMapper {
+class MessageMapper(context: Context) {
 
-    fun toPresentation(messagesResponse: MessagesResponse, currentUserEmail: String): List<Message> = messagesResponse.run {
+    val applicationContext = context.applicationContext
+
+    fun toPresentation(
+        messagesResponse: MessagesResponse,
+        currentUserEmail: String
+    ): List<Message> = messagesResponse.run {
         messages.mapNotNull { toPresentation(it, currentUserEmail) }
     }
 
-    fun toPresentation(messageWrapperResponse: MessageResponseWrapper, currentUserEmail: String): UserMessage? = messageWrapperResponse.run {
-        when {
-            textMessageResponse != null -> toPresentation(textMessageResponse, currentUserEmail)
-            callStatusMessageResponse != null -> toPresentation(callStatusMessageResponse, currentUserEmail)
-            else -> null
+    fun toPresentation(messageWrapperResponse: MessageResponseWrapper, currentUserEmail: String): UserMessage? =
+        messageWrapperResponse.run {
+            when {
+                textMessageResponse != null -> toPresentation(textMessageResponse)
+                callStatusMessageResponse != null -> toPresentation(callStatusMessageResponse, currentUserEmail)
+                else -> null
+            }
         }
-    }
 
     fun toNetwork(callActionRequest: CallActionRequest) =
         CallActionMessageRequest(
@@ -37,12 +45,15 @@ object MessageMapper {
             callActionRequest.callUuid
         )
 
-    private fun toPresentation(textMessageResult: TextMessageResponse, currentUserEmail: String): TextMessage =
+    private fun toPresentation(textMessageResult: TextMessageResponse): TextMessage =
         textMessageResult.run {
             TextMessage(uuid, senderEmail, recipientEmail, sendingTimestamp, text)
         }
 
-    private fun toPresentation(callStatusMessage: CallStatusMessageResponse, currentUserEmail: String): CallStatusMessage =
+    private fun toPresentation(
+        callStatusMessage: CallStatusMessageResponse,
+        currentUserEmail: String
+    ): CallStatusMessage =
         callStatusMessage.run {
             val callStatus = getCallStatusFromValue(callStatus)
             val isFromCurrentUser = currentUserEmail == senderEmail
@@ -74,12 +85,12 @@ object MessageMapper {
         }
     }
 
-    // TODO
-    private fun CallStatus.toText(isFromCurrentUser: Boolean): String =
+    private fun CallStatus.toText(isFromCurrentUser: Boolean): String = applicationContext.getString(
         when (this) {
-            CallStatus.INITIATED -> if (isFromCurrentUser) "Исходящий вызов" else "Входящий вызов"
-            CallStatus.STARTED -> "Разговор начат"
-            CallStatus.CANCELLED -> "Разговор закончен"
+            CallStatus.INITIATED -> if (isFromCurrentUser) R.string.outcoming_call else R.string.incoming_call
+            CallStatus.STARTED -> R.string.call_started
+            CallStatus.CANCELLED -> R.string.call_ended
         }
+    )
 
 }

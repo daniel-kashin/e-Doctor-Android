@@ -1,7 +1,9 @@
 package com.edoctor.data.injection
 
+import android.content.Context
 import com.edoctor.data.injection.NetworkModule.Companion.AUTHORIZED_TAG
 import com.edoctor.data.injection.NetworkModule.Companion.EDOCTOR_WS_ENDPOINT
+import com.edoctor.data.mapper.MessageMapper
 import com.edoctor.data.remote.api.ChatRestApi
 import com.edoctor.data.remote.api.ChatService
 import com.edoctor.data.repository.ChatRepository
@@ -60,11 +62,17 @@ class ChatModule(
     ): ChatRestApi = builder.build().create(ChatRestApi::class.java)
 
     @Provides
-    fun provideChatRepository(chatService: ChatService, chatRestApi: ChatRestApi) =
-        ChatRepository(currentUserEmail, recipientEmail, chatRestApi, chatService)
-            .apply {
-                onStartConnectionListener = { lifecycle.start() }
-                onCloseConnectionListener = { lifecycle.stop() }
-            }
+    fun provideChatRepository(
+        chatService: ChatService,
+        chatRestApi: ChatRestApi,
+        context: Context
+    ): ChatRepository = ChatRepository(
+        currentUserEmail, recipientEmail,
+        chatRestApi, chatService,
+        MessageMapper(context)
+    ).apply {
+        onStartConnectionListener = { lifecycle.start() }
+        onCloseConnectionListener = { lifecycle.stop() }
+    }
 
 }

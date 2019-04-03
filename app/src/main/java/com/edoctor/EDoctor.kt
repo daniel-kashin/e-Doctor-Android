@@ -1,5 +1,6 @@
 package com.edoctor
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -33,6 +34,7 @@ open class EDoctor : MultiDexApplication() {
     lateinit var applicationComponent: ApplicationComponent
         protected set
 
+    @SuppressLint("CheckResult")
     override fun onCreate() {
         super.onCreate()
         AppProperties.init(this)

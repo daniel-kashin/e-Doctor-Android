@@ -5,8 +5,7 @@ import com.edoctor.data.entity.presentation.Message
 import com.edoctor.data.entity.remote.request.MessageRequestWrapper
 import com.edoctor.data.entity.remote.request.TextMessageRequest
 import com.edoctor.data.entity.remote.response.MessageResponseWrapper
-import com.edoctor.data.mapper.MessageMapper.toNetwork
-import com.edoctor.data.mapper.MessageMapper.toPresentation
+import com.edoctor.data.mapper.MessageMapper
 import com.edoctor.data.remote.api.ChatRestApi
 import com.edoctor.data.remote.api.ChatService
 import com.edoctor.utils.rx.RxExtensions.justOrEmptyFlowable
@@ -22,7 +21,8 @@ class ChatRepository(
     private val currentUserEmail: String,
     private val recipientEmail: String,
     private val chatRestApi: ChatRestApi,
-    private val chatService: ChatService
+    private val chatService: ChatService,
+    private val messageMapper: MessageMapper
 ) {
 
     var onStartConnectionListener: (() -> Unit)? = null
@@ -37,7 +37,7 @@ class ChatRepository(
 
     fun getMessages(fromTimestamp: Long): Single<List<Message>> {
         return chatRestApi.getMessages(fromTimestamp, recipientEmail)
-            .map { toPresentation(it, currentUserEmail) }
+            .map { messageMapper.toPresentation(it, currentUserEmail) }
     }
 
     fun sendMessage(message: String) {
@@ -51,7 +51,7 @@ class ChatRepository(
     fun sendCallStatusRequest(callActionRequest: CallActionRequest) {
         chatService.sendMessage(
             MessageRequestWrapper(
-                callActionMessageRequest = toNetwork(callActionRequest)
+                callActionMessageRequest = messageMapper.toNetwork(callActionRequest)
             )
         )
     }
@@ -61,7 +61,7 @@ class ChatRepository(
             is WebSocketEvent.OnMessageReceived -> {
                 val messageString = (this.message as? Text)?.value ?: return null
                 val textMessage = fromJsonSafely(messageString, MessageResponseWrapper::class.java)
-                    ?.let { toPresentation(it, currentUserEmail) }
+                    ?.let { messageMapper.toPresentation(it, currentUserEmail) }
                     ?: return null
 
                 ChatEvent.OnMessageReceived(textMessage)
