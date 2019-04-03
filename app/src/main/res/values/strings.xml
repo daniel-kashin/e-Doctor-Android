@@ -48,6 +48,13 @@
     <string name="full_name_hint">Full name</string>
     <string name="city_hint">City</string>
     <string name="gender_hint">Gender</string>
+    <string name="years_of_experience_hint">Years of experience</string>
+    <string name="category_hint">Category</string>
+    <string name="specialization_hint">Specialization</string>
+    <string name="clinical_interests_hint">Clinical interests</string>
+    <string name="education_hint">Education</string>
+    <string name="work_experience_hint">Work experience</string>
+    <string name="trainings_hint">Trainings</string>
     <string name="date_of_birth_hint">Date of birth</string>
     <string name="first_name_error">At least 1 character</string>
     <string name="second_name_hint">Last name</string>
@@ -92,6 +99,11 @@
 
     <string name="male">Male</string>
     <string name="female">Female</string>
+
+    <string name="none_category">None</string>
+    <string name="second_category">Second</string>
+    <string name="first_category">First</string>
+    <string name="highest_category">Highest</string>
 
     <string name="take_photo">Take photo</string>
     <string name="pick_from_gallery">Pick from gallery</string>

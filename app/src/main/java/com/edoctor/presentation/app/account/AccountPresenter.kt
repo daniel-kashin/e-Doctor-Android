@@ -69,7 +69,14 @@ class AccountPresenter @Inject constructor(
         fullName: String?,
         city: String?,
         dateOfBirthTimestamp: Long?,
-        isMale: Boolean?
+        isMale: Boolean?,
+        yearsOfExperience: Int?,
+        category: Int?,
+        specialization: String?,
+        clinicalInterests: String?,
+        education: String?,
+        workExperience: String?,
+        trainings: String?
     ) {
         val viewState = viewStateSnapshot()
         val oldAccount = viewState.account
@@ -85,7 +92,14 @@ class AccountPresenter @Inject constructor(
                 fullName = fullName,
                 city = city,
                 dateOfBirthTimestamp = dateOfBirthTimestamp,
-                isMale = isMale
+                isMale = isMale,
+                yearsOfExperience = yearsOfExperience,
+                category = category,
+                specialization = specialization,
+                clinicalInterests = clinicalInterests,
+                education = education,
+                workExperience = workExperience,
+                trainings = trainings
             )
             else -> return
         }

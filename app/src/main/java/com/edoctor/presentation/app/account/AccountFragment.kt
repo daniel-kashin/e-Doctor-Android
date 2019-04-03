@@ -37,6 +37,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     companion object {
         const val DATE_OF_BIRTH_TIMESTAMP_PARAM = "date_of_birth_timestamp"
         const val IS_MALE_PARAM = "is_male"
+        const val CATEGORY_NUMBER_PARAM = "category_number"
 
         private const val REQUEST_CAMERA = 10135
         private const val REQUEST_GALLERY = 10136
@@ -49,6 +50,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
 
     private var dateOfBirthTimestamp: Long? = null
     private var isMale: Boolean? = null
+    private var categoryNumber: Int? = null
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var contentLayout: ConstraintLayout
@@ -57,7 +59,14 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     private lateinit var cityEditText: TextInputEditText
     private lateinit var fullNameEditText: TextInputEditText
     private lateinit var dateOfBirthEditText: TextInputEditText
-    private lateinit var gender: TextInputEditText
+    private lateinit var genderEditText: TextInputEditText
+    private lateinit var yearsOfExperienceEditText: TextInputEditText
+    private lateinit var categoryEditText: TextInputEditText
+    private lateinit var specializationEditText: TextInputEditText
+    private lateinit var clinicalInterestsEditText: TextInputEditText
+    private lateinit var educationEditText: TextInputEditText
+    private lateinit var workExperienceEditText: TextInputEditText
+    private lateinit var trainingsEditText: TextInputEditText
     private lateinit var logOutButton: Button
     private lateinit var saveButton: Button
 
@@ -69,25 +78,39 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         super.onActivityCreated(savedInstanceState)
         dateOfBirthTimestamp = savedInstanceState?.get(DATE_OF_BIRTH_TIMESTAMP_PARAM) as? Long
         isMale = savedInstanceState?.get(IS_MALE_PARAM) as? Boolean
+        categoryNumber = savedInstanceState?.get(CATEGORY_NUMBER_PARAM) as? Int
     }
 
-    @SuppressLint("SimpleDateFormat")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        contentLayout = view.findViewById(R.id.content_layout)
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        imageView = view.findViewById(R.id.image_view)
-        imageViewPlaceholder = view.findViewById(R.id.image_view_placeholder)
-        fullNameEditText = view.findViewById(R.id.full_name)
-        dateOfBirthEditText = view.findViewById(R.id.date_of_birth)
-        gender = view.findViewById(R.id.gender)
-        cityEditText = view.findViewById(R.id.city)
-        logOutButton = view.findViewById(R.id.log_out_button)
-        saveButton = view.findViewById(R.id.save_button)
+        view.run {
+            contentLayout = findViewById(R.id.content_layout)
+            swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout)
+            imageView = findViewById(R.id.image_view)
+            imageViewPlaceholder = findViewById(R.id.image_view_placeholder)
+            fullNameEditText = findViewById(R.id.full_name)
+            dateOfBirthEditText = findViewById(R.id.date_of_birth)
+            genderEditText = findViewById(R.id.gender)
+            cityEditText = findViewById(R.id.city)
+            yearsOfExperienceEditText = findViewById(R.id.years_of_experience)
+            categoryEditText = findViewById(R.id.category)
+            specializationEditText = findViewById(R.id.specialization)
+            clinicalInterestsEditText = findViewById(R.id.clinical_interests)
+            educationEditText = findViewById(R.id.education)
+            workExperienceEditText = findViewById(R.id.work_experience)
+            trainingsEditText = findViewById(R.id.trainings)
+            logOutButton = findViewById(R.id.log_out_button)
+            saveButton = findViewById(R.id.save_button)
+        }
 
         contentLayout.hide()
 
+        initializeListeners(view)
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun initializeListeners(view: View) {
         swipeRefreshLayout.setOnRefreshListener {
             presenter.refreshAccount()
         }
@@ -95,7 +118,6 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         imageView.setOnClickListener {
             showImagePickerOptions()
         }
-
         imageViewPlaceholder.setOnClickListener {
             showImagePickerOptions()
         }
@@ -119,11 +141,11 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             }
         }
 
-        gender.setOnClickListener {
-            PopupMenu(gender.context, gender).apply {
+        genderEditText.setOnClickListener {
+            PopupMenu(genderEditText.context, genderEditText).apply {
                 menuInflater.inflate(R.menu.gender, menu)
                 setOnMenuItemClickListener { item ->
-                    gender.setText(item.title)
+                    genderEditText.setText(item.title)
                     isMale = item.itemId == R.id.male
                     true
                 }
@@ -131,6 +153,22 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             }
         }
 
+        categoryEditText.setOnClickListener {
+            PopupMenu(categoryEditText.context, categoryEditText).apply {
+                menuInflater.inflate(R.menu.doctor_category, menu)
+                setOnMenuItemClickListener { item ->
+                    categoryEditText.setText(if (item.itemId == R.id.none) null else item.title)
+                    categoryNumber = when (item.itemId) {
+                        R.id.second -> 2
+                        R.id.first -> 1
+                        R.id.highest -> 0
+                        else -> null
+                    }
+                    true
+                }
+                show()
+            }
+        }
 
         logOutButton.setOnClickListener {
             presenter.logOut()
@@ -141,6 +179,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     override fun render(viewState: ViewState) {
         isMale = viewState.account?.isMale
         dateOfBirthTimestamp = viewState.account?.dateOfBirthTimestamp
+        categoryNumber = null // TODO
 
         swipeRefreshLayout.isRefreshing = viewState.isLoading
 
@@ -150,7 +189,14 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                     fullName = fullNameEditText.text?.toString()?.takeIfNotEmpty(),
                     city = cityEditText.text?.toString()?.takeIfNotEmpty(),
                     dateOfBirthTimestamp = dateOfBirthTimestamp,
-                    isMale = isMale
+                    isMale = isMale,
+                    yearsOfExperience = yearsOfExperienceEditText.text?.toString()?.toIntOrNull(),
+                    category = categoryNumber,
+                    specialization = specializationEditText.text?.toString()?.takeIfNotEmpty(),
+                    clinicalInterests = clinicalInterestsEditText.text?.toString()?.takeIfNotEmpty(),
+                    education = educationEditText.text?.toString()?.takeIfNotEmpty(),
+                    workExperience = workExperienceEditText.text?.toString()?.takeIfNotEmpty(),
+                    trainings = trainingsEditText.text?.toString()?.takeIfNotEmpty()
                 )
             }
         }
@@ -183,7 +229,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         if (viewState.account != null) {
             fullNameEditText.setText(viewState.account.fullName)
             cityEditText.setText(viewState.account.city)
-            gender.setText(
+            genderEditText.setText(
                 when (viewState.account.isMale) {
                     true -> getString(R.string.male)
                     false -> getString(R.string.female)
@@ -218,6 +264,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     override fun onSaveInstanceState(outState: Bundle) {
         outState.put(DATE_OF_BIRTH_TIMESTAMP_PARAM, dateOfBirthTimestamp)
         outState.put(IS_MALE_PARAM, isMale)
+        outState.put(CATEGORY_NUMBER_PARAM, categoryNumber)
         super.onSaveInstanceState(outState)
     }
 

@@ -74,4 +74,15 @@
     <string name="pick_from_gallery">Выбрать из галереи</string>
     <string name="main_information">Основная информация</string>
     <string name="career">Карьера</string>
+    <string name="years_of_experience_hint">Лет опыта</string>
+    <string name="category_hint">Категория</string>
+    <string name="specialization_hint">Специализация</string>
+    <string name="clinical_interests_hint">Клинические интересы</string>
+    <string name="education_hint">Образование</string>
+    <string name="work_experience_hint">Опыт работы</string>
+    <string name="trainings_hint">Повышения квалификации</string>
+    <string name="none_category">Нет</string>
+    <string name="second_category">Вторая</string>
+    <string name="first_category">Первая</string>
+    <string name="highest_category">Высшая</string>
 </resources>

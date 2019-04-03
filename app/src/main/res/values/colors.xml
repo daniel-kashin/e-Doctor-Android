@@ -26,4 +26,6 @@
     <color name="outcoming_bubble_color">#EFFEDD</color>
 
     <color name="navigationBlue">#2e61b4</color>
+
+    <color name="declineRed">#863c3c</color>
 </resources>
