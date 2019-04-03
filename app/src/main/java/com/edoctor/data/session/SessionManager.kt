@@ -55,8 +55,10 @@ class SessionManager @Inject constructor(
             .fromCallable {
                 updateSessionFunc(sessionInfo ?: throw SessionNotOpenedException())
             }
-            .doOnSuccess { sessionInfo = it }
-            .flatMapCompletable { sessionStorage.save(it) }
+            .flatMapCompletable {
+                sessionStorage.save(it)
+                    .doOnComplete { sessionInfo = it }
+            }
 
     fun close(): Completable = Completable.defer {
         if (isSessionClosingInProgress.get() || !isOpen) {

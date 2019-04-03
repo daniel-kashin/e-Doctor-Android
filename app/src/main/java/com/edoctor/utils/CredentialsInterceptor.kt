@@ -17,7 +17,7 @@ class CredentialsInterceptor(private val context: Application) : AnonymousInterc
         private val AUTHORIZATION_HEADER = "Authorization"
     }
 
-    private val REFRESH_TOKEN_LOCK = Any()
+    private val refreshTokenLock = Any()
 
     private val authRepository by lazy {
         EDoctor.get(context).applicationComponent.authRepository
@@ -50,13 +50,16 @@ class CredentialsInterceptor(private val context: Application) : AnonymousInterc
         return response
     }
 
-    private fun getFreshestAccessToken(session: SessionManager) = synchronized(REFRESH_TOKEN_LOCK) {
+    private fun getFreshestAccessToken(session: SessionManager) = synchronized(refreshTokenLock) {
         try {
             val tokenResult = authRepository.getFreshestTokenByRequestToken(session.info.refreshToken.value)
             val expiresAfter = tokenResult.expiresIn.unixTimeToJavaTime() + currentJavaTime()
             val newRefreshToken = SessionInfo.RefreshToken(tokenResult.refreshToken)
             val accessToken = SessionInfo.AccessToken(tokenResult.tokenType, tokenResult.accessToken, expiresAfter)
-            session.update { it.copy(refreshToken = newRefreshToken, accessToken = accessToken) }
+            session.update {
+                val result = it.copy(refreshToken = newRefreshToken, accessToken = accessToken)
+                return@update result
+            }.blockingAwait()
             accessToken
         } catch (e: Exception) {
             if (e is HttpException && e.code() == 400) {
