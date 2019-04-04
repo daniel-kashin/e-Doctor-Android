@@ -128,4 +128,18 @@
 
     <string name="tab_events">Events</string>
     <string name="tab_parameters">Parameters</string>
+
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="blood_pressure">Blood pressure</string>
+    <string name="blood_sugar">Blood sugar</string>
+    <string name="temperature">Temperature</string>
+    <string name="blood_oxygen">Blood oxygen</string>
+
+    <string name="cm_param">%1$.1f cm</string>
+    <string name="kg_param">%1$.1f kg</string>
+    <string name="mmHg_params">%1$d/%2$d mmHg</string>
+    <string name="mmol_per_liter_param">%1$.1f mmol/L</string>
+    <string name="celcius_param" translatable="false">%1$.1f °C</string>
+    <string name="percent_param" translatable="false">%1$.1f %%</string>
 </resources>

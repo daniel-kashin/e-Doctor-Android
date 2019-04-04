@@ -1,14 +1,14 @@
 package com.edoctor.data.entity.remote.response
 
-abstract class MessageResponse {
+sealed class MessageResponse {
     abstract val uuid: String
     abstract val recipientEmail: String
     abstract val sendingTimestamp: Long
 }
 
-abstract class SystemMessageResponse : MessageResponse()
+sealed class SystemMessageResponse : MessageResponse()
 
-abstract class UserMessageResponse : MessageResponse() {
+sealed class UserMessageResponse : MessageResponse() {
     abstract val senderEmail: String
 }
 

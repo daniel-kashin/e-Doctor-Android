@@ -12,13 +12,19 @@ class DialogsAdapter<DIALOG : IDialog<out IMessage>> : DialogsListAdapter<DIALOG
 
         this.items = dialogs
 
-        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                oldItems[oldItemPosition] == items[newItemPosition]
-            override fun getOldListSize(): Int = oldItems.size
-            override fun getNewListSize(): Int = items.size
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) = true
-        }, true).dispatchUpdatesTo(this)
+        DiffUtil
+            .calculateDiff(
+                object : DiffUtil.Callback() {
+                    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                        oldItems[oldItemPosition] == items[newItemPosition]
+
+                    override fun getOldListSize(): Int = oldItems.size
+                    override fun getNewListSize(): Int = items.size
+                    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) = true
+                },
+                true
+            )
+            .dispatchUpdatesTo(this)
 
         afterSettingListener?.invoke()
     }

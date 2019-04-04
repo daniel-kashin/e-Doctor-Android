@@ -1,6 +1,6 @@
 package com.edoctor.data.entity.remote.model.record
 
-abstract class BodyParameterModel : MedicalRecordModel(), DateSpecific
+sealed class BodyParameterModel : MedicalRecordModel(), DateSpecific
 
 data class HeightModel(
     override val uuid: String,

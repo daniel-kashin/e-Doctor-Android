@@ -18,7 +18,7 @@ class MedcardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fragmentManager?.let { fragmentManager ->
+        childFragmentManager.let { fragmentManager ->
             view.findViewById<ViewPager>(R.id.view_pager).adapter =
                     MedcardPagerAdapter(
                         fragmentManager,

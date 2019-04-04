@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.edoctor.presentation.app.events.EventsFragment
-import com.edoctor.presentation.parameters.ParametersFragment
+import com.edoctor.presentation.app.parameters.ParametersFragment
 
 class MedcardPagerAdapter(
     fragmentManager: FragmentManager,

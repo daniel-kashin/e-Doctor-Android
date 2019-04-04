@@ -6,6 +6,7 @@ import com.edoctor.presentation.app.account.AccountComponent
 import com.edoctor.presentation.app.chat.ChatComponent
 import com.edoctor.presentation.app.conversations.ConversationsComponent
 import com.edoctor.presentation.app.findDoctor.FindDoctorComponent
+import com.edoctor.presentation.app.parameters.ParametersComponent
 import com.edoctor.presentation.app.welcome.WelcomeComponent
 import dagger.Component
 import javax.inject.Singleton
@@ -15,11 +16,9 @@ import javax.inject.Singleton
     modules = [
         ApplicationModule::class,
         AuthModule::class,
-//        DatabaseModule::class,
         NetworkModule::class,
-//        DownloaderModule::class,
-//        DataModule::class,
-        SessionModule::class
+        SessionModule::class,
+        MedicalRecordsModule::class
     ]
 )
 interface ApplicationComponent {
@@ -30,12 +29,14 @@ interface ApplicationComponent {
 
     val welcomeComponent: WelcomeComponent
 
-    fun plus(chatModule: ChatModule) : ChatComponent
+    val parametersComponent: ParametersComponent
 
-    fun plus(accountModule: AccountModule) : AccountComponent
+    fun plus(chatModule: ChatModule): ChatComponent
 
-    fun plus(conversationsModule: ConversationsModule) : ConversationsComponent
+    fun plus(accountModule: AccountModule): AccountComponent
 
-    fun plus(findDoctorModule: FindDoctorModule) : FindDoctorComponent
+    fun plus(conversationsModule: ConversationsModule): ConversationsComponent
+
+    fun plus(findDoctorModule: FindDoctorModule): FindDoctorComponent
 
 }
