@@ -3,6 +3,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/swipe_refresh_layout"
         android:orientation="vertical"
+        android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -20,6 +21,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="100dp"
+                    android:elevation="4dp"
                     android:layout_marginTop="30dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +39,7 @@
                     android:id="@+id/image_view_placeholder"
                     app:layout_constraintBottom_toBottomOf="@id/card_image_view"
                     app:layout_constraintEnd_toEndOf="@id/card_image_view"
-                    android:elevation="5dp"
+                    android:elevation="10dp"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginEnd="5dp"

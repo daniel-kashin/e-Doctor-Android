@@ -41,7 +41,7 @@ class ChatModule(
                 .addInterceptor(RecipientEmailInterceptor(recipientEmail))
                 .build(),
             requestFactory = OkHttpWebSocket.SimpleRequestFactory(
-                { Request.Builder().url("${EDOCTOR_WS_ENDPOINT}chat").build() },
+                { Request.Builder().url("$EDOCTOR_WS_ENDPOINT/chat").build() },
                 { ShutdownReason.GRACEFUL }
             )
         )
