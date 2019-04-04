@@ -13,6 +13,7 @@ import com.edoctor.R
 import com.edoctor.data.entity.presentation.CallStatusMessage
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
 import com.edoctor.data.entity.presentation.Message
+import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ChatModule
 import com.edoctor.presentation.app.chat.ChatPresenter.Event
@@ -39,9 +40,8 @@ import javax.inject.Inject
 class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity"), JitsiMeetActivityInterface {
 
     companion object {
-        // TODO: replace with id
-        private const val EXTRA_CURRENT_USER_EMAIL = "SENDER_EMAIL"
-        private const val EXTRA_RECIPIENT_EMAIL = "RECIPIENT_EMAIL"
+        private const val EXTRA_CURRENT_USER = "SENDER_USER"
+        private const val EXTRA_RECIPIENT_USER = "RECIPIENT_USER"
     }
 
     @Inject
@@ -62,10 +62,10 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
     private lateinit var messagesAdapter: MessagesAdapter<Message>
 
     override fun init(applicationComponent: ApplicationComponent) {
-        val recipientEmail = intent.getStringExtra(EXTRA_RECIPIENT_EMAIL)
-        val currentUserEmail = intent.getStringExtra(EXTRA_CURRENT_USER_EMAIL)
-        applicationComponent.plus(ChatModule(currentUserEmail, recipientEmail)).inject(this)
-        presenter.init(currentUserEmail, recipientEmail)
+        val recipientUser = intent.getSerializableExtra(EXTRA_RECIPIENT_USER) as UserModel
+        val currentUser = intent.getSerializableExtra(EXTRA_CURRENT_USER) as UserModel
+        applicationComponent.plus(ChatModule(currentUser, recipientUser)).inject(this)
+        presenter.init(currentUser.email, recipientUser.email)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -224,17 +224,17 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
     class IntentBuilder(fragment: Fragment) : CheckedIntentBuilder(fragment) {
 
-        private var currentUserEmail: String? = null
-        private var recipientEmail: String? = null
+        private var currentUser: UserModel? = null
+        private var recipientUser: UserModel? = null
 
-        fun recipientEmail(recipientEmail: String) = apply { this.recipientEmail = recipientEmail }
-        fun currentUserEmail(currentUserEmail: String) = apply { this.currentUserEmail = currentUserEmail }
+        fun recipientUser(recipientUser: UserModel) = apply { this.recipientUser = recipientUser }
+        fun currentUser(currentUser: UserModel) = apply { this.currentUser = currentUser }
 
-        override fun areParamsValid() = recipientEmail != null && currentUserEmail != null
+        override fun areParamsValid() = currentUser != null && recipientUser != null
 
         override fun get() = Intent(context, ChatActivity::class.java)
-            .putExtra(EXTRA_RECIPIENT_EMAIL, recipientEmail)
-            .putExtra(EXTRA_CURRENT_USER_EMAIL, currentUserEmail)
+            .putExtra(EXTRA_RECIPIENT_USER, recipientUser)
+            .putExtra(EXTRA_CURRENT_USER, currentUser)
 
     }
 

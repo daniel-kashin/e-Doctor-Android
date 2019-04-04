@@ -1,6 +1,7 @@
 package com.edoctor.data.injection
 
 import android.content.Context
+import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.mapper.MessageMapper
 import com.edoctor.data.remote.api.ConversationsRestApi
 import com.edoctor.data.repository.ConversationsRepository
@@ -10,7 +11,7 @@ import retrofit2.Retrofit
 import javax.inject.Named
 
 @Module
-class ConversationsModule(private val currentUserEmail: String) {
+class ConversationsModule(private val currentUser: UserModel) {
 
     @Provides
     internal fun provideConversationsRestApi(
@@ -22,6 +23,6 @@ class ConversationsModule(private val currentUserEmail: String) {
     internal fun provideConversationsRepository(
         api: ConversationsRestApi,
         context: Context
-    ): ConversationsRepository = ConversationsRepository(currentUserEmail, api, MessageMapper(context))
+    ): ConversationsRepository = ConversationsRepository(currentUser, api, MessageMapper(context))
 
 }

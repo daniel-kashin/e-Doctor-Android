@@ -2,9 +2,14 @@ package com.edoctor.presentation.app.conversations
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.Conversation
+import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ConversationsModule
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
@@ -16,18 +21,18 @@ import com.edoctor.utils.DialogsAdapter
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.session
 import com.edoctor.utils.toast
+import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.dialogs.DialogsList
 import javax.inject.Inject
 
 class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Event>("ConversationsFragment") {
 
     companion object {
-        // TODO: replace with id
-        const val EXTRA_CURRENT_USER_EMAIL = "CURRENT_USER_EMAIL"
+        private const val EXTRA_CURRENT_USER = "CURRENT_USER"
 
-        fun newInstance(currentUserEmail: String) = ConversationsFragment().apply {
+        fun newInstance(currentUser: UserModel) = ConversationsFragment().apply {
             arguments = Bundle().apply {
-                putString(EXTRA_CURRENT_USER_EMAIL, currentUserEmail)
+                putSerializable(EXTRA_CURRENT_USER, currentUser)
             }
         }
     }
@@ -42,24 +47,32 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
     private lateinit var dialogsAdapter: DialogsAdapter<Conversation>
 
     override fun init(applicationComponent: ApplicationComponent) {
-        val currentUserEmail = arguments!!.getString(EXTRA_CURRENT_USER_EMAIL)!!
-        applicationComponent.plus(ConversationsModule(currentUserEmail)).inject(this)
+        val currentUser = arguments!!.getSerializable(EXTRA_CURRENT_USER) as UserModel
+        applicationComponent.plus(ConversationsModule(currentUser)).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dialogsAdapter = DialogsAdapter()
-        dialogsAdapter.setOnDialogClickListener {
-            activity?.let { activity ->
-                activity.session.runIfOpened { sessionInfo ->
-                    ChatActivity.IntentBuilder(this)
-                        .recipientEmail(it.dialogName)
-                        .currentUserEmail(unwrapResponse(sessionInfo.account).email)
-                        .start()
-                } ?: run {
-                    activity.onSessionException()
-                }
+        dialogsAdapter = DialogsAdapter(
+            ImageLoader { imageView, url, _ ->
+                Glide.with(imageView.context)
+                    .load(url)
+                    .apply(
+                        RequestOptions()
+                            .centerCrop()
+                            .placeholder(R.color.lightLightGrey)
+                            .dontAnimate()
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    )
+                    .into(imageView)
             }
+        )
+        dialogsAdapter.setOnDialogClickListener {
+            ChatActivity.IntentBuilder(this)
+                .recipientUser(it.recipientUser)
+                .currentUser(it.currentUser)
+                .start()
         }
     }
 

@@ -2,7 +2,7 @@ package com.edoctor.data
 
 import com.edoctor.utils.AbstractPreferences
 
-object Preferences : AbstractPreferences("bookmate_preferences") {
+object Preferences : AbstractPreferences("edoctor_preferences") {
 
 
 

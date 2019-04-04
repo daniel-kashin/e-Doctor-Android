@@ -91,7 +91,7 @@ class FindDoctorFragment : BaseFragment<FindDoctorPresenter, ViewState, Event>("
 
     private fun initializeRecyclerView(context: Context) {
         doctorsAdapter = FindDoctorAdapter().apply {
-            onDoctorClickListener = { openChatWithDoctor(it.email) }
+            onDoctorClickListener = { openChatWithDoctor(it) }
         }
         recyclerView.adapter = doctorsAdapter
         recyclerView.addItemDecoration(SimpleDividerItemDecoration(context))
@@ -179,12 +179,12 @@ class FindDoctorFragment : BaseFragment<FindDoctorPresenter, ViewState, Event>("
         recyclerView.visibility = View.INVISIBLE
     }
 
-    private fun openChatWithDoctor(doctorEmail: String) {
+    private fun openChatWithDoctor(doctor: DoctorModel) {
         activity?.let { activity ->
             activity.session.runIfOpened { sessionInfo ->
                 ChatActivity.IntentBuilder(this)
-                    .recipientEmail(doctorEmail)
-                    .currentUserEmail(unwrapResponse(sessionInfo.account).email)
+                    .recipientUser(doctor)
+                    .currentUser(unwrapResponse(sessionInfo.account))
                     .start()
             } ?: run {
                 activity.onSessionException()

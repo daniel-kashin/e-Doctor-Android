@@ -1,6 +1,8 @@
 package com.edoctor.data.entity.remote.model.user
 
-sealed class UserModel {
+import java.io.Serializable
+
+sealed class UserModel : Serializable {
     abstract val email: String
     abstract val fullName: String?
     abstract val city: String?

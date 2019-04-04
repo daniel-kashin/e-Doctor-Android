@@ -1,11 +1,14 @@
 package com.edoctor.utils
 
 import androidx.recyclerview.widget.DiffUtil
+import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.commons.models.IDialog
 import com.stfalcon.chatkit.commons.models.IMessage
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter
 
-class DialogsAdapter<DIALOG : IDialog<out IMessage>> : DialogsListAdapter<DIALOG>(null) {
+class DialogsAdapter<DIALOG : IDialog<out IMessage>>(
+    imageLoader: ImageLoader
+) : DialogsListAdapter<DIALOG>(imageLoader) {
 
     fun setDialogs(dialogs: List<DIALOG>, afterSettingListener: (() -> Unit)? = null) {
         val oldItems = items

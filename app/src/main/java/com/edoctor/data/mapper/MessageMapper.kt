@@ -7,6 +7,7 @@ import com.edoctor.data.entity.presentation.CallActionRequest.CallAction
 import com.edoctor.data.entity.presentation.CallActionRequest.CallAction.*
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
+import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.entity.remote.request.CallActionMessageRequest
 import com.edoctor.data.entity.remote.request.CallActionMessageRequest.Companion.CALL_ACTION_ENTER
 import com.edoctor.data.entity.remote.request.CallActionMessageRequest.Companion.CALL_ACTION_INITIATE
@@ -18,6 +19,8 @@ import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Compani
 import com.edoctor.data.entity.remote.response.MessageResponseWrapper
 import com.edoctor.data.entity.remote.response.MessagesResponse
 import com.edoctor.data.entity.remote.response.TextMessageResponse
+import com.edoctor.data.mapper.UserMapper.unwrapResponse
+import com.edoctor.data.mapper.UserMapper.withAbsoluteUrl
 
 class MessageMapper(context: Context) {
 
@@ -25,16 +28,19 @@ class MessageMapper(context: Context) {
 
     fun toPresentation(
         messagesResponse: MessagesResponse,
-        currentUserEmail: String
+        currentUser: UserModel
     ): List<Message> = messagesResponse.run {
-        messages.mapNotNull { toPresentation(it, currentUserEmail) }
+        messages.mapNotNull { toPresentation(it, currentUser) }
     }
 
-    fun toPresentation(messageWrapperResponse: MessageResponseWrapper, currentUserEmail: String): UserMessage? =
+    fun toPresentation(
+        messageWrapperResponse: MessageResponseWrapper,
+        currentUser: UserModel
+    ): UserMessage? =
         messageWrapperResponse.run {
             when {
                 textMessageResponse != null -> toPresentation(textMessageResponse)
-                callStatusMessageResponse != null -> toPresentation(callStatusMessageResponse, currentUserEmail)
+                callStatusMessageResponse != null -> toPresentation(callStatusMessageResponse, currentUser)
                 else -> null
             }
         }
@@ -45,22 +51,34 @@ class MessageMapper(context: Context) {
             callActionRequest.callUuid
         )
 
-    private fun toPresentation(textMessageResult: TextMessageResponse): TextMessage =
+    private fun toPresentation(
+        textMessageResult: TextMessageResponse
+    ): TextMessage =
         textMessageResult.run {
-            TextMessage(uuid, senderEmail, recipientEmail, sendingTimestamp, text)
+            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser))
+            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser))
+            TextMessage(
+                uuid,
+                senderUserUnwrapped,
+                recipientUserUnwrapped,
+                sendingTimestamp,
+                text
+            )
         }
 
     private fun toPresentation(
         callStatusMessage: CallStatusMessageResponse,
-        currentUserEmail: String
+        currentUser: UserModel
     ): CallStatusMessage =
         callStatusMessage.run {
             val callStatus = getCallStatusFromValue(callStatus)
-            val isFromCurrentUser = currentUserEmail == senderEmail
+            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser))
+            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser))
+            val isFromCurrentUser = currentUser.email == senderUserUnwrapped.email
             val text = callStatus.toText(isFromCurrentUser)
             CallStatusMessage(
                 uuid,
-                senderEmail, recipientEmail,
+                senderUserUnwrapped, recipientUserUnwrapped,
                 sendingTimestamp,
                 callStatus, callUuid,
                 isFromCurrentUser,

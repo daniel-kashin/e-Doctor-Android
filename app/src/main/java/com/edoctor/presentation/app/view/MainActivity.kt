@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_chat -> {
                 if (topFragment is ConversationsFragment) return
                 session.runIfOpened {
-                    ConversationsFragment.newInstance(unwrapResponse(it.account).email)
+                    ConversationsFragment.newInstance(unwrapResponse(it.account))
                 } ?: run {
                     onSessionException()
                     return

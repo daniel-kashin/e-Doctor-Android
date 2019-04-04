@@ -2,6 +2,7 @@ package com.edoctor.data.repository
 
 import com.edoctor.data.entity.presentation.CallActionRequest
 import com.edoctor.data.entity.presentation.Message
+import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.entity.remote.request.MessageRequestWrapper
 import com.edoctor.data.entity.remote.request.TextMessageRequest
 import com.edoctor.data.entity.remote.response.MessageResponseWrapper
@@ -18,8 +19,8 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 
 class ChatRepository(
-    private val currentUserEmail: String,
-    private val recipientEmail: String,
+    private val currentUser: UserModel,
+    private val recipientUser: UserModel,
     private val chatRestApi: ChatRestApi,
     private val chatService: ChatService,
     private val messageMapper: MessageMapper
@@ -36,8 +37,8 @@ class ChatRepository(
     }
 
     fun getMessages(fromTimestamp: Long): Single<List<Message>> {
-        return chatRestApi.getMessages(fromTimestamp, recipientEmail)
-            .map { messageMapper.toPresentation(it, currentUserEmail) }
+        return chatRestApi.getMessages(fromTimestamp, recipientUser.email)
+            .map { messageMapper.toPresentation(it, currentUser) }
     }
 
     fun sendMessage(message: String) {
@@ -61,7 +62,7 @@ class ChatRepository(
             is WebSocketEvent.OnMessageReceived -> {
                 val messageString = (this.message as? Text)?.value ?: return null
                 val textMessage = fromJsonSafely(messageString, MessageResponseWrapper::class.java)
-                    ?.let { messageMapper.toPresentation(it, currentUserEmail) }
+                    ?.let { messageMapper.toPresentation(it, currentUser) }
                     ?: return null
 
                 ChatEvent.OnMessageReceived(textMessage)

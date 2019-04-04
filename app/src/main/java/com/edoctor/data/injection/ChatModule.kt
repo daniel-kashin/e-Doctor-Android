@@ -1,6 +1,7 @@
 package com.edoctor.data.injection
 
 import android.content.Context
+import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.NetworkModule.Companion.AUTHORIZED_TAG
 import com.edoctor.data.injection.NetworkModule.Companion.EDOCTOR_WS_ENDPOINT
 import com.edoctor.data.mapper.MessageMapper
@@ -24,8 +25,8 @@ import javax.inject.Named
 
 @Module
 class ChatModule(
-    private val currentUserEmail: String,
-    private val recipientEmail: String
+    private val currentUser: UserModel,
+    private val recipientUser: UserModel
 ) {
 
     private val lifecycle: StoppableLifecycle = StoppableLifecycle()
@@ -38,7 +39,7 @@ class ChatModule(
     ): ChatService {
         val protocol = OkHttpWebSocket(
             okHttpClient = okHttpClientBuilder
-                .addInterceptor(RecipientEmailInterceptor(recipientEmail))
+                .addInterceptor(RecipientEmailInterceptor(recipientUser.email))
                 .build(),
             requestFactory = OkHttpWebSocket.SimpleRequestFactory(
                 { Request.Builder().url("$EDOCTOR_WS_ENDPOINT/chat").build() },
@@ -67,7 +68,7 @@ class ChatModule(
         chatRestApi: ChatRestApi,
         context: Context
     ): ChatRepository = ChatRepository(
-        currentUserEmail, recipientEmail,
+        currentUser, recipientUser,
         chatRestApi, chatService,
         MessageMapper(context)
     ).apply {
