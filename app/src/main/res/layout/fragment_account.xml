@@ -165,7 +165,7 @@
                         android:focusable="false"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/gender_hint"/>
+                        android:hint="@string/blood_group_hint"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

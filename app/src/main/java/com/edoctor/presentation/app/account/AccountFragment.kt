@@ -116,6 +116,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             dateOfBirthEditText = findViewById(R.id.date_of_birth)
             genderEditText = findViewById(R.id.gender)
             cityEditText = findViewById(R.id.city)
+            bloodGroupEditText = findViewById(R.id.blood_group)
             labelCareer = findViewById(R.id.label_career)
             yearsOfExperienceEditText = findViewById(R.id.years_of_experience)
             categoryEditText = findViewById(R.id.category)
