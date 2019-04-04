@@ -1,6 +1,6 @@
-package com.edoctor.data.entity.remote.response
+package com.edoctor.data.entity.remote.model.user
 
-abstract class UserResponse {
+abstract class UserModel {
     abstract val email: String
     abstract val fullName: String?
     abstract val city: String?

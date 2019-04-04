@@ -1,9 +1,9 @@
 package com.edoctor.presentation.app.account
 
 import android.graphics.Bitmap
-import com.edoctor.data.entity.remote.response.DoctorResponse
-import com.edoctor.data.entity.remote.response.PatientResponse
-import com.edoctor.data.entity.remote.response.UserResponse
+import com.edoctor.data.entity.remote.model.user.DoctorModel
+import com.edoctor.data.entity.remote.model.user.PatientModel
+import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.AccountRepository
 import com.edoctor.data.repository.AuthRepository
@@ -83,14 +83,14 @@ class AccountPresenter @Inject constructor(
         val oldAccount = viewState.account
 
         val newAccount = when (oldAccount) {
-            is PatientResponse -> oldAccount.copy(
+            is PatientModel -> oldAccount.copy(
                 fullName = fullName,
                 city = city,
                 dateOfBirthTimestamp = dateOfBirthTimestamp,
                 isMale = isMale,
                 bloodGroup = bloodGroup
             )
-            is DoctorResponse -> oldAccount.copy(
+            is DoctorModel -> oldAccount.copy(
                 fullName = fullName,
                 city = city,
                 dateOfBirthTimestamp = dateOfBirthTimestamp,
@@ -144,7 +144,7 @@ class AccountPresenter @Inject constructor(
     }
 
     data class ViewState(
-        val account: UserResponse?,
+        val account: UserModel?,
         val selectedAvatar: File?,
         val isLoading: Boolean
     ) : Presenter.ViewState {

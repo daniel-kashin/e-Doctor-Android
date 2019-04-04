@@ -1,17 +1,17 @@
 package com.edoctor.data.session
 
-import com.edoctor.data.entity.remote.response.UserResponseWrapper
+import com.edoctor.data.entity.remote.model.user.UserModelWrapper
 import com.edoctor.utils.JavaTime
 import com.edoctor.utils.withHiddenPart
 import java.util.concurrent.TimeUnit
 
 data class SessionInfo constructor(
-    val account: UserResponseWrapper,
+    val account: UserModelWrapper,
     val refreshToken: RefreshToken,
     val accessToken: AccessToken? = null
 ) {
 
-    val isValid = account.doctorResponse != null || account.patientResponse != null
+    val isValid = account.doctorModel != null || account.patientModel != null
 
     data class RefreshToken(val value: String) {
         override fun toString() = "Token(value='${value.withHiddenPart()}')"

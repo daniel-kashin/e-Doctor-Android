@@ -6,17 +6,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.edoctor.R
-import com.edoctor.data.entity.remote.response.DoctorResponse
+import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.presentation.app.findDoctor.FindDoctorAdapter.FindDoctorViewHolder
 import com.edoctor.utils.lazyFind
 
 class FindDoctorAdapter : RecyclerView.Adapter<FindDoctorViewHolder>() {
 
-    var onDoctorClickListener: ((DoctorResponse) -> Unit)? = null
+    var onDoctorClickListener: ((DoctorModel) -> Unit)? = null
 
-    private var doctors: List<DoctorResponse> = emptyList()
+    private var doctors: List<DoctorModel> = emptyList()
 
-    internal fun setDoctors(doctors: List<DoctorResponse>) {
+    internal fun setDoctors(doctors: List<DoctorModel>) {
         this.doctors = doctors
         notifyDataSetChanged()
     }
@@ -37,12 +37,12 @@ class FindDoctorAdapter : RecyclerView.Adapter<FindDoctorViewHolder>() {
 
     class FindDoctorViewHolder(
         private val rootView: View,
-        private val onDoctorClickListener: (DoctorResponse) -> Unit
+        private val onDoctorClickListener: (DoctorModel) -> Unit
     ) : RecyclerView.ViewHolder(rootView) {
 
         private val doctorEmail by rootView.lazyFind<TextView>(R.id.text_view_doctor_email)
 
-        fun bind(doctor: DoctorResponse) {
+        fun bind(doctor: DoctorModel) {
             doctorEmail.text = doctor.email
             rootView.setOnClickListener {
                 onDoctorClickListener(doctor)

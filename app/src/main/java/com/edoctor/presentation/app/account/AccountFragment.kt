@@ -19,8 +19,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
-import com.edoctor.data.entity.remote.response.DoctorResponse
-import com.edoctor.data.entity.remote.response.PatientResponse
+import com.edoctor.data.entity.remote.model.user.DoctorModel
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.AccountModule
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.account.AccountPresenter.Event
@@ -226,8 +226,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     override fun render(viewState: ViewState) {
         isMale = viewState.account?.isMale
         dateOfBirthTimestamp = viewState.account?.dateOfBirthTimestamp
-        categoryNumber = (viewState.account as? DoctorResponse)?.category
-        bloodGroup = (viewState.account as? PatientResponse)?.bloodGroup
+        categoryNumber = (viewState.account as? DoctorModel)?.category
+        bloodGroup = (viewState.account as? PatientModel)?.bloodGroup
 
         swipeRefreshLayout.isRefreshing = viewState.isLoading
 
@@ -295,7 +295,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                 }
             )
 
-            if (viewState.account is DoctorResponse) {
+            if (viewState.account is DoctorModel) {
                 labelCareer.show()
                 doctorEditTexts.forEach { (it.parent as View).show() }
                 patientEditTexts.forEach { (it.parent as View).hide() }
@@ -311,7 +311,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                 educationEditText.setText(viewState.account.education)
                 workExperienceEditText.setText(viewState.account.workExperience)
                 trainingsEditText.setText(viewState.account.trainings)
-            } else if (viewState.account is PatientResponse) {
+            } else if (viewState.account is PatientModel) {
                 labelCareer.hide()
                 doctorEditTexts.forEach { (it.parent as View).hide() }
                 patientEditTexts.forEach { (it.parent as View).show() }

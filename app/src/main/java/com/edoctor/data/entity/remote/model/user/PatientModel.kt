@@ -1,6 +1,6 @@
-package com.edoctor.data.entity.remote.response
+package com.edoctor.data.entity.remote.model.user
 
-data class PatientResponse(
+data class PatientModel(
     override val email: String,
     override val fullName: String?,
     override val city: String?,
@@ -8,4 +8,4 @@ data class PatientResponse(
     override val isMale: Boolean?,
     override val relativeImageUrl: String?,
     val bloodGroup: Int?
-): UserResponse()
+): UserModel()

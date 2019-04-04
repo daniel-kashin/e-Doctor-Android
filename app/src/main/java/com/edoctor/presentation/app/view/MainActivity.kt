@@ -5,7 +5,7 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.edoctor.R
-import com.edoctor.data.entity.remote.response.PatientResponse
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.presentation.app.account.AccountFragment
 import com.edoctor.presentation.app.conversations.ConversationsFragment
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         session.runIfOpened {
-            if (unwrapResponse(it.account) !is PatientResponse) {
+            if (unwrapResponse(it.account) !is PatientModel) {
                 bottomNavigationView.menu.removeItem(R.id.action_medcard)
                 bottomNavigationView.menu.removeItem(R.id.action_find_doctor)
             }

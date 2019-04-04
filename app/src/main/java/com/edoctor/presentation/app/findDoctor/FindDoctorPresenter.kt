@@ -1,6 +1,6 @@
 package com.edoctor.presentation.app.findDoctor
 
-import com.edoctor.data.entity.remote.response.DoctorResponse
+import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.FindDoctorRepository
 import com.edoctor.presentation.app.findDoctor.FindDoctorPresenter.ViewState.*
@@ -47,7 +47,7 @@ class FindDoctorPresenter @Inject constructor(
 
     sealed class ViewState : Presenter.ViewState {
         object EmptySearchViewState : ViewState()
-        data class DoctorsViewState(val doctors: List<DoctorResponse>) : ViewState()
+        data class DoctorsViewState(val doctors: List<DoctorModel>) : ViewState()
         object LoadingViewState : ViewState()
 
         object UnknownExceptionViewState : ViewState()

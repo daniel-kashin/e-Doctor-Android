@@ -1,6 +1,8 @@
-package com.edoctor.data.entity.remote.response
+package com.edoctor.data.entity.remote.model.user
 
-data class DoctorResponse(
+import com.edoctor.data.entity.remote.model.user.UserModel
+
+data class DoctorModel(
     override val email: String,
     override val fullName: String?,
     override val city: String?,
@@ -14,4 +16,4 @@ data class DoctorResponse(
     val education: String?,
     val workExperience: String?,
     val trainings: String?
-) : UserResponse()
+) : UserModel()

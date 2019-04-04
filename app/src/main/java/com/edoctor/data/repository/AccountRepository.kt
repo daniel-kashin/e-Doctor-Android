@@ -1,6 +1,6 @@
 package com.edoctor.data.repository
 
-import com.edoctor.data.entity.remote.response.UserResponse
+import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.data.mapper.UserMapper.wrapRequest
 import com.edoctor.data.remote.api.AccountRestApi
@@ -14,7 +14,7 @@ class AccountRepository(
     private val sessionManager: SessionManager
 ) {
 
-    fun getCurrentAccount(refresh: Boolean = false): Single<UserResponse> {
+    fun getCurrentAccount(refresh: Boolean = false): Single<UserModel> {
         val fromSessionManager = Single
             .fromCallable {
                 unwrapResponse(sessionManager.info.account)
@@ -35,8 +35,8 @@ class AccountRepository(
         }
     }
 
-    fun updateAccount(userResponse: UserResponse, imageFile: File?): Single<UserResponse> {
-        return api.updateAccount(wrapRequest(userResponse), imageFile?.asImageBodyPart("image"))
+    fun updateAccount(userModel: UserModel, imageFile: File?): Single<UserModel> {
+        return api.updateAccount(wrapRequest(userModel), imageFile?.asImageBodyPart("image"))
             .flatMap { userResponseWrapper ->
                 sessionManager
                     .update { it.copy(account = userResponseWrapper) }

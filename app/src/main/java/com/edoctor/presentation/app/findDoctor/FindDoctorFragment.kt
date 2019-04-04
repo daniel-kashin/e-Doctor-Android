@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import com.edoctor.R
-import com.edoctor.data.entity.remote.response.DoctorResponse
+import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.FindDoctorModule
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
@@ -140,7 +140,7 @@ class FindDoctorFragment : BaseFragment<FindDoctorPresenter, ViewState, Event>("
         recyclerView.visibility = View.INVISIBLE
     }
 
-    private fun showDoctors(doctors: List<DoctorResponse>) {
+    private fun showDoctors(doctors: List<DoctorModel>) {
         doctorsAdapter.setDoctors(doctors)
 
         progressBar.visibility = View.INVISIBLE
