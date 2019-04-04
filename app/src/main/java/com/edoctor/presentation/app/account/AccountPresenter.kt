@@ -70,6 +70,7 @@ class AccountPresenter @Inject constructor(
         city: String?,
         dateOfBirthTimestamp: Long?,
         isMale: Boolean?,
+        bloodGroup: Int?,
         yearsOfExperience: Int?,
         category: Int?,
         specialization: String?,
@@ -86,7 +87,8 @@ class AccountPresenter @Inject constructor(
                 fullName = fullName,
                 city = city,
                 dateOfBirthTimestamp = dateOfBirthTimestamp,
-                isMale = isMale
+                isMale = isMale,
+                bloodGroup = bloodGroup
             )
             is DoctorResponse -> oldAccount.copy(
                 fullName = fullName,

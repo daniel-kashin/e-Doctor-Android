@@ -68,6 +68,7 @@
     <string name="save_changes">Сохранить изменения</string>
     <string name="date_of_birth_hint">Дата рождения</string>
     <string name="gender_hint">Пол</string>
+    <string name="blood_group_hint">Группа крови</string>
     <string name="male">Мужской</string>
     <string name="female">Женский</string>
     <string name="take_photo">Сделать фотографию</string>

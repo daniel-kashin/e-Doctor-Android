@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/first_negative"
+            android:title="@string/first_negative" />
+    <item
+            android:id="@+id/first_positive"
+            android:title="@string/first_positive" />
+    <item
+            android:id="@+id/second_negative"
+            android:title="@string/second_negative" />
+    <item
+            android:id="@+id/second_positive"
+            android:title="@string/second_positive" />
+    <item
+            android:id="@+id/third_negative"
+            android:title="@string/third_negative" />
+    <item
+            android:id="@+id/third_positive"
+            android:title="@string/third_positive" />
+    <item
+            android:id="@+id/fourth_negative"
+            android:title="@string/fourth_negative" />
+    <item
+            android:id="@+id/fourth_positive"
+            android:title="@string/fourth_positive" />
+</menu>

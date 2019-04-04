@@ -48,6 +48,7 @@
     <string name="full_name_hint">Full name</string>
     <string name="city_hint">City</string>
     <string name="gender_hint">Gender</string>
+    <string name="blood_group_hint">Blood group</string>
     <string name="years_of_experience_hint">Years of experience</string>
     <string name="category_hint">Category</string>
     <string name="specialization_hint">Specialization</string>
@@ -115,4 +116,13 @@
     <string name="outcoming_call">Outcoming call</string>
     <string name="call_started">Call started</string>
     <string name="call_ended">Call ended</string>
+
+    <string name="first_negative" translatable="false">I -</string>
+    <string name="first_positive" translatable="false">I +</string>
+    <string name="second_negative" translatable="false">II -</string>
+    <string name="second_positive" translatable="false">II +</string>
+    <string name="third_negative" translatable="false">III -</string>
+    <string name="third_positive" translatable="false">III +</string>
+    <string name="fourth_negative" translatable="false">IV -</string>
+    <string name="fourth_positive" translatable="false">IV +</string>
 </resources>

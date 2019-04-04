@@ -20,6 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
 import com.edoctor.data.entity.remote.response.DoctorResponse
+import com.edoctor.data.entity.remote.response.PatientResponse
 import com.edoctor.data.injection.AccountModule
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.account.AccountPresenter.Event
@@ -40,6 +41,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         const val DATE_OF_BIRTH_TIMESTAMP_PARAM = "date_of_birth_timestamp"
         const val IS_MALE_PARAM = "is_male"
         const val CATEGORY_NUMBER_PARAM = "category_number"
+        const val BLOOD_GROUP_PARAM = "blood_group"
 
         private const val REQUEST_CAMERA = 10135
         private const val REQUEST_GALLERY = 10136
@@ -53,6 +55,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     private var dateOfBirthTimestamp: Long? = null
     private var isMale: Boolean? = null
     private var categoryNumber: Int? = null
+    private var bloodGroup: Int? = null
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var contentLayout: ConstraintLayout
@@ -63,6 +66,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     private lateinit var fullNameEditText: TextInputEditText
     private lateinit var dateOfBirthEditText: TextInputEditText
     private lateinit var genderEditText: TextInputEditText
+
+    private lateinit var bloodGroupEditText: TextInputEditText
 
     private lateinit var labelCareer: TextView
     private lateinit var yearsOfExperienceEditText: TextInputEditText
@@ -83,6 +88,10 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         )
     }
 
+    private val patientEditTexts by lazy {
+        listOf(bloodGroupEditText)
+    }
+
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.plus(AccountModule()).inject(this)
     }
@@ -92,6 +101,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         dateOfBirthTimestamp = savedInstanceState?.get(DATE_OF_BIRTH_TIMESTAMP_PARAM) as? Long
         isMale = savedInstanceState?.get(IS_MALE_PARAM) as? Boolean
         categoryNumber = savedInstanceState?.get(CATEGORY_NUMBER_PARAM) as? Int
+        bloodGroup = savedInstanceState?.get(BLOOD_GROUP_PARAM) as? Int
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -184,6 +194,28 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             }
         }
 
+        bloodGroupEditText.setOnClickListener {
+            PopupMenu(bloodGroupEditText.context, bloodGroupEditText).apply {
+                menuInflater.inflate(R.menu.blood_group, menu)
+                setOnMenuItemClickListener { item ->
+                    bloodGroupEditText.setText( item.title)
+                    bloodGroup = when (item.itemId) {
+                        R.id.first_negative -> 0
+                        R.id.first_positive -> 1
+                        R.id.second_negative -> 2
+                        R.id.second_positive -> 3
+                        R.id.third_negative -> 4
+                        R.id.third_positive -> 5
+                        R.id.fourth_negative -> 6
+                        R.id.fourth_positive -> 7
+                        else -> null
+                    }
+                    true
+                }
+                show()
+            }
+        }
+
         logOutButton.setOnClickListener {
             presenter.logOut()
         }
@@ -194,6 +226,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         isMale = viewState.account?.isMale
         dateOfBirthTimestamp = viewState.account?.dateOfBirthTimestamp
         categoryNumber = (viewState.account as? DoctorResponse)?.category
+        bloodGroup = (viewState.account as? PatientResponse)?.bloodGroup
 
         swipeRefreshLayout.isRefreshing = viewState.isLoading
 
@@ -204,6 +237,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                     city = cityEditText.text?.toString()?.takeIfNotEmpty(),
                     dateOfBirthTimestamp = dateOfBirthTimestamp,
                     isMale = isMale,
+                    bloodGroup = bloodGroup,
                     yearsOfExperience = yearsOfExperienceEditText.text?.toString()?.toIntOrNull(),
                     category = categoryNumber,
                     specialization = specializationEditText.text?.toString()?.takeIfNotEmpty(),
@@ -263,6 +297,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             if (viewState.account is DoctorResponse) {
                 labelCareer.show()
                 doctorEditTexts.forEach { (it.parent as View).show() }
+                patientEditTexts.forEach { (it.parent as View).hide() }
                 yearsOfExperienceEditText.setText(viewState.account.yearsOfExperience?.toString())
                 categoryEditText.setText(when (viewState.account.category) {
                     0 -> getString(R.string.highest_category)
@@ -275,9 +310,23 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                 educationEditText.setText(viewState.account.education)
                 workExperienceEditText.setText(viewState.account.workExperience)
                 trainingsEditText.setText(viewState.account.trainings)
-            } else {
+            } else if (viewState.account is PatientResponse) {
                 labelCareer.hide()
                 doctorEditTexts.forEach { (it.parent as View).hide() }
+                patientEditTexts.forEach { (it.parent as View).show() }
+                bloodGroupEditText.setText(
+                    when (viewState.account.bloodGroup) {
+                        0 -> getString(R.string.first_negative)
+                        1 -> getString(R.string.first_positive)
+                        2 -> getString(R.string.second_negative)
+                        3 -> getString(R.string.second_positive)
+                        4 -> getString(R.string.third_negative)
+                        5 -> getString(R.string.third_positive)
+                        6 -> getString(R.string.fourth_negative)
+                        7 -> getString(R.string.fourth_positive)
+                        else -> null
+                    }
+                )
             }
 
             contentLayout.show()
@@ -299,6 +348,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         outState.put(DATE_OF_BIRTH_TIMESTAMP_PARAM, dateOfBirthTimestamp)
         outState.put(IS_MALE_PARAM, isMale)
         outState.put(CATEGORY_NUMBER_PARAM, categoryNumber)
+        outState.put(BLOOD_GROUP_PARAM, bloodGroup)
         super.onSaveInstanceState(outState)
     }
 
