@@ -10,7 +10,7 @@ import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.presentation.app.account.AccountFragment
 import com.edoctor.presentation.app.conversations.ConversationsFragment
 import com.edoctor.presentation.app.findDoctor.FindDoctorFragment
-import com.edoctor.presentation.app.medcatd.MedcardFragment
+import com.edoctor.presentation.app.medcard.MedcardFragment
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.disposableDelegate
 import com.edoctor.utils.lazyFind

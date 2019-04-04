@@ -20,8 +20,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             app:elevation="16dp"
-            app:itemIconTint="@color/blue"
-            app:itemTextColor="@color/blue"
+            app:itemIconTint="@color/colorPrimary"
+            app:itemTextColor="@color/colorPrimary"
             app:menu="@menu/bottom_navigation" />
 
 </LinearLayout>

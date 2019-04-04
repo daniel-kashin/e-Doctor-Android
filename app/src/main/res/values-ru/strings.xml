@@ -90,4 +90,6 @@
     <string name="outcoming_call">Исходящий вызов</string>
     <string name="call_started">Разговор начат</string>
     <string name="call_ended">Разговор окончен</string>
+    <string name="tab_events">События</string>
+    <string name="tab_parameters">Показатели</string>
 </resources>

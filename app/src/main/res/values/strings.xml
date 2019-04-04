@@ -125,4 +125,7 @@
     <string name="third_positive" translatable="false">III +</string>
     <string name="fourth_negative" translatable="false">IV -</string>
     <string name="fourth_positive" translatable="false">IV +</string>
+
+    <string name="tab_events">Events</string>
+    <string name="tab_parameters">Parameters</string>
 </resources>

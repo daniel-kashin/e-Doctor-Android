@@ -63,7 +63,7 @@ ext {
             customTabs                : "androidx.browser:browser:$androidSupportVersion",
             percent                   : "androidx.percentlayout:percentlayout:$androidSupportVersion",
             vectorDrawable            : "androidx.vectordrawable:vectordrawable:$androidSupportVersion",
-            design                    : "com.google.android.material:material:1.0.0-rc01",
+            design                    : "com.google.android.material:material:1.0.0",
             multidex                  : "androidx.multidex:multidex:2.0.0",
             constraintLayout          : 'androidx.constraintlayout:constraintlayout:1.1.2',
 
