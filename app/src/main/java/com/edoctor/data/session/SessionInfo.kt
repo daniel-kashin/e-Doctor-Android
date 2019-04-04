@@ -11,7 +11,8 @@ data class SessionInfo constructor(
     val accessToken: AccessToken? = null
 ) {
 
-    val isValid = account.doctorModel != null || account.patientModel != null
+    val isValid
+        get() = account.doctorModel != null || account.patientModel != null
 
     data class RefreshToken(val value: String) {
         override fun toString() = "Token(value='${value.withHiddenPart()}')"
