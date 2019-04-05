@@ -53,10 +53,10 @@ class MessageMapper(context: Context) {
 
     private fun toPresentation(
         textMessageResult: TextMessageResponse
-    ): TextMessage =
+    ): TextMessage? =
         textMessageResult.run {
-            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser))
-            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser))
+            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser)) ?: return@run null
+            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser)) ?: return@run null
             TextMessage(
                 uuid,
                 senderUserUnwrapped,
@@ -69,11 +69,11 @@ class MessageMapper(context: Context) {
     private fun toPresentation(
         callStatusMessage: CallStatusMessageResponse,
         currentUser: UserModel
-    ): CallStatusMessage =
+    ): CallStatusMessage? =
         callStatusMessage.run {
             val callStatus = getCallStatusFromValue(callStatus)
-            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser))
-            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser))
+            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser)) ?: return@run null
+            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser)) ?: return@run null
             val isFromCurrentUser = currentUser.email == senderUserUnwrapped.email
             val text = callStatus.toText(isFromCurrentUser)
             CallStatusMessage(

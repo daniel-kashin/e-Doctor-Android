@@ -31,11 +31,11 @@ object UserMapper {
             else -> throw IllegalStateException()
         }
 
-    fun unwrapResponse(userModelWrapper: UserModelWrapper): UserModel =
+    fun unwrapResponse(userModelWrapper: UserModelWrapper): UserModel? =
         when {
             userModelWrapper.doctorModel != null -> userModelWrapper.doctorModel
             userModelWrapper.patientModel != null -> userModelWrapper.patientModel
-            else -> throw IllegalStateException()
+            else -> null
         }
 
     fun wrapRequest(userModel: UserModel): UserModelWrapper =
