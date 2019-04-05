@@ -5,9 +5,9 @@ data class BodyParameterWrapper(
     val measurementTimestamp: Long,
     val type: Int,
     val firstValue: Double,
-    val secondValue: Double?,
-    val customModelName: String?,
-    val customModelUnit: String?
+    val secondValue: Double? = null,
+    val customModelName: String? = null,
+    val customModelUnit: String? = null
 ) {
     companion object {
         const val TYPE_CUSTOM = 0
