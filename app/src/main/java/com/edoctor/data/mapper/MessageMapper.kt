@@ -55,8 +55,8 @@ class MessageMapper(context: Context) {
         textMessageResult: TextMessageResponse
     ): TextMessage? =
         textMessageResult.run {
-            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser)) ?: return@run null
-            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser)) ?: return@run null
+            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser) ?: return@run null) ?: return@run null
+            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser) ?: return@run null) ?: return@run null
             TextMessage(
                 uuid,
                 senderUserUnwrapped,
@@ -72,8 +72,8 @@ class MessageMapper(context: Context) {
     ): CallStatusMessage? =
         callStatusMessage.run {
             val callStatus = getCallStatusFromValue(callStatus)
-            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser)) ?: return@run null
-            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser)) ?: return@run null
+            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser) ?: return@run null) ?: return@run null
+            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser) ?: return@run null) ?: return@run null
             val isFromCurrentUser = currentUser.email == senderUserUnwrapped.email
             val text = callStatus.toText(isFromCurrentUser)
             CallStatusMessage(

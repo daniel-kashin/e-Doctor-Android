@@ -8,7 +8,7 @@ import com.edoctor.data.injection.NetworkModule.Companion.EDOCTOR_HTTP_ENDPOINT
 
 object UserMapper {
 
-    fun withAbsoluteUrl(userModelWrapper: UserModelWrapper): UserModelWrapper =
+    fun withAbsoluteUrl(userModelWrapper: UserModelWrapper): UserModelWrapper? =
         when {
             userModelWrapper.doctorModel != null -> UserModelWrapper(
                 doctorModel = userModelWrapper.doctorModel.let {
@@ -28,7 +28,7 @@ object UserMapper {
                     }
                 }
             )
-            else -> throw IllegalStateException()
+            else -> null
         }
 
     fun unwrapResponse(userModelWrapper: UserModelWrapper): UserModel? =

@@ -16,13 +16,13 @@ class AccountRepository(
 ) {
 
     fun getCurrentAccount(refresh: Boolean = false): Single<UserModel> {
-        val fromSessionManager = Single
+        val fromSessionManager: Single<UserModel> = Single
             .fromCallable {
                 unwrapResponse(sessionManager.info.account)
             }
 
-        val fromNetwork = api.getAccount()
-            .map { withAbsoluteUrl(it) }
+        val fromNetwork: Single<UserModel> = api.getAccount()
+            .map { requireNotNull(withAbsoluteUrl(it)) }
             .flatMap { userResponseWrapper ->
                 sessionManager
                     .update { it.copy(account = userResponseWrapper) }
@@ -39,7 +39,7 @@ class AccountRepository(
 
     fun updateAccount(userModel: UserModel, imageFile: File?): Single<UserModel> {
         return api.updateAccount(wrapRequest(userModel), imageFile?.asImageBodyPart("image"))
-            .map { withAbsoluteUrl(it) }
+            .map { requireNotNull(withAbsoluteUrl(it)) }
             .flatMap { userResponseWrapper ->
                 sessionManager
                     .update { it.copy(account = userResponseWrapper) }
