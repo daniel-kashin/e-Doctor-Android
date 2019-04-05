@@ -1,6 +1,6 @@
 package com.edoctor.data.entity.remote.model.record
 
-data class MedicalRecordWrapper(
+data class BodyParameterWrapper(
     val uuid: String,
     val measurementTimestamp: Long,
     val type: Int,
