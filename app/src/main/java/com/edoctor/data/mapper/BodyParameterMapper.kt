@@ -1,6 +1,7 @@
 package com.edoctor.data.mapper
 
 import com.edoctor.data.entity.remote.model.record.*
+import com.edoctor.data.entity.remote.model.record.BodyParameterType.*
 import com.edoctor.data.entity.remote.model.record.BodyParameterWrapper.Companion.TYPE_BLOOD_OXYGEN
 import com.edoctor.data.entity.remote.model.record.BodyParameterWrapper.Companion.TYPE_BLOOD_PRESSURE
 import com.edoctor.data.entity.remote.model.record.BodyParameterWrapper.Companion.TYPE_BLOOD_SUGAR
@@ -82,6 +83,18 @@ object BodyParameterMapper {
                 }
             }
             else -> null
+        }
+    }
+
+    fun toType(bodyParameterModel: BodyParameterModel) : BodyParameterType {
+        return when (bodyParameterModel) {
+            is HeightModel -> Height
+            is WeightModel -> Weight
+            is BloodOxygenModel -> BloodOxygen
+            is BloodSugarModel -> BloodSugar
+            is TemperatureModel -> Temperature
+            is BloodPressureModel -> BloodPressure
+            is CustomBodyParameterModel -> Custom(bodyParameterModel.name, bodyParameterModel.unit)
         }
     }
 

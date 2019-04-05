@@ -98,6 +98,7 @@
     <string name="blood_sugar">Сахар в крови</string>
     <string name="temperature">Температура тела</string>
     <string name="blood_oxygen">Кислород в крови</string>
+    <string name="new_parameter">Новый показатель</string>
 
     <string name="cm_param">%1$.1f см</string>
     <string name="kg_param">%1$.1f кг</string>

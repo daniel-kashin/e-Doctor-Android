@@ -1,5 +1,6 @@
 package com.edoctor.presentation.app.parameters
 
+import com.edoctor.data.entity.presentation.LatestBodyParametersInfo
 import com.edoctor.data.entity.remote.model.record.BodyParameterModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalRecordsRepository
@@ -21,20 +22,20 @@ class ParametersPresenter @Inject constructor(
 ) : Presenter<ViewState, Event>() {
 
     init {
-        setViewState(ViewState(emptyList()))
+        setViewState(ViewState(null))
 
-        disposables += medicalRecordsRepository.getLatestBodyParametersOfEachType()
+        disposables += medicalRecordsRepository.getLatestBodyParametersInfo()
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
-                setViewState { copy(bodyParameters = it) }
+                setViewState { copy(latestBodyParametersInfo = it) }
             }, { throwable ->
                 nothing()
             })
     }
 
     data class ViewState(
-        val bodyParameters: List<BodyParameterModel>
+        val latestBodyParametersInfo: LatestBodyParametersInfo?
     ) : Presenter.ViewState
 
     class Event : Presenter.Event

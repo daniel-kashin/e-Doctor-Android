@@ -184,7 +184,7 @@ class FindDoctorFragment : BaseFragment<FindDoctorPresenter, ViewState, Event>("
             activity.session.runIfOpened { sessionInfo ->
                 ChatActivity.IntentBuilder(this)
                     .recipientUser(doctor)
-                    .currentUser(unwrapResponse(sessionInfo.account))
+                    .currentUser(requireNotNull(unwrapResponse(sessionInfo.account)))
                     .start()
             } ?: run {
                 activity.onSessionException()
