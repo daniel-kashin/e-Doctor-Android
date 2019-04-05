@@ -43,6 +43,6 @@ data class CustomBodyParameterModel(
     override val uuid: String,
     override val measurementTimestamp: Long,
     val name: String,
-    val value: String,
-    val unit: String
+    val unit: String,
+    val value: Double
 ) : BodyParameterModel()

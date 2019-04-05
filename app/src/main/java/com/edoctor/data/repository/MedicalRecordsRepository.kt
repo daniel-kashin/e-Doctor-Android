@@ -13,7 +13,7 @@ class MedicalRecordsRepository() {
                 HeightModel("111", currentUnixTime(), 178.5),
                 WeightModel("222", currentUnixTime() - 1000, 70.0),
                 BloodPressureModel("333", currentUnixTime() - 2000, 120, 80),
-                CustomBodyParameterModel("444", currentUnixTime() - 3000, "Размер ноги", "26.5", "см")
+                CustomBodyParameterModel("444", currentUnixTime() - 3000, "Размер ноги", "см", 26.5)
             )
         )
     }
