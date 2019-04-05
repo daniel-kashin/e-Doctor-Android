@@ -30,6 +30,7 @@
 
         <activity android:name="com.edoctor.presentation.app.welcome.WelcomeActivity"/>
         <activity android:name=".presentation.app.view.MainActivity"/>
+        <activity android:name=".presentation.app.addParameter.AddParameterActivity"/>
         <activity android:name="com.edoctor.presentation.app.chat.ChatActivity"/>
 
     </application>

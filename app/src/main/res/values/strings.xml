@@ -128,6 +128,7 @@
 
     <string name="tab_events">Events</string>
     <string name="tab_parameters">Parameters</string>
+    <string name="parameter">Parameter</string>
 
     <string name="height">Height</string>
     <string name="weight">Weight</string>
@@ -144,4 +145,21 @@
     <string name="mmol_per_liter_param">%1$.1f mmol/L</string>
     <string name="celcius_param" translatable="false">%1$.1f °C</string>
     <string name="percent_param" translatable="false">%1$.1f %%</string>
+
+    <string name="cm">cm</string>
+    <string name="kg">kg</string>
+    <string name="mmHg">mmHg</string>
+    <string name="mmol_per_liter">mmol/L</string>
+    <string name="celcius" translatable="false">°C</string>
+    <string name="percent" translatable="false">%</string>
+
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="name">Name</string>
+    <string name="unit">Unit</string>
+    <string name="value">Value</string>
+    <string name="systolic_value">Systolic value</string>
+    <string name="diastolic_value">Diastolic value</string>
+
+    <string name="parameter_save_error">Wrong field values</string>
 </resources>

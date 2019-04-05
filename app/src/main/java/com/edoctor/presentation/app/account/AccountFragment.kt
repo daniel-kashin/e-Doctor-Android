@@ -155,7 +155,11 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                 { _, year, month, dayOfMonth ->
                     nowCalendar.set(year, month, dayOfMonth, 0, 0, 0)
                     dateOfBirthTimestamp = nowCalendar.timeInMillis.javaTimeToUnixTime()
-                    dateOfBirthEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(nowCalendar.time))
+                    dateOfBirthEditText.setText(
+                        SimpleDateFormat("dd.MM.yyyy")
+                            .apply { timeZone = TimeZone.getTimeZone("UTC") }
+                            .format(nowCalendar.time)
+                    )
                 },
                 nowCalendar.get(Calendar.YEAR) - 20,
                 nowCalendar.get(Calendar.MONTH),

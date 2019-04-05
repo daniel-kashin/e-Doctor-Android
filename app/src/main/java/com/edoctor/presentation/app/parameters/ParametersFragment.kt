@@ -13,6 +13,7 @@ import com.edoctor.data.entity.remote.model.record.*
 import com.edoctor.data.entity.remote.model.record.BodyParameterType.*
 import com.edoctor.data.entity.remote.model.record.BodyParameterType.Custom.Companion.NEW
 import com.edoctor.data.injection.ApplicationComponent
+import com.edoctor.presentation.app.addParameter.AddParameterActivity
 import com.edoctor.presentation.app.parameters.ParametersPresenter.Event
 import com.edoctor.presentation.app.parameters.ParametersPresenter.ViewState
 import com.edoctor.presentation.architecture.fragment.BaseFragment
@@ -34,7 +35,7 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
     lateinit var adapter: ParametersAdapter
 
     override fun init(applicationComponent: ApplicationComponent) {
-        applicationComponent.parametersComponent.inject(this)
+        applicationComponent.medicalRecordsComponent.inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,7 +79,10 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
                     }
 
                     setOnMenuItemClickListener { item ->
-                        fab.context.toast(namesToTypes.first { it.first == item.title }.toString())
+                        val type = namesToTypes.first { it.first == item.title }.second
+                        AddParameterActivity.IntentBuilder(this@ParametersFragment)
+                            .parameterType(type)
+                            .start()
                         true
                     }
                     show()

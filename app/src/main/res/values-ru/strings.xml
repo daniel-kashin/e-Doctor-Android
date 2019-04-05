@@ -99,9 +99,25 @@
     <string name="temperature">Температура тела</string>
     <string name="blood_oxygen">Кислород в крови</string>
     <string name="new_parameter">Новый показатель</string>
+    <string name="parameter">Параметр</string>
 
     <string name="cm_param">%1$.1f см</string>
     <string name="kg_param">%1$.1f кг</string>
     <string name="mmHg_params">%1$d/%2$d мм рт. ст.</string>
     <string name="mmol_per_liter_param">%1$.1f ммоль/л</string>
+
+    <string name="cm">см</string>
+    <string name="kg">кг</string>
+    <string name="mmHg">мм рт. ст.</string>
+    <string name="mmol_per_liter">ммоль/л</string>
+
+    <string name="date">Дата</string>
+    <string name="time">Время</string>
+    <string name="name">Название</string>
+    <string name="unit">Единицы измерения</string>
+    <string name="value">Значение</string>
+    <string name="systolic_value">Систолическое значение</string>
+    <string name="diastolic_value">Диастолическое значение</string>
+
+    <string name="parameter_save_error">Поля заполнены неверно</string>
 </resources>

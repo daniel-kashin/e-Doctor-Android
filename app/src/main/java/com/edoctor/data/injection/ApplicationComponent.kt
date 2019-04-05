@@ -6,7 +6,7 @@ import com.edoctor.presentation.app.account.AccountComponent
 import com.edoctor.presentation.app.chat.ChatComponent
 import com.edoctor.presentation.app.conversations.ConversationsComponent
 import com.edoctor.presentation.app.findDoctor.FindDoctorComponent
-import com.edoctor.presentation.app.parameters.ParametersComponent
+import com.edoctor.presentation.app.medcard.MedicalRecordsComponent
 import com.edoctor.presentation.app.welcome.WelcomeComponent
 import dagger.Component
 import javax.inject.Singleton
@@ -29,7 +29,7 @@ interface ApplicationComponent {
 
     val welcomeComponent: WelcomeComponent
 
-    val parametersComponent: ParametersComponent
+    val medicalRecordsComponent: MedicalRecordsComponent
 
     fun plus(chatModule: ChatModule): ChatComponent
 

@@ -1,9 +1,10 @@
-package com.edoctor.presentation.app.parameters
+package com.edoctor.presentation.app.medcard
 
 import com.edoctor.data.injection.MedicalRecordsModule
+import com.edoctor.presentation.app.parameters.ParametersFragment
 import dagger.Subcomponent
 
 @Subcomponent(modules = [MedicalRecordsModule::class])
-interface ParametersComponent {
+interface MedicalRecordsComponent {
     fun inject(parametersFragment: ParametersFragment)
 }

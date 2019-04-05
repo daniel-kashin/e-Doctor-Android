@@ -1,6 +1,8 @@
 package com.edoctor.data.entity.remote.model.record
 
-sealed class BodyParameterModel : MedicalRecordModel(), DateSpecific
+import java.io.Serializable
+
+sealed class BodyParameterModel : MedicalRecordModel(), DateSpecific, Serializable
 
 data class HeightModel(
     override val uuid: String,
