@@ -16,15 +16,15 @@ interface ParametersRestApi {
         @Body type: BodyParameterTypeWrapper
     ) : Single<BodyParametersResponse>
 
-    @GET
+    @GET("/latestParameters")
     fun getLatestParametersOfEachType() : Single<BodyParametersResponse>
 
-    @POST
+    @POST("/addOrEditParameter")
     fun addOrEditParameter(
         @Body parameter: BodyParameterWrapper
     ) : Single<BodyParameterWrapper>
 
-    @POST
+    @POST("/deleteParameter")
     fun deleteParameter(
         @Body parameter: BodyParameterWrapper
     ) : Completable
