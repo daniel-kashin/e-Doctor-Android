@@ -7,6 +7,7 @@ data class Analysis(
     override val timestamp: Long,
     override val comment: String?,
     override val clinic: String?,
+    val name: String,
     val result: String?
 ) : MedicalEventModel(), ClinicSpecific
 
