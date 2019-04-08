@@ -63,53 +63,49 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
     @SuppressLint("RestrictedApi")
     override fun render(viewState: ViewState) {
         val info = viewState.latestBodyParametersInfo
-        if (info != null) {
-            adapter.parameters = info.latestBodyParametersOfEachType
-            adapter.onParameterClickListener = { parameter ->
-                ParameterActivity.IntentBuilder(this)
-                    .parameterType(toType(parameter))
-                    .start()
-            }
 
-            fab.show()
-            fab.setOnClickListener {
-                PopupMenu(fab.context, fab).apply {
-                    val namesToTypes: List<Pair<String, BodyParameterType>> =
-                        info.availableBodyParametesTypes.map {
-                            val name = when (it) {
-                                is Height -> getString(R.string.height)
-                                is Weight -> getString(R.string.weight)
-                                is BloodPressure -> getString(R.string.blood_pressure)
-                                is BloodSugar -> getString(R.string.blood_sugar)
-                                is Temperature -> getString(R.string.temperature)
-                                is BloodOxygen -> getString(R.string.blood_oxygen)
-                                is Custom -> if (it == NEW) getString(R.string.new_parameter) else "${it.name} (${it.unit})"
-                            }
-                            name to it
+        adapter.parameters = info.latestBodyParametersOfEachType
+        adapter.onParameterClickListener = { parameter ->
+            ParameterActivity.IntentBuilder(this)
+                .parameterType(toType(parameter))
+                .start()
+        }
+
+        fab.show()
+        fab.setOnClickListener {
+            PopupMenu(fab.context, fab).apply {
+                val namesToTypes: List<Pair<String, BodyParameterType>> =
+                    info.availableBodyParametesTypes.map {
+                        val name = when (it) {
+                            is Height -> getString(R.string.height)
+                            is Weight -> getString(R.string.weight)
+                            is BloodPressure -> getString(R.string.blood_pressure)
+                            is BloodSugar -> getString(R.string.blood_sugar)
+                            is Temperature -> getString(R.string.temperature)
+                            is BloodOxygen -> getString(R.string.blood_oxygen)
+                            is Custom -> if (it == NEW) getString(R.string.new_parameter) else "${it.name} (${it.unit})"
                         }
-
-                    namesToTypes.forEach {
-                        menu.add(it.first)
+                        name to it
                     }
 
-                    setOnMenuItemClickListener { item ->
-                        val type = namesToTypes.first { it.first == item.title }.second
-                        context?.let {
-                            startActivityForResult(
-                                AddOrEditParameterActivity.IntentBuilder(it)
-                                    .parameterType(type)
-                                    .get(),
-                                REQUEST_ADD_OR_EDIT_PARAMETER
-                            )
-                        }
-                        true
-                    }
-                    show()
+                namesToTypes.forEach {
+                    menu.add(it.first)
                 }
+
+                setOnMenuItemClickListener { item ->
+                    val type = namesToTypes.first { it.first == item.title }.second
+                    context?.let {
+                        startActivityForResult(
+                            AddOrEditParameterActivity.IntentBuilder(it)
+                                .parameterType(type)
+                                .get(),
+                            REQUEST_ADD_OR_EDIT_PARAMETER
+                        )
+                    }
+                    true
+                }
+                show()
             }
-        } else {
-            adapter.parameters = emptyList()
-            fab.hide()
         }
     }
 

@@ -22,7 +22,7 @@ class ParametersPresenter @Inject constructor(
 ) : Presenter<ViewState, Event>() {
 
     init {
-        setViewState(ViewState(null))
+        setViewState(ViewState(LatestBodyParametersInfo.EMPTY))
 
         disposables += medicalRecordsRepository.getLatestBodyParametersInfo()
             .subscribeOn(subscribeScheduler)
@@ -62,7 +62,7 @@ class ParametersPresenter @Inject constructor(
     }
 
     data class ViewState(
-        val latestBodyParametersInfo: LatestBodyParametersInfo?
+        val latestBodyParametersInfo: LatestBodyParametersInfo
     ) : Presenter.ViewState
 
     class Event : Presenter.Event

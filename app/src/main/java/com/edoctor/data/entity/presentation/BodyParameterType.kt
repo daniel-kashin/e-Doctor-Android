@@ -4,17 +4,6 @@ import java.io.Serializable
 
 sealed class BodyParameterType : Serializable {
 
-    companion object {
-        val NON_CUSTOM_TYPES = listOf(
-            Height,
-            Weight,
-            BloodOxygen,
-            BloodSugar,
-            BloodPressure,
-            Temperature
-        )
-    }
-
     object Height : BodyParameterType()
 
     object Weight : BodyParameterType()
