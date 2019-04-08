@@ -19,5 +19,4 @@
             android:src="@drawable/ic_add"
             android:layout_margin="16dp"/>
 
-
 </FrameLayout>

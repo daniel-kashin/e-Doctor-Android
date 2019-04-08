@@ -37,7 +37,7 @@ class ParameterAdapter : RecyclerView.Adapter<ViewHolder>() {
                     },
                     true
                 )
-                .dispatchUpdatesTo(this, "ParametersAdapter")
+                .dispatchUpdatesTo(this, "ParameterAdapter")
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
