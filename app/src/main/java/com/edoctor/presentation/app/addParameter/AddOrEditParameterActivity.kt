@@ -16,8 +16,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import com.edoctor.R
+import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.entity.remote.model.record.*
-import com.edoctor.data.entity.remote.model.record.BodyParameterType.Custom.Companion.NEW
+import com.edoctor.data.entity.presentation.BodyParameterType.Custom.Companion.NEW
 import com.edoctor.data.mapper.BodyParameterMapper.toType
 import com.edoctor.utils.*
 import com.google.android.material.textfield.TextInputLayout

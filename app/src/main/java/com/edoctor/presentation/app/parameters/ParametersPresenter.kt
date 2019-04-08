@@ -30,16 +30,30 @@ class ParametersPresenter @Inject constructor(
             .subscribe({
                 setViewState { copy(latestBodyParametersInfo = it) }
             }, { throwable ->
-                nothing()
+                // TODO
             })
     }
 
     fun addOrEditParameter(parameter: BodyParameterModel) {
-
+        disposables += medicalRecordsRepository.addOrEditParameter(parameter)
+            .subscribeOn(subscribeScheduler)
+            .observeOn(observeScheduler)
+            .subscribe({
+                // TODO
+            }, {
+                // TODO
+            })
     }
 
     fun removeParameter(parameter: BodyParameterModel) {
-
+        disposables += medicalRecordsRepository.removeParameter(parameter)
+            .subscribeOn(subscribeScheduler)
+            .observeOn(observeScheduler)
+            .subscribe({
+                // TODO
+            }, {
+                // TODO
+            })
     }
 
     data class ViewState(

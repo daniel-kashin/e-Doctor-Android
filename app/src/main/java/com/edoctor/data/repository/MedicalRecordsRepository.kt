@@ -1,25 +1,29 @@
 package com.edoctor.data.repository
 
+import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.entity.presentation.LatestBodyParametersInfo
 import com.edoctor.data.entity.remote.model.record.*
-import com.edoctor.data.entity.remote.model.record.BodyParameterType.*
-import com.edoctor.data.entity.remote.model.record.BodyParameterType.Companion.NON_CUSTOM_TYPES
-import com.edoctor.data.entity.remote.model.record.BodyParameterType.Custom.Companion.NEW
-import com.edoctor.utils.currentUnixTime
+import com.edoctor.data.entity.presentation.BodyParameterType.*
+import com.edoctor.data.entity.presentation.BodyParameterType.Companion.NON_CUSTOM_TYPES
+import com.edoctor.data.entity.presentation.BodyParameterType.Custom.Companion.NEW
+import com.edoctor.data.mapper.BodyParameterMapper.fromWrapperModel
+import com.edoctor.data.mapper.BodyParameterMapper.toWrapperModel
+import com.edoctor.data.mapper.BodyParameterMapper.toWrapperType
+import com.edoctor.data.remote.rest.ParametersRestApi
+import io.reactivex.Completable
 import io.reactivex.Single
 
-class MedicalRecordsRepository() {
+class MedicalRecordsRepository(
+    private val parametersApi: ParametersRestApi
+) {
 
     fun getLatestBodyParametersInfo(): Single<LatestBodyParametersInfo> =
-        Single
-            .just(
-                listOf(
-                    HeightModel("111", currentUnixTime(), 178.5),
-                    WeightModel("222", currentUnixTime() - 1000, 70.0),
-                    BloodPressureModel("333", currentUnixTime() - 2000, 120, 80),
-                    CustomBodyParameterModel("444", currentUnixTime() - 3000, "Размер ноги", "см", 26.5)
-                )
-            ).map {
+        parametersApi
+            .getLatestParametersOfEachType()
+            .map {
+                it.bodyParameters.mapNotNull { wrapper -> fromWrapperModel(wrapper) }
+            }
+            .map {
                 val customTypes = it
                     .filterIsInstance<CustomBodyParameterModel>()
                     .map { Custom(it.name, it.unit) }
@@ -34,8 +38,29 @@ class MedicalRecordsRepository() {
     fun getAllParametersOfType(
         bodyParameterType: BodyParameterType
     ): Single<List<BodyParameterModel>> =
-        Single.just(
-                emptyList()
-        )
+        Single
+            .defer {
+                parametersApi.getParameters(toWrapperType(bodyParameterType))
+            }
+            .map {
+                it.bodyParameters.mapNotNull { wrapper -> fromWrapperModel(wrapper) }
+            }
+
+    fun addOrEditParameter(
+        parameter: BodyParameterModel
+    ): Single<BodyParameterModel> =
+        Single
+            .defer {
+                parametersApi.addOrEditParameter(toWrapperModel(parameter))
+            }
+            .map { fromWrapperModel(it) }
+
+    fun removeParameter(
+        parameter: BodyParameterModel
+    ): Completable =
+        Completable
+            .defer {
+                parametersApi.deleteParameter(toWrapperModel(parameter))
+            }
 
 }

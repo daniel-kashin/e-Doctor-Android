@@ -1,7 +1,8 @@
 package com.edoctor.data.mapper
 
+import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.entity.remote.model.record.*
-import com.edoctor.data.entity.remote.model.record.BodyParameterType.*
+import com.edoctor.data.entity.presentation.BodyParameterType.*
 import com.edoctor.data.entity.remote.model.record.BodyParameterWrapper.Companion.TYPE_BLOOD_OXYGEN
 import com.edoctor.data.entity.remote.model.record.BodyParameterWrapper.Companion.TYPE_BLOOD_PRESSURE
 import com.edoctor.data.entity.remote.model.record.BodyParameterWrapper.Companion.TYPE_BLOOD_SUGAR
@@ -9,10 +10,11 @@ import com.edoctor.data.entity.remote.model.record.BodyParameterWrapper.Companio
 import com.edoctor.data.entity.remote.model.record.BodyParameterWrapper.Companion.TYPE_HEIGHT
 import com.edoctor.data.entity.remote.model.record.BodyParameterWrapper.Companion.TYPE_TEMPERATURE
 import com.edoctor.data.entity.remote.model.record.BodyParameterWrapper.Companion.TYPE_WEIGHT
+import com.edoctor.data.entity.remote.request.BodyParameterTypeWrapper
 
 object BodyParameterMapper {
 
-    fun toWrapper(bodyParameterModel: BodyParameterModel): BodyParameterWrapper? = bodyParameterModel.let {
+    fun toWrapperModel(bodyParameterModel: BodyParameterModel): BodyParameterWrapper = bodyParameterModel.let {
         when (it) {
             is HeightModel -> {
                 BodyParameterWrapper(it.uuid, it.measurementTimestamp, TYPE_HEIGHT, it.centimeters)
@@ -51,7 +53,7 @@ object BodyParameterMapper {
         }
     }
 
-    fun fromWrapper(bodyParameterWrapper: BodyParameterWrapper): BodyParameterModel? = bodyParameterWrapper.let {
+    fun fromWrapperModel(bodyParameterWrapper: BodyParameterWrapper): BodyParameterModel? = bodyParameterWrapper.let {
         when (it.type) {
             TYPE_HEIGHT -> {
                 HeightModel(it.uuid, it.measurementTimestamp, it.firstValue)
@@ -77,7 +79,13 @@ object BodyParameterMapper {
             }
             TYPE_CUSTOM -> {
                 if (it.customModelName != null && it.customModelUnit != null) {
-                    CustomBodyParameterModel(it.uuid, it.measurementTimestamp, it.customModelName, it.customModelUnit, it.firstValue)
+                    CustomBodyParameterModel(
+                        it.uuid,
+                        it.measurementTimestamp,
+                        it.customModelName,
+                        it.customModelUnit,
+                        it.firstValue
+                    )
                 } else {
                     null
                 }
@@ -86,7 +94,7 @@ object BodyParameterMapper {
         }
     }
 
-    fun toType(bodyParameterModel: BodyParameterModel) : BodyParameterType {
+    fun toType(bodyParameterModel: BodyParameterModel): BodyParameterType {
         return when (bodyParameterModel) {
             is HeightModel -> Height
             is WeightModel -> Weight
@@ -95,6 +103,18 @@ object BodyParameterMapper {
             is TemperatureModel -> Temperature
             is BloodPressureModel -> BloodPressure
             is CustomBodyParameterModel -> Custom(bodyParameterModel.name, bodyParameterModel.unit)
+        }
+    }
+
+    fun toWrapperType(bodyParameterType: BodyParameterType): BodyParameterTypeWrapper {
+        return when (bodyParameterType) {
+            is BodyParameterType.BloodOxygen -> BodyParameterTypeWrapper(TYPE_BLOOD_OXYGEN)
+            is BodyParameterType.BloodPressure -> BodyParameterTypeWrapper(TYPE_BLOOD_PRESSURE)
+            is BodyParameterType.BloodSugar -> BodyParameterTypeWrapper(TYPE_BLOOD_SUGAR)
+            is BodyParameterType.Custom -> BodyParameterTypeWrapper(TYPE_CUSTOM, bodyParameterType.name, bodyParameterType.unit)
+            is BodyParameterType.Height -> BodyParameterTypeWrapper(TYPE_HEIGHT)
+            is BodyParameterType.Temperature -> BodyParameterTypeWrapper(TYPE_TEMPERATURE)
+            is BodyParameterType.Weight -> BodyParameterTypeWrapper(TYPE_WEIGHT)
         }
     }
 

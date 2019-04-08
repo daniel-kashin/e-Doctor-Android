@@ -1,7 +1,7 @@
 package com.edoctor.presentation.app.parameter
 
 import com.edoctor.data.entity.remote.model.record.BodyParameterModel
-import com.edoctor.data.entity.remote.model.record.BodyParameterType
+import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalRecordsRepository
 import com.edoctor.presentation.app.parameter.ParameterPresenter.Event
@@ -35,16 +35,30 @@ class ParameterPresenter @Inject constructor(
             .subscribe({
                 setViewState { copy(parameters = it) }
             }, { throwable ->
-                nothing()
+                // TODO
             })
     }
 
     fun addOrEditParameter(parameter: BodyParameterModel) {
-
+        disposables += medicalRecordsRepository.addOrEditParameter(parameter)
+            .subscribeOn(subscribeScheduler)
+            .observeOn(observeScheduler)
+            .subscribe({
+                // TODO
+            }, {
+                // TODO
+            })
     }
 
     fun removeParameter(parameter: BodyParameterModel) {
-
+        disposables += medicalRecordsRepository.removeParameter(parameter)
+            .subscribeOn(subscribeScheduler)
+            .observeOn(observeScheduler)
+            .subscribe({
+                // TODO
+            }, {
+                // TODO
+            })
     }
 
     data class ViewState(

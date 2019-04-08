@@ -1,11 +1,18 @@
-package com.edoctor.data.entity.remote.model.record
+package com.edoctor.data.entity.presentation
 
 import java.io.Serializable
 
 sealed class BodyParameterType : Serializable {
 
     companion object {
-        val NON_CUSTOM_TYPES = listOf(Height, Weight, BloodOxygen, BloodSugar, BloodPressure, Temperature)
+        val NON_CUSTOM_TYPES = listOf(
+            Height,
+            Weight,
+            BloodOxygen,
+            BloodSugar,
+            BloodPressure,
+            Temperature
+        )
     }
 
     object Height : BodyParameterType()

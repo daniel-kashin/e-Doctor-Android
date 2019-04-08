@@ -2,7 +2,6 @@ package com.edoctor.presentation.app.parameters
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,9 +9,10 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.edoctor.R
+import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.entity.remote.model.record.*
-import com.edoctor.data.entity.remote.model.record.BodyParameterType.*
-import com.edoctor.data.entity.remote.model.record.BodyParameterType.Custom.Companion.NEW
+import com.edoctor.data.entity.presentation.BodyParameterType.*
+import com.edoctor.data.entity.presentation.BodyParameterType.Custom.Companion.NEW
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.mapper.BodyParameterMapper.toType
 import com.edoctor.presentation.app.addParameter.AddOrEditParameterActivity

@@ -12,5 +12,4 @@ interface FindDoctorRestApi {
         @Query("textToSearch") textToSearch: String
     ) : Single<DoctorsResponse>
 
-
 }

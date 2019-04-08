@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.record.BodyParameterModel
-import com.edoctor.data.entity.remote.model.record.BodyParameterType
+import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.addParameter.AddOrEditParameterActivity
 import com.edoctor.presentation.app.parameter.ParameterPresenter.Event
