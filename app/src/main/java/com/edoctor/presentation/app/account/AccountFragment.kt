@@ -303,8 +303,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
 
             if (viewState.account is DoctorModel) {
                 labelCareer.show()
-                doctorEditTexts.forEach { (it.parent as View).show() }
-                patientEditTexts.forEach { (it.parent as View).hide() }
+                doctorEditTexts.forEach { (it.parent.parent as View).show() }
+                patientEditTexts.forEach { (it.parent.parent as View).hide() }
                 yearsOfExperienceEditText.setText(viewState.account.yearsOfExperience?.toString())
                 categoryEditText.setText(when (viewState.account.category) {
                     0 -> getString(R.string.highest_category)
@@ -319,8 +319,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                 trainingsEditText.setText(viewState.account.trainings)
             } else if (viewState.account is PatientModel) {
                 labelCareer.hide()
-                doctorEditTexts.forEach { (it.parent as View).hide() }
-                patientEditTexts.forEach { (it.parent as View).show() }
+                doctorEditTexts.forEach { (it.parent.parent as View).hide() }
+                patientEditTexts.forEach { (it.parent.parent as View).show() }
                 bloodGroupEditText.setText(
                     when (viewState.account.bloodGroup) {
                         0 -> getString(R.string.first_negative)

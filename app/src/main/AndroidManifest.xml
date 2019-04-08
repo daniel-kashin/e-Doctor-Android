@@ -31,6 +31,7 @@
         <activity android:name="com.edoctor.presentation.app.welcome.WelcomeActivity"/>
         <activity android:name=".presentation.app.view.MainActivity"/>
         <activity android:name=".presentation.app.addParameter.AddOrEditParameterActivity"/>
+        <activity android:name=".presentation.app.addEvent.AddOrEditEventActivity"/>
         <activity android:name=".presentation.app.parameter.ParameterActivity"/>
         <activity android:name="com.edoctor.presentation.app.chat.ChatActivity"/>
 
