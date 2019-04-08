@@ -3,7 +3,7 @@ package com.edoctor.data.repository
 import com.edoctor.data.entity.presentation.Conversation
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.mapper.MessageMapper
-import com.edoctor.data.remote.api.ConversationsRestApi
+import com.edoctor.data.remote.rest.ConversationsRestApi
 import io.reactivex.Single
 
 class ConversationsRepository(

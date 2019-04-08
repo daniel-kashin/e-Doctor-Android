@@ -4,7 +4,7 @@ import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.data.mapper.UserMapper.withAbsoluteUrl
 import com.edoctor.data.mapper.UserMapper.wrapRequest
-import com.edoctor.data.remote.api.AccountRestApi
+import com.edoctor.data.remote.rest.AccountRestApi
 import com.edoctor.data.session.SessionManager
 import com.edoctor.utils.asImageBodyPart
 import io.reactivex.Single

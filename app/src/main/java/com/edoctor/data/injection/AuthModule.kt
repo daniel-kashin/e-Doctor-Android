@@ -2,7 +2,7 @@ package com.edoctor.data.injection
 
 import com.edoctor.data.injection.NetworkModule.Companion.ANONYMOUS_TAG
 import com.edoctor.data.injection.NetworkModule.Companion.AUTHORIZED_TAG
-import com.edoctor.data.remote.api.AuthRestApi
+import com.edoctor.data.remote.rest.AuthRestApi
 import com.edoctor.data.repository.AuthRepository
 import com.edoctor.data.session.SessionManager
 import dagger.Module

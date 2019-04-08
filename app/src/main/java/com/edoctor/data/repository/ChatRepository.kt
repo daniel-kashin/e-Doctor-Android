@@ -7,8 +7,8 @@ import com.edoctor.data.entity.remote.request.MessageRequestWrapper
 import com.edoctor.data.entity.remote.request.TextMessageRequest
 import com.edoctor.data.entity.remote.response.MessageResponseWrapper
 import com.edoctor.data.mapper.MessageMapper
-import com.edoctor.data.remote.api.ChatRestApi
-import com.edoctor.data.remote.api.ChatService
+import com.edoctor.data.remote.rest.ChatRestApi
+import com.edoctor.data.remote.socket.ChatSocketApi
 import com.edoctor.utils.rx.RxExtensions.justOrEmptyFlowable
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -22,7 +22,7 @@ class ChatRepository(
     private val currentUser: UserModel,
     private val recipientUser: UserModel,
     private val chatRestApi: ChatRestApi,
-    private val chatService: ChatService,
+    private val chatSocketApi: ChatSocketApi,
     private val messageMapper: MessageMapper
 ) {
 
@@ -30,7 +30,7 @@ class ChatRepository(
     var onCloseConnectionListener: (() -> Unit)? = null
 
     fun observeEvents(): Flowable<ChatEvent> {
-        return chatService.observeEvents()
+        return chatSocketApi.observeEvents()
             .doOnSubscribe { onStartConnectionListener?.invoke() }
             .doOnCancel { onCloseConnectionListener?.invoke() }
             .flatMap { justOrEmptyFlowable(it.toChatEvent()) }
@@ -42,7 +42,7 @@ class ChatRepository(
     }
 
     fun sendMessage(message: String) {
-        chatService.sendMessage(
+        chatSocketApi.sendMessage(
             MessageRequestWrapper(
                 textMessageRequest = TextMessageRequest(message)
             )
@@ -50,7 +50,7 @@ class ChatRepository(
     }
 
     fun sendCallStatusRequest(callActionRequest: CallActionRequest) {
-        chatService.sendMessage(
+        chatSocketApi.sendMessage(
             MessageRequestWrapper(
                 callActionMessageRequest = messageMapper.toNetwork(callActionRequest)
             )

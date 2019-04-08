@@ -1,4 +1,4 @@
-package com.edoctor.data.remote.api
+package com.edoctor.data.remote.rest
 
 import com.edoctor.data.entity.remote.model.user.UserModelWrapper
 import io.reactivex.Single

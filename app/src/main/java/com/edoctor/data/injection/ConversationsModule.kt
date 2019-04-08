@@ -3,7 +3,7 @@ package com.edoctor.data.injection
 import android.content.Context
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.mapper.MessageMapper
-import com.edoctor.data.remote.api.ConversationsRestApi
+import com.edoctor.data.remote.rest.ConversationsRestApi
 import com.edoctor.data.repository.ConversationsRepository
 import dagger.Module
 import dagger.Provides

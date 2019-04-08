@@ -1,7 +1,7 @@
 package com.edoctor.data.repository
 
 import com.edoctor.data.entity.remote.model.user.DoctorModel
-import com.edoctor.data.remote.api.FindDoctorRestApi
+import com.edoctor.data.remote.rest.FindDoctorRestApi
 import io.reactivex.Single
 
 class FindDoctorRepository(

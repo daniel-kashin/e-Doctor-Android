@@ -5,8 +5,8 @@ import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.NetworkModule.Companion.AUTHORIZED_TAG
 import com.edoctor.data.injection.NetworkModule.Companion.EDOCTOR_WS_ENDPOINT
 import com.edoctor.data.mapper.MessageMapper
-import com.edoctor.data.remote.api.ChatRestApi
-import com.edoctor.data.remote.api.ChatService
+import com.edoctor.data.remote.rest.ChatRestApi
+import com.edoctor.data.remote.socket.ChatSocketApi
 import com.edoctor.data.repository.ChatRepository
 import com.edoctor.utils.RecipientEmailInterceptor
 import com.edoctor.utils.StoppableLifecycle
@@ -36,7 +36,7 @@ class ChatModule(
         @Named(AUTHORIZED_TAG)
         okHttpClientBuilder: OkHttpClient.Builder,
         moshi: Moshi
-    ): ChatService {
+    ): ChatSocketApi {
         val protocol = OkHttpWebSocket(
             okHttpClient = okHttpClientBuilder
                 .addInterceptor(RecipientEmailInterceptor(recipientUser.email))
@@ -64,12 +64,12 @@ class ChatModule(
 
     @Provides
     fun provideChatRepository(
-        chatService: ChatService,
+        chatSocketApi: ChatSocketApi,
         chatRestApi: ChatRestApi,
         context: Context
     ): ChatRepository = ChatRepository(
         currentUser, recipientUser,
-        chatRestApi, chatService,
+        chatRestApi, chatSocketApi,
         MessageMapper(context)
     ).apply {
         onStartConnectionListener = { lifecycle.start() }

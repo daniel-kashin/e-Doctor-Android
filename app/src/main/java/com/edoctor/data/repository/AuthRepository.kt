@@ -3,7 +3,7 @@ package com.edoctor.data.repository
 import com.edoctor.data.entity.remote.request.LoginDataRequest
 import com.edoctor.data.entity.remote.response.TokenResponse
 import com.edoctor.data.entity.remote.model.user.UserModelWrapper
-import com.edoctor.data.remote.api.AuthRestApi
+import com.edoctor.data.remote.rest.AuthRestApi
 import com.edoctor.data.session.SessionInfo
 import com.edoctor.data.session.SessionManager
 import com.edoctor.utils.onErrorConvertRetrofitThrowable

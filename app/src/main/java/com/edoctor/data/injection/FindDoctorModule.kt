@@ -1,6 +1,6 @@
 package com.edoctor.data.injection
 
-import com.edoctor.data.remote.api.FindDoctorRestApi
+import com.edoctor.data.remote.rest.FindDoctorRestApi
 import com.edoctor.data.repository.FindDoctorRepository
 import dagger.Module
 import dagger.Provides

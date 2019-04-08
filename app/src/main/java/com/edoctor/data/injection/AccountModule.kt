@@ -1,6 +1,6 @@
 package com.edoctor.data.injection
 
-import com.edoctor.data.remote.api.AccountRestApi
+import com.edoctor.data.remote.rest.AccountRestApi
 import com.edoctor.data.repository.AccountRepository
 import com.edoctor.data.session.SessionManager
 import dagger.Module
