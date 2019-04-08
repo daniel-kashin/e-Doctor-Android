@@ -28,15 +28,30 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.edoctor.presentation.app.welcome.WelcomeActivity"/>
-        <activity android:name=".presentation.app.view.MainActivity"/>
-        <activity android:name=".presentation.app.addParameter.AddOrEditParameterActivity"/>
-        <activity android:name=".presentation.app.addEvent.AddOrEditEventActivity"/>
+        <activity
+                android:name="com.edoctor.presentation.app.welcome.WelcomeActivity"
+                android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+                android:name=".presentation.app.view.MainActivity"
+                android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+                android:name=".presentation.app.addParameter.AddOrEditParameterActivity"
+                android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+                android:name=".presentation.app.addEvent.AddOrEditEventActivity"
+                android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+                android:name="com.edoctor.presentation.app.chat.ChatActivity"
+                android:windowSoftInputMode="adjustPan"/>
+
         <activity android:name=".presentation.app.parameter.ParameterActivity"/>
-        <activity android:name="com.edoctor.presentation.app.chat.ChatActivity"/>
+
 
     </application>
-
 
 
 </manifest>

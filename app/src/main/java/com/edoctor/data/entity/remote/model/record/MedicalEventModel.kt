@@ -1,6 +1,8 @@
 package com.edoctor.data.entity.remote.model.record
 
-sealed class MedicalEventModel : MedicalRecordModel(), DateSpecific, Commentable
+import java.io.Serializable
+
+sealed class MedicalEventModel : MedicalRecordModel(), DateSpecific, Commentable, Serializable
 
 data class Analysis(
     override val uuid: String,
@@ -15,10 +17,10 @@ data class Allergy(
     override val uuid: String,
     override val timestamp: Long,
     override val comment: String?,
-    val endTimestamp: Long?,
-    val allergenName: String?,
-    val reaction: String?
-) : MedicalEventModel()
+    override val endTimestamp: Long?,
+    val allergenName: String,
+    val symptoms: String?
+) : MedicalEventModel(), EndDateSpecific
 
 data class Note(
     override val uuid: String,
@@ -53,7 +55,8 @@ data class DoctorVisit(
     override val clinic: String?,
     override val doctorName: String?,
     override val doctorSpecialization: String?,
-    val diagnosisAndRecommendations: String?,
+    val complaints: String,
+    val diagnosisAndRecommendations: String,
     val recipe: String?
 ) : MedicalEventModel(), ClinicSpecific, DoctorSpecific
 
@@ -61,7 +64,7 @@ data class Sickness(
     override val uuid: String,
     override val timestamp: Long,
     override val comment: String?,
-    val endTimestamp: Long?,
+    override val endTimestamp: Long?,
     val symptoms: String?,
     val diagnosis: String
-) : MedicalEventModel()
+) : MedicalEventModel(), EndDateSpecific

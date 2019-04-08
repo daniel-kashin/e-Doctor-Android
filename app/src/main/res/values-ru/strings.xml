@@ -24,9 +24,6 @@
     <string name="unhandled_error_message">Что-то пошло не так</string>
     <string name="server_login_error_message">Введена неверная пара логин-пароль.</string>
     <string name="server_registration_error_message">Введенные данные неверны.</string>
-    <string name="loading_map">Загрузка карты...</string>
-    <string name="loading_json">Загрузка информации...</string>
-    <string name="loading_media">Загрузка медиа...</string>
     <string name="loading">Загрузка...</string>
     <string name="cancel">Остановить</string>
     <string name="download_excursion">Скачать экскурсию</string>
@@ -119,7 +116,30 @@
     <string name="systolic_value">Систолическое значение</string>
     <string name="diastolic_value">Диастолическое значение</string>
 
-    <string name="parameter_save_error">Поля заполнены неверно</string>
+    <string name="fields_wrong_content">Поля заполнены неверно</string>
 
     <string name="delete">Удалить</string>
+
+    <string name="analysis">Сдача анализов</string>
+    <string name="allergy">Аллергия</string>
+    <string name="note">Заметка</string>
+    <string name="vaccination">Прививка</string>
+    <string name="procedure">Процедура</string>
+    <string name="doctor_visit">Посещение врача</string>
+    <string name="sickness">Болезнь</string>
+    <string name="start_time">Время начала</string>
+    <string name="end_time">Время окончания</string>
+    <string name="clinic_name">Название медучреждения</string>
+    <string name="doctor_name">Доктор</string>
+    <string name="doctor_specialization">Специализация доктора</string>
+    <string name="start_date">Дата начала</string>
+    <string name="end_date">Дата окончания</string>
+    <string name="comment">Комментарий</string>
+    <string name="diagnosis">Диагноз</string>
+    <string name="symptoms">Симптомы</string>
+    <string name="recipe">Рецепт</string>
+    <string name="conclusion">Заключение</string>
+    <string name="allergen">Аллерген</string>
+    <string name="diagnosis_and_recommendations">Диагноз и рекомендации</string>
+    <string name="complaints">Жалобы</string>
 </resources>

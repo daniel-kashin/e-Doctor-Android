@@ -8,6 +8,10 @@ interface DateSpecific {
     val timestamp: Long
 }
 
+interface EndDateSpecific {
+    val endTimestamp: Long?
+}
+
 interface ClinicSpecific {
     val clinic: String?
 }

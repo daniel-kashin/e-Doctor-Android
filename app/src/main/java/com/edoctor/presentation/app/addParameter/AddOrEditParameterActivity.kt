@@ -49,7 +49,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
     private val deleteButton by lazyFind<Button>(R.id.delete_button)
 
     private var calendar: Calendar = Calendar.getInstance()
-    private val timestamp: Long get() = calendar.time.time.javaTimeToUnixTime()
+    private val timestamp: Long get() = calendar.time.let { calendar.time }.time.javaTimeToUnixTime()
     private val maxTimestamp = calendar.timeInMillis
 
     @SuppressLint("SimpleDateFormat")
@@ -70,7 +70,14 @@ class AddOrEditParameterActivity : AppCompatActivity() {
             DatePickerDialog(
                 this,
                 { _, year, month, dayOfMonth ->
-                    calendar.set(year, month, dayOfMonth, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), 0)
+                    calendar.set(
+                        year,
+                        month,
+                        dayOfMonth,
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
+                        0
+                    )
                     dateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(calendar.time.let { calendar.time }))
                 },
                 calendar.get(Calendar.YEAR),
@@ -87,7 +94,14 @@ class AddOrEditParameterActivity : AppCompatActivity() {
             TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), hourOfDay, minute, 0)
+                    calendar.set(
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH),
+                        hourOfDay,
+                        minute,
+                        0
+                    )
                     timeEditText.setText(SimpleDateFormat("HH:mm").format(calendar.time.let { calendar.time }))
                 },
                 calendar.get(Calendar.HOUR_OF_DAY),
@@ -97,23 +111,19 @@ class AddOrEditParameterActivity : AppCompatActivity() {
         }
 
         val parameter = intent.getSerializableExtra(PARAMETER_PARAM) as? BodyParameterModel
-        val parameterType = (intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as? BodyParameterType) ?: toType(parameter!!)
+        val parameterType =
+            (intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as? BodyParameterType) ?: toType(parameter!!)
 
         if (parameter == null) {
-            dateEditText.setText(
-                SimpleDateFormat("dd.MM.yyyy").format(calendar.time.let { calendar.time })
-            )
-            timeEditText.setText(
-                SimpleDateFormat("HH:mm").format(calendar.time.let { calendar.time })
-            )
+            dateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(calendar.time.let { calendar.time }))
+            timeEditText.setText(SimpleDateFormat("HH:mm").format(calendar.time.let { calendar.time }))
+
             deleteButton.hide()
         } else {
-            dateEditText.setText(
-                SimpleDateFormat("dd.MM.yyyy").format(parameter.timestamp.unixTimeToJavaTime())
-            )
-            timeEditText.setText(
-                SimpleDateFormat("HH:mm").format(parameter.timestamp.unixTimeToJavaTime())
-            )
+            dateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(parameter.timestamp.unixTimeToJavaTime()))
+            timeEditText.setText(SimpleDateFormat("HH:mm").format(parameter.timestamp.unixTimeToJavaTime()))
+            calendar.time = Date(parameter.timestamp)
+
             deleteButton.setOnClickListener {
                 finishWithRemoveParameter(parameter)
             }
@@ -131,7 +141,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                 saveButton.setOnClickListener {
                     val centimeters = firstValueEditText.positiveDoubleOrNull()?.takeIf { it > 0 }
                     if (centimeters == null) {
-                        toast(R.string.parameter_save_error)
+                        toast(R.string.fields_wrong_content)
                     } else {
                         finishWithBodyParameter(
                             if (parameter == null) {
@@ -155,7 +165,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                 saveButton.setOnClickListener {
                     val kilograms = firstValueEditText.positiveDoubleOrNull()?.takeIf { it > 0 }
                     if (kilograms == null) {
-                        toast(R.string.parameter_save_error)
+                        toast(R.string.fields_wrong_content)
                     } else {
                         finishWithBodyParameter(
                             if (parameter == null) {
@@ -176,7 +186,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                 saveButton.setOnClickListener {
                     val percents = firstValueEditText.positiveIntOrNull()?.takeIf { it <= 100 }
                     if (percents == null) {
-                        toast(R.string.parameter_save_error)
+                        toast(R.string.fields_wrong_content)
                     } else {
                         finishWithBodyParameter(
                             if (parameter == null) {
@@ -209,7 +219,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                     val first = firstValueEditText.positiveIntOrNull()
                     val second = secondValueEditText.positiveIntOrNull()
                     if (first == null || second == null) {
-                        toast(R.string.parameter_save_error)
+                        toast(R.string.fields_wrong_content)
                     } else {
                         finishWithBodyParameter(
                             if (parameter == null) {
@@ -233,7 +243,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                 saveButton.setOnClickListener {
                     val mmolPerLiter = firstValueEditText.positiveDoubleOrNull()
                     if (mmolPerLiter == null) {
-                        toast(R.string.parameter_save_error)
+                        toast(R.string.fields_wrong_content)
                     } else {
                         finishWithBodyParameter(
                             if (parameter == null) {
@@ -254,7 +264,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                 saveButton.setOnClickListener {
                     val celsius = firstValueEditText.positiveDoubleOrNull()
                     if (celsius == null) {
-                        toast(R.string.parameter_save_error)
+                        toast(R.string.fields_wrong_content)
                     } else {
                         finishWithBodyParameter(
                             if (parameter == null) {
@@ -286,7 +296,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                     val name = nameEditText?.text?.toString()?.takeIfNotBlank()
                     val unit = unitEditText?.text?.toString()?.takeIfNotBlank()
                     if (value == null || name == null || unit == null) {
-                        toast(R.string.parameter_save_error)
+                        toast(R.string.fields_wrong_content)
                     } else {
                         finishWithBodyParameter(
                             if (parameter == null) {
@@ -345,9 +355,10 @@ class AddOrEditParameterActivity : AppCompatActivity() {
 
         override fun areParamsValid() = parameterType != null || parameter != null
 
-        override fun get(): Intent = Intent(context, AddOrEditParameterActivity::class.java)
-            .putExtra(PARAMETER_TYPE_PARAM, parameterType)
-            .putExtra(PARAMETER_PARAM, parameter)
+        override fun get(): Intent =
+            Intent(context, AddOrEditParameterActivity::class.java)
+                .putExtra(PARAMETER_TYPE_PARAM, parameterType)
+                .putExtra(PARAMETER_PARAM, parameter)
 
     }
 
