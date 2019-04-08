@@ -26,9 +26,6 @@
     <string name="server_login_error_message">Either login or password is incorrect.</string>
     <string name="server_registration_error_message">The data you typed is invalid.</string>
 
-    <string name="loading_map">Loading map...</string>
-    <string name="loading_json">Loading info...</string>
-    <string name="loading_media">Loading media..</string>
     <string name="loading">Loading...</string>
 
     <string name="cancel">Cancel</string>
