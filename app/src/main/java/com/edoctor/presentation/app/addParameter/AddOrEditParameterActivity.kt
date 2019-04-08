@@ -48,9 +48,9 @@ class AddOrEditParameterActivity : AppCompatActivity() {
     private val saveButton by lazyFind<Button>(R.id.save_button)
     private val deleteButton by lazyFind<Button>(R.id.delete_button)
 
-    private var calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-    private val timestamp: Long get() = calendar.timeInMillis.javaTimeToUnixTime()
-    private val maxDate = calendar.timeInMillis
+    private var calendar: Calendar = Calendar.getInstance()
+    private val timestamp: Long get() = calendar.time.time.javaTimeToUnixTime()
+    private val maxTimestamp = calendar.timeInMillis
 
     @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,42 +65,19 @@ class AddOrEditParameterActivity : AppCompatActivity() {
             title = getString(R.string.parameter)
         }
 
-        dateEditText.setText(
-            SimpleDateFormat("dd.MM.yyyy")
-                .apply { timeZone = TimeZone.getTimeZone("UTC") }
-                .format(calendar.time)
-        )
-        timeEditText.setText(
-            SimpleDateFormat("hh:mm")
-                .apply { timeZone = TimeZone.getTimeZone("UTC") }
-                .format(calendar.time)
-        )
-
         dateEditText.isFocusable = false
         dateEditText.setOnClickListener {
             DatePickerDialog(
                 this,
                 { _, year, month, dayOfMonth ->
-                    calendar.set(
-                        year,
-                        month,
-                        dayOfMonth,
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE),
-                        0
-                    )
-                    calendar.time
-                    dateEditText.setText(
-                        SimpleDateFormat("dd.MM.yyyy")
-                            .apply { timeZone = TimeZone.getTimeZone("UTC") }
-                            .format(calendar.time)
-                    )
+                    calendar.set(year, month, dayOfMonth, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), 0)
+                    dateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(calendar.time.let { calendar.time }))
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
             ).apply {
-                datePicker.maxDate = maxDate
+                datePicker.maxDate = maxTimestamp
                 show()
             }
         }
@@ -110,20 +87,8 @@ class AddOrEditParameterActivity : AppCompatActivity() {
             TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                    calendar.set(
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH),
-                        hourOfDay,
-                        minute,
-                        0
-                    )
-                    calendar.time
-                    timeEditText.setText(
-                        SimpleDateFormat("hh:mm")
-                            .apply { timeZone = TimeZone.getTimeZone("UTC") }
-                            .format(calendar.time)
-                    )
+                    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), hourOfDay, minute, 0)
+                    timeEditText.setText(SimpleDateFormat("HH:mm").format(calendar.time.let { calendar.time }))
                 },
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
@@ -135,8 +100,20 @@ class AddOrEditParameterActivity : AppCompatActivity() {
         val parameterType = (intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as? BodyParameterType) ?: toType(parameter!!)
 
         if (parameter == null) {
+            dateEditText.setText(
+                SimpleDateFormat("dd.MM.yyyy").format(calendar.time.let { calendar.time })
+            )
+            timeEditText.setText(
+                SimpleDateFormat("HH:mm").format(calendar.time.let { calendar.time })
+            )
             deleteButton.hide()
         } else {
+            dateEditText.setText(
+                SimpleDateFormat("dd.MM.yyyy").format(parameter.measurementTimestamp.unixTimeToJavaTime())
+            )
+            timeEditText.setText(
+                SimpleDateFormat("HH:mm").format(parameter.measurementTimestamp.unixTimeToJavaTime())
+            )
             deleteButton.setOnClickListener {
                 finishWithRemoveParameter(parameter)
             }
@@ -366,7 +343,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
         fun parameterType(parameterType: BodyParameterType) = apply { this.parameterType = parameterType }
         fun parameter(parameter: BodyParameterModel) = apply { this.parameter = parameter }
 
-        override fun areParamsValid() = parameterType != null
+        override fun areParamsValid() = parameterType != null || parameter != null
 
         override fun get(): Intent = Intent(context, AddOrEditParameterActivity::class.java)
             .putExtra(PARAMETER_TYPE_PARAM, parameterType)

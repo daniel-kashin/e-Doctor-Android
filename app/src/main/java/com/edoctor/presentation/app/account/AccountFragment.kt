@@ -158,7 +158,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                     dateOfBirthEditText.setText(
                         SimpleDateFormat("dd.MM.yyyy")
                             .apply { timeZone = TimeZone.getTimeZone("UTC") }
-                            .format(nowCalendar.time)
+                            .format(nowCalendar.time.let { nowCalendar.time })
                     )
                 },
                 nowCalendar.get(Calendar.YEAR) - 20,
@@ -293,7 +293,9 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             val dateOfBirthTimestamp = viewState.account.dateOfBirthTimestamp
             dateOfBirthEditText.setText(
                 if (dateOfBirthTimestamp != null) {
-                    SimpleDateFormat("dd.MM.yyyy").format(Date(dateOfBirthTimestamp.unixTimeToJavaTime()))
+                    SimpleDateFormat("dd.MM.yyyy")
+                        .apply { timeZone = TimeZone.getTimeZone("UTC") }
+                        .format(Date(dateOfBirthTimestamp.unixTimeToJavaTime()))
                 } else {
                     null
                 }

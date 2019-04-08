@@ -141,7 +141,7 @@
     <string name="mmHg_params">%1$d/%2$d mmHg</string>
     <string name="mmol_per_liter_param">%1$.1f mmol/L</string>
     <string name="celcius_param" translatable="false">%1$.1f °C</string>
-    <string name="percent_param" translatable="false">%1$.1f %%</string>
+    <string name="percent_param" translatable="false">%1$d %%</string>
 
     <string name="cm">cm</string>
     <string name="kg">kg</string>
