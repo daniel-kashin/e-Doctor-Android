@@ -5,7 +5,7 @@ abstract class MedicalRecordModel {
 }
 
 interface DateSpecific {
-    val measurementTimestamp: Long
+    val timestamp: Long
 }
 
 interface ClinicSpecific {
@@ -13,7 +13,8 @@ interface ClinicSpecific {
 }
 
 interface DoctorSpecific {
-    val doctor: String?
+    val doctorName: String?
+    val doctorSpecialization: String?
 }
 
 interface Commentable {

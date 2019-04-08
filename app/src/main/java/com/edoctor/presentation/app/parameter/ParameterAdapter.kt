@@ -95,7 +95,7 @@ class ParameterAdapter : RecyclerView.Adapter<ViewHolder>() {
             }
 
             value.text = valueText
-            date.text = SimpleDateFormat("dd MMM, HH:mm").format(it.measurementTimestamp.unixTimeToJavaTime())
+            date.text = SimpleDateFormat("dd MMM, HH:mm").format(it.timestamp.unixTimeToJavaTime())
 
             rootView.setOnClickListener {
                 onParameterClickListener(bodyParameterModel)

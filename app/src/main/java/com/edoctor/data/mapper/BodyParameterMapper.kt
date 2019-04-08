@@ -17,24 +17,24 @@ object BodyParameterMapper {
     fun toWrapperModel(bodyParameterModel: BodyParameterModel): BodyParameterWrapper = bodyParameterModel.let {
         when (it) {
             is HeightModel -> {
-                BodyParameterWrapper(it.uuid, it.measurementTimestamp, TYPE_HEIGHT, it.centimeters)
+                BodyParameterWrapper(it.uuid, it.timestamp, TYPE_HEIGHT, it.centimeters)
             }
             is WeightModel -> {
-                BodyParameterWrapper(it.uuid, it.measurementTimestamp, TYPE_WEIGHT, it.kilograms)
+                BodyParameterWrapper(it.uuid, it.timestamp, TYPE_WEIGHT, it.kilograms)
             }
             is BloodOxygenModel -> {
-                BodyParameterWrapper(it.uuid, it.measurementTimestamp, TYPE_BLOOD_OXYGEN, it.percents.toDouble())
+                BodyParameterWrapper(it.uuid, it.timestamp, TYPE_BLOOD_OXYGEN, it.percents.toDouble())
             }
             is BloodSugarModel -> {
-                BodyParameterWrapper(it.uuid, it.measurementTimestamp, TYPE_BLOOD_SUGAR, it.mmolPerLiter)
+                BodyParameterWrapper(it.uuid, it.timestamp, TYPE_BLOOD_SUGAR, it.mmolPerLiter)
             }
             is TemperatureModel -> {
-                BodyParameterWrapper(it.uuid, it.measurementTimestamp, TYPE_TEMPERATURE, it.celsiusDegrees)
+                BodyParameterWrapper(it.uuid, it.timestamp, TYPE_TEMPERATURE, it.celsiusDegrees)
             }
             is BloodPressureModel -> {
                 BodyParameterWrapper(
                     uuid = it.uuid,
-                    measurementTimestamp = it.measurementTimestamp,
+                    measurementTimestamp = it.timestamp,
                     type = TYPE_BLOOD_PRESSURE,
                     firstValue = it.systolicMmHg.toDouble(),
                     secondValue = it.diastolicMmHg.toDouble()
@@ -43,7 +43,7 @@ object BodyParameterMapper {
             is CustomBodyParameterModel -> {
                 BodyParameterWrapper(
                     uuid = it.uuid,
-                    measurementTimestamp = it.measurementTimestamp,
+                    measurementTimestamp = it.timestamp,
                     type = TYPE_CUSTOM,
                     firstValue = it.value,
                     customModelName = it.name,

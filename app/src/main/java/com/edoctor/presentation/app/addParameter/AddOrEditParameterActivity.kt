@@ -109,10 +109,10 @@ class AddOrEditParameterActivity : AppCompatActivity() {
             deleteButton.hide()
         } else {
             dateEditText.setText(
-                SimpleDateFormat("dd.MM.yyyy").format(parameter.measurementTimestamp.unixTimeToJavaTime())
+                SimpleDateFormat("dd.MM.yyyy").format(parameter.timestamp.unixTimeToJavaTime())
             )
             timeEditText.setText(
-                SimpleDateFormat("HH:mm").format(parameter.measurementTimestamp.unixTimeToJavaTime())
+                SimpleDateFormat("HH:mm").format(parameter.timestamp.unixTimeToJavaTime())
             )
             deleteButton.setOnClickListener {
                 finishWithRemoveParameter(parameter)
@@ -138,7 +138,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                                 HeightModel(randomUUID().toString(), timestamp, centimeters)
                             } else {
                                 (parameter as HeightModel).copy(
-                                    measurementTimestamp = timestamp,
+                                    timestamp = timestamp,
                                     centimeters = centimeters
                                 )
                             }
@@ -161,7 +161,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                             if (parameter == null) {
                                 WeightModel(randomUUID().toString(), timestamp, kilograms)
                             } else {
-                                (parameter as WeightModel).copy(measurementTimestamp = timestamp, kilograms = kilograms)
+                                (parameter as WeightModel).copy(timestamp = timestamp, kilograms = kilograms)
                             }
                         )
                     }
@@ -183,7 +183,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                                 BloodOxygenModel(randomUUID().toString(), timestamp, percents)
                             } else {
                                 (parameter as BloodOxygenModel).copy(
-                                    measurementTimestamp = timestamp,
+                                    timestamp = timestamp,
                                     percents = percents
                                 )
                             }
@@ -216,7 +216,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                                 BloodPressureModel(randomUUID().toString(), timestamp, first, second)
                             } else {
                                 (parameter as BloodPressureModel).copy(
-                                    measurementTimestamp = timestamp,
+                                    timestamp = timestamp,
                                     systolicMmHg = first, diastolicMmHg = second
                                 )
                             }
@@ -239,7 +239,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                             if (parameter == null) {
                                 BloodSugarModel(randomUUID().toString(), timestamp, mmolPerLiter)
                             } else {
-                                (parameter as BloodSugarModel).copy(measurementTimestamp = timestamp, mmolPerLiter = mmolPerLiter)
+                                (parameter as BloodSugarModel).copy(timestamp = timestamp, mmolPerLiter = mmolPerLiter)
                             }
                         )
                     }
@@ -260,7 +260,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                             if (parameter == null) {
                                 TemperatureModel(randomUUID().toString(), timestamp, celsius)
                             } else {
-                                (parameter as TemperatureModel).copy(measurementTimestamp = timestamp, celsiusDegrees = celsius)
+                                (parameter as TemperatureModel).copy(timestamp = timestamp, celsiusDegrees = celsius)
                             }
                         )
                     }
@@ -298,7 +298,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
                                     value
                                 )
                             } else {
-                                (parameter as CustomBodyParameterModel).copy(measurementTimestamp = timestamp, value = value)
+                                (parameter as CustomBodyParameterModel).copy(timestamp = timestamp, value = value)
                             }
                         )
                     }
