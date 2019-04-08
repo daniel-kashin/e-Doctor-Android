@@ -20,7 +20,6 @@
     <string name="ok" translatable="false">OK</string>
 
     <string name="try_again">Try again</string>
-    <string name="server_error_message">An error on the server side. Please, try again later.</string>
     <string name="media_upload_error_message">Unable to upload</string>
     <string name="empty_bought_excursions">Bought excursions will be shown here</string>
     <string name="unhandled_error_message">Something went wrong.</string>
@@ -97,6 +96,7 @@
     <string name="register">Register</string>
 
     <string name="save_changes">Save changes</string>
+    <string name="delete">Delete</string>
 
     <string name="male">Male</string>
     <string name="female">Female</string>

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -14,21 +15,22 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.record.*
 import com.edoctor.data.entity.remote.model.record.BodyParameterType.Custom.Companion.NEW
+import com.edoctor.data.mapper.BodyParameterMapper.toType
 import com.edoctor.utils.*
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.UUID.randomUUID
 
-class AddParameterActivity : AppCompatActivity() {
+class AddOrEditParameterActivity : AppCompatActivity() {
 
     companion object {
         const val PARAMETER_TYPE_PARAM = "parameter_type"
         const val PARAMETER_PARAM = "parameter"
+        const val IS_REMOVED_PARAM = "is_removed"
     }
 
     private val toolbar by lazyFind<Toolbar>(R.id.toolbar)
@@ -43,6 +45,7 @@ class AddParameterActivity : AppCompatActivity() {
     private val secondValueLayout by lazyFind<TextInputLayout>(R.id.second_value_layout)
     private val secondValueDelimiter by lazyFind<View>(R.id.second_value_delimiter)
     private val saveButton by lazyFind<Button>(R.id.save_button)
+    private val deleteButton by lazyFind<Button>(R.id.delete_button)
 
     private var calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
     private val timestamp: Long get() = calendar.timeInMillis.javaTimeToUnixTime()
@@ -127,7 +130,16 @@ class AddParameterActivity : AppCompatActivity() {
             ).show()
         }
 
-        val parameterType = intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as BodyParameterType
+        val parameter = intent.getSerializableExtra(PARAMETER_PARAM) as? BodyParameterModel
+        val parameterType = (intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as? BodyParameterType) ?: toType(parameter!!)
+
+        if (parameter == null) {
+            deleteButton.hide()
+        } else {
+            deleteButton.setOnClickListener {
+                finishWithRemoveParameter(parameter)
+            }
+        }
 
         secondValueLayout.hide()
         secondValueDelimiter.hide()
@@ -143,9 +155,19 @@ class AddParameterActivity : AppCompatActivity() {
                     if (centimeters == null) {
                         toast(R.string.parameter_save_error)
                     } else {
-                        finishWithBodyParameter(HeightModel(randomUUID().toString(), timestamp, centimeters))
+                        finishWithBodyParameter(
+                            if (parameter == null) {
+                                HeightModel(randomUUID().toString(), timestamp, centimeters)
+                            } else {
+                                (parameter as HeightModel).copy(
+                                    measurementTimestamp = timestamp,
+                                    centimeters = centimeters
+                                )
+                            }
+                        )
                     }
                 }
+                firstValueEditText.setText((parameter as? HeightModel)?.centimeters?.toString())
             }
             is BodyParameterType.Weight -> {
                 nameEditText.setText(getString(R.string.weight))
@@ -157,9 +179,16 @@ class AddParameterActivity : AppCompatActivity() {
                     if (kilograms == null) {
                         toast(R.string.parameter_save_error)
                     } else {
-                        finishWithBodyParameter(WeightModel(randomUUID().toString(), timestamp, kilograms))
+                        finishWithBodyParameter(
+                            if (parameter == null) {
+                                WeightModel(randomUUID().toString(), timestamp, kilograms)
+                            } else {
+                                (parameter as WeightModel).copy(measurementTimestamp = timestamp, kilograms = kilograms)
+                            }
+                        )
                     }
                 }
+                firstValueEditText.setText((parameter as? WeightModel)?.kilograms?.toString())
             }
             is BodyParameterType.BloodOxygen -> {
                 nameEditText.setText(getString(R.string.blood_oxygen))
@@ -171,9 +200,19 @@ class AddParameterActivity : AppCompatActivity() {
                     if (percents == null) {
                         toast(R.string.parameter_save_error)
                     } else {
-                        finishWithBodyParameter(BloodOxygenModel(randomUUID().toString(), timestamp, percents))
+                        finishWithBodyParameter(
+                            if (parameter == null) {
+                                BloodOxygenModel(randomUUID().toString(), timestamp, percents)
+                            } else {
+                                (parameter as BloodOxygenModel).copy(
+                                    measurementTimestamp = timestamp,
+                                    percents = percents
+                                )
+                            }
+                        )
                     }
                 }
+                firstValueEditText.setText((parameter as? BloodOxygenModel)?.percents?.toString())
             }
             is BodyParameterType.BloodPressure -> {
                 nameEditText.setText(getString(R.string.blood_pressure))
@@ -185,13 +224,25 @@ class AddParameterActivity : AppCompatActivity() {
                 secondValueLayout.show()
                 secondValueDelimiter.show()
 
+                firstValueEditText.setText((parameter as? BloodPressureModel)?.systolicMmHg?.toString())
+                secondValueEditText.setText((parameter as? BloodPressureModel)?.diastolicMmHg?.toString())
+
                 saveButton.setOnClickListener {
                     val first = firstValueEditText.positiveIntOrNull()
                     val second = secondValueEditText.positiveIntOrNull()
                     if (first == null || second == null) {
                         toast(R.string.parameter_save_error)
                     } else {
-                        finishWithBodyParameter(BloodPressureModel(randomUUID().toString(), timestamp, first, second))
+                        finishWithBodyParameter(
+                            if (parameter == null) {
+                                BloodPressureModel(randomUUID().toString(), timestamp, first, second)
+                            } else {
+                                (parameter as BloodPressureModel).copy(
+                                    measurementTimestamp = timestamp,
+                                    systolicMmHg = first, diastolicMmHg = second
+                                )
+                            }
+                        )
                     }
                 }
             }
@@ -200,12 +251,19 @@ class AddParameterActivity : AppCompatActivity() {
                 unitEditText.setText(getText(R.string.mmol_per_liter))
                 nameEditText.isFocusable = false
                 unitEditText.isFocusable = false
+                firstValueEditText.setText((parameter as? BloodSugarModel)?.mmolPerLiter?.toString())
                 saveButton.setOnClickListener {
                     val mmolPerLiter = firstValueEditText.positiveDoubleOrNull()
                     if (mmolPerLiter == null) {
                         toast(R.string.parameter_save_error)
                     } else {
-                        finishWithBodyParameter(BloodSugarModel(randomUUID().toString(), timestamp, mmolPerLiter))
+                        finishWithBodyParameter(
+                            if (parameter == null) {
+                                BloodSugarModel(randomUUID().toString(), timestamp, mmolPerLiter)
+                            } else {
+                                (parameter as BloodSugarModel).copy(measurementTimestamp = timestamp, mmolPerLiter = mmolPerLiter)
+                            }
+                        )
                     }
                 }
             }
@@ -214,12 +272,19 @@ class AddParameterActivity : AppCompatActivity() {
                 unitEditText.setText(getText(R.string.celcius))
                 nameEditText.isFocusable = false
                 unitEditText.isFocusable = false
+                firstValueEditText.setText((parameter as? TemperatureModel)?.celsiusDegrees?.toString())
                 saveButton.setOnClickListener {
                     val celsius = firstValueEditText.positiveDoubleOrNull()
                     if (celsius == null) {
                         toast(R.string.parameter_save_error)
                     } else {
-                        finishWithBodyParameter(TemperatureModel(randomUUID().toString(), timestamp, celsius))
+                        finishWithBodyParameter(
+                            if (parameter == null) {
+                                TemperatureModel(randomUUID().toString(), timestamp, celsius)
+                            } else {
+                                (parameter as TemperatureModel).copy(measurementTimestamp = timestamp, celsiusDegrees = celsius)
+                            }
+                        )
                     }
                 }
             }
@@ -229,6 +294,7 @@ class AddParameterActivity : AppCompatActivity() {
                     unitEditText.setText(parameterType.unit)
                     nameEditText.isFocusable = false
                     unitEditText.isFocusable = false
+                    firstValueEditText.setText((parameter as? CustomBodyParameterModel)?.value?.toString())
                 } else {
                     nameEditText.isFocusable = true
                     unitEditText.isFocusable = true
@@ -245,19 +311,22 @@ class AddParameterActivity : AppCompatActivity() {
                         toast(R.string.parameter_save_error)
                     } else {
                         finishWithBodyParameter(
-                            CustomBodyParameterModel(
-                                randomUUID().toString(),
-                                timestamp,
-                                name,
-                                unit,
-                                value
-                            )
+                            if (parameter == null) {
+                                CustomBodyParameterModel(
+                                    randomUUID().toString(),
+                                    timestamp,
+                                    name,
+                                    unit,
+                                    value
+                                )
+                            } else {
+                                (parameter as CustomBodyParameterModel).copy(measurementTimestamp = timestamp, value = value)
+                            }
                         )
                     }
                 }
             }
         }
-
     }
 
     private fun EditText.positiveIntOrNull(): Int? {
@@ -278,16 +347,29 @@ class AddParameterActivity : AppCompatActivity() {
         finish()
     }
 
-    class IntentBuilder(fragment: Fragment) : CheckedIntentBuilder(fragment) {
+    private fun finishWithRemoveParameter(bodyParameterModel: BodyParameterModel) {
+        setResult(
+            Activity.RESULT_OK,
+            Intent()
+                .putExtra(PARAMETER_PARAM, bodyParameterModel)
+                .putExtra(IS_REMOVED_PARAM, true)
+        )
+        finish()
+    }
+
+    class IntentBuilder(context: Context) : CheckedIntentBuilder(context) {
 
         private var parameterType: BodyParameterType? = null
+        private var parameter: BodyParameterModel? = null
 
         fun parameterType(parameterType: BodyParameterType) = apply { this.parameterType = parameterType }
+        fun parameter(parameter: BodyParameterModel) = apply { this.parameter = parameter }
 
         override fun areParamsValid() = parameterType != null
 
-        override fun get(): Intent = Intent(context, AddParameterActivity::class.java)
+        override fun get(): Intent = Intent(context, AddOrEditParameterActivity::class.java)
             .putExtra(PARAMETER_TYPE_PARAM, parameterType)
+            .putExtra(PARAMETER_PARAM, parameter)
 
     }
 

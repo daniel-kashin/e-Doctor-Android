@@ -1,5 +1,6 @@
 package com.edoctor.presentation.app.medcard
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,10 @@ class MedcardFragment : Fragment() {
                         listOf(getString(R.string.tab_events), getString(R.string.tab_parameters))
                     )
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
 }

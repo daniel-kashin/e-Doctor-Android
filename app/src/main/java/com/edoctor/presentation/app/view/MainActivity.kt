@@ -1,5 +1,6 @@
 package com.edoctor.presentation.app.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -99,6 +100,10 @@ class MainActivity : AppCompatActivity() {
                     .replace(R.id.fragment_container, fragmentToOpen)
                     .commit()
             }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
 }

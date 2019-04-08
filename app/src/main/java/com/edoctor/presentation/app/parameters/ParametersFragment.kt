@@ -1,10 +1,11 @@
 package com.edoctor.presentation.app.parameters
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,26 +14,33 @@ import com.edoctor.data.entity.remote.model.record.*
 import com.edoctor.data.entity.remote.model.record.BodyParameterType.*
 import com.edoctor.data.entity.remote.model.record.BodyParameterType.Custom.Companion.NEW
 import com.edoctor.data.injection.ApplicationComponent
-import com.edoctor.presentation.app.addParameter.AddParameterActivity
+import com.edoctor.data.mapper.BodyParameterMapper.toType
+import com.edoctor.presentation.app.addParameter.AddOrEditParameterActivity
+import com.edoctor.presentation.app.parameter.ParameterActivity
 import com.edoctor.presentation.app.parameters.ParametersPresenter.Event
 import com.edoctor.presentation.app.parameters.ParametersPresenter.ViewState
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.SimpleDividerItemDecoration
-import com.edoctor.utils.toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import javax.inject.Inject
 
 class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("ParametersFragment") {
+
+    companion object {
+        const val PARAMETER_PARAM = "parameter"
+        const val IS_REMOVED_PARAM = "is_removed"
+        const val REQUEST_ADD_OR_EDIT_PARAMETER = 12300
+    }
 
     @Inject
     override lateinit var presenter: ParametersPresenter
 
     override val layoutRes: Int = R.layout.fragment_parameters
 
-    lateinit var recyclerView: RecyclerView
-    lateinit var fab: FloatingActionButton
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var fab: FloatingActionButton
 
-    lateinit var adapter: ParametersAdapter
+    private lateinit var adapter: ParametersAdapter
 
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.medicalRecordsComponent.inject(this)
@@ -57,6 +65,12 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
         val info = viewState.latestBodyParametersInfo
         if (info != null) {
             adapter.parameters = info.latestBodyParametersOfEachType
+            adapter.onParameterClickListener = { parameter ->
+                ParameterActivity.IntentBuilder(this)
+                    .parameterType(toType(parameter))
+                    .start()
+            }
+
             fab.show()
             fab.setOnClickListener {
                 PopupMenu(fab.context, fab).apply {
@@ -80,9 +94,14 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
 
                     setOnMenuItemClickListener { item ->
                         val type = namesToTypes.first { it.first == item.title }.second
-                        AddParameterActivity.IntentBuilder(this@ParametersFragment)
-                            .parameterType(type)
-                            .start()
+                        context?.let {
+                            startActivityForResult(
+                                AddOrEditParameterActivity.IntentBuilder(it)
+                                    .parameterType(type)
+                                    .get(),
+                                REQUEST_ADD_OR_EDIT_PARAMETER
+                            )
+                        }
                         true
                     }
                     show()
@@ -96,6 +115,23 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
 
     override fun showEvent(event: Event) {
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == ParameterActivity.REQUEST_ADD_OR_EDIT_PARAMETER) {
+                val parameter = data?.getSerializableExtra(PARAMETER_PARAM) as? BodyParameterModel
+                val isRemoved = data?.getBooleanExtra(IS_REMOVED_PARAM, false) ?: false
+                if (parameter != null) {
+                    if (isRemoved) {
+                        presenter.removeParameter(parameter)
+                    } else {
+                        presenter.addOrEditParameter(parameter)
+                    }
+                }
+            }
+        }
     }
 
 }

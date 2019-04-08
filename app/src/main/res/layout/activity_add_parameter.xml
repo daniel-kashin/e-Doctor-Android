@@ -187,4 +187,16 @@
             android:textColor="@color/primaryTextWhite"
             android:textSize="14sp"/>
 
+    <Button
+            android:id="@+id/delete_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:background="@drawable/login_button_red"
+            android:text="@string/delete"
+            android:textColor="@color/primaryTextWhite"
+            android:textSize="14sp"/>
+
 </LinearLayout>

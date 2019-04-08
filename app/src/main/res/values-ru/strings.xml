@@ -120,4 +120,6 @@
     <string name="diastolic_value">Диастолическое значение</string>
 
     <string name="parameter_save_error">Поля заполнены неверно</string>
+
+    <string name="delete">Удалить</string>
 </resources>
