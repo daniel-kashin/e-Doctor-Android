@@ -15,7 +15,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class EventsPresenter @Inject constructor(
-    val medicalRecordsRepository: MedicalRecordsRepository,
+    private val medicalRecordsRepository: MedicalRecordsRepository,
     @Named(ApplicationModule.MAIN_THREAD_SCHEDULER)
     private val observeScheduler: Scheduler,
     @Named(ApplicationModule.IO_THREAD_SCHEDULER)
@@ -30,6 +30,32 @@ class EventsPresenter @Inject constructor(
             .observeOn(observeScheduler)
             .subscribe({
                 setViewState { copy(medicalEventsInfo = it) }
+            }, {
+                // TODO
+                nothing()
+            })
+    }
+
+    fun addOrEditEvent(event: MedicalEventModel) {
+        disposables += medicalRecordsRepository.addOrEditEvent(event)
+            .subscribeOn(subscribeScheduler)
+            .observeOn(observeScheduler)
+            .subscribe({
+                // TODO
+                nothing()
+            }, {
+                // TODO
+                nothing()
+            })
+    }
+
+    fun removeEvent(event: MedicalEventModel) {
+        disposables += medicalRecordsRepository.removeEvent(event)
+            .subscribeOn(subscribeScheduler)
+            .observeOn(observeScheduler)
+            .subscribe({
+                // TODO
+                nothing()
             }, {
                 // TODO
                 nothing()

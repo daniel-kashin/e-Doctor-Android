@@ -1,5 +1,7 @@
 package com.edoctor.presentation.app.events
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
@@ -8,10 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.presentation.MedicalEventType.*
+import com.edoctor.data.entity.remote.model.record.BodyParameterModel
+import com.edoctor.data.entity.remote.model.record.MedicalEventModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.addEvent.AddOrEditEventActivity
 import com.edoctor.presentation.app.events.EventsPresenter.Event
 import com.edoctor.presentation.app.events.EventsPresenter.ViewState
+import com.edoctor.presentation.app.parameter.ParameterActivity
+import com.edoctor.presentation.app.parameters.ParametersFragment
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.SimpleDividerItemDecoration
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -20,6 +26,8 @@ import javax.inject.Inject
 class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFragment") {
 
     companion object {
+        const val EVENT_PARAM = "event"
+        const val IS_REMOVED_PARAM = "is_removed"
         const val REQUEST_ADD_OR_EDIT_PARAMETER = 12301
     }
 
@@ -106,6 +114,23 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
 
     override fun showEvent(event: Event) {
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_ADD_OR_EDIT_PARAMETER) {
+                val event = data?.getSerializableExtra(EVENT_PARAM) as? MedicalEventModel
+                if (event != null) {
+                    val isRemoved = data.getBooleanExtra(IS_REMOVED_PARAM, false)
+                    if (isRemoved) {
+                        presenter.removeEvent(event)
+                    } else {
+                        presenter.addOrEditEvent(event)
+                    }
+                }
+            }
+        }
     }
 
 }
