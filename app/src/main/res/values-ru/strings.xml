@@ -5,7 +5,7 @@
     <string name="guide">Гид</string>
     <string name="your_guide">Ваш гид</string>
     <string name="btn_chat">Чаты</string>
-    <string name="btn_search">Поиск доктора</string>
+    <string name="btn_search">Поиск врача</string>
     <string name="btn_medcard">Медкарта</string>
     <string name="btn_account">Аккаунт</string>
     <string name="kilometers">км</string>
@@ -28,7 +28,7 @@
     <string name="cancel">Остановить</string>
     <string name="download_excursion">Скачать экскурсию</string>
     <string name="search_excursions">Имя или почта</string>
-    <string name="type_search_excursions">Найдите доктора по имени или электронной почте</string>
+    <string name="type_search_excursions">Найдите врача по имени или специализации</string>
     <string name="nothing_was_found">Ничего не найдено. Попробуйте изменить поисковый запрос</string>
     <string name="username_error">Как минимум 1 символ</string>
     <string name="password_hint">Пароль</string>
@@ -47,7 +47,7 @@
     <string name="alteady_registered">Уже зарегистрированы?</string>
     <string name="you_are_user">Вы %1$s?</string>
     <string name="patient">пациент</string>
-    <string name="doctor">доктор</string>
+    <string name="doctor">врач</string>
     <string name="action_as_user">%1$s как %2$s</string>
     <string name="you_logged_in_as">Вы вошли как:</string>
     <string name="personal_recommendation">Рекомендация для Вас</string>
@@ -59,7 +59,6 @@
     <string name="only_route_supported">При добавлении Маршрута, Медиа и Гид будут добавлены автоматически. Спасибо, что используете Zighter.</string>
     <string name="money_not_supported">Перевод денег пока не поддерживается. Спасибо, что используете Zighter.</string>
     <string name="route_added">Маршрут был добавлен в список купленных экскурсий.</string>
-    <string name="adding_route">Маршрут добавляется...</string>
     <string name="adding_exception">Невозможно добавить маршрут. Пожалуйста, выберите другой маршрут и попробуйте заново.</string>
     <string name="register">Зарегистрироваться</string>
     <string name="save_changes">Сохранить изменения</string>
@@ -130,8 +129,8 @@
     <string name="start_time">Время начала</string>
     <string name="end_time">Время окончания</string>
     <string name="clinic_name">Название медучреждения</string>
-    <string name="doctor_name">Доктор</string>
-    <string name="doctor_specialization">Специализация доктора</string>
+    <string name="doctor_name">Врач</string>
+    <string name="doctor_specialization">Специализация врача</string>
     <string name="start_date">Дата начала</string>
     <string name="end_date">Дата окончания</string>
     <string name="comment">Комментарий</string>
@@ -142,4 +141,9 @@
     <string name="allergen">Аллерген</string>
     <string name="diagnosis_and_recommendations">Диагноз и рекомендации</string>
     <string name="complaints">Жалобы</string>
+    <string name="doctor_no_category">Врач</string>
+    <string name="doctor_second_category">Врач второй категории</string>
+    <string name="doctor_first_category">Врач первой категории</string>
+    <string name="doctor_highest_category">Врач высшей категории</string>
+
 </resources>

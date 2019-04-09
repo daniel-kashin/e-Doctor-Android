@@ -88,7 +88,6 @@
     <string name="only_route_supported">Media and Guide will be added automatically when adding Route. Thank you for using Zighter.</string>
     <string name="money_not_supported">Money transfers not supported yet. Please, choose free excursions from the list. Thank you for using Zighter.</string>
     <string name="route_added">Route has been added to the list of your excursions.</string>
-    <string name="adding_route">Adding route...</string>
     <string name="adding_exception">Unable to add route. Please, choose another route and try again.</string>
     <string name="register">Register</string>
 
@@ -102,6 +101,11 @@
     <string name="second_category">Second</string>
     <string name="first_category">First</string>
     <string name="highest_category">Highest</string>
+
+    <string name="doctor_no_category">Doctor</string>
+    <string name="doctor_second_category">Second category doctor</string>
+    <string name="doctor_first_category">First category doctor</string>
+    <string name="doctor_highest_category">Highest category doctor</string>
 
     <string name="take_photo">Take photo</string>
     <string name="pick_from_gallery">Pick from gallery</string>
