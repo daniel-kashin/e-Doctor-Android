@@ -149,4 +149,6 @@
     <string name="years_of_experince_param">%1$d лет практического опыта</string>
     <string name="years_param">%1$d лет</string>
     <string name="name_not_set">Имя не указано</string>
+    <string name="btn_doctor_access">Права врачей</string>
+    <string name="btn_medcards">Медкарты</string>
 </resources>

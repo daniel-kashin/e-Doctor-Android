@@ -4,6 +4,8 @@
     <string name="btn_chat">Chat</string>
     <string name="btn_search">Find doctor</string>
     <string name="btn_medcard">Medcard</string>
+    <string name="btn_doctor_access">Doctor access</string>
+    <string name="btn_medcards">Medcards</string>
     <string name="btn_account">Account</string>
 
     <string name="kilometers">km</string>

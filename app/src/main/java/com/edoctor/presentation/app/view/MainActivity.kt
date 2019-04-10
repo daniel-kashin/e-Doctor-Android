@@ -6,12 +6,15 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.edoctor.R
+import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.presentation.app.account.AccountFragment
 import com.edoctor.presentation.app.conversations.ConversationsFragment
 import com.edoctor.presentation.app.findDoctor.FindDoctorFragment
 import com.edoctor.presentation.app.medcard.MedcardFragment
+import com.edoctor.presentation.app.restrictions.RestrictionsFragment
+import com.edoctor.presentation.app.doctorMedcards.DoctorMedcardsFragment
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.disposableDelegate
 import com.edoctor.utils.lazyFind
@@ -31,10 +34,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        session.runIfOpened {
-            if (unwrapResponse(it.account) !is PatientModel) {
-                bottomNavigationView.menu.removeItem(R.id.action_medcard)
-                bottomNavigationView.menu.removeItem(R.id.action_find_doctor)
+        session.runIfOpened { userInfo ->
+            when (userInfo) {
+                is DoctorModel -> {
+                    bottomNavigationView.menu.findItem(R.id.action_medcard).title = getString(R.string.btn_medcards)
+                    bottomNavigationView.menu.removeItem(R.id.action_find_doctor)
+                    bottomNavigationView.menu.removeItem(R.id.action_restrictions)
+                }
+                is PatientModel -> {
+                    bottomNavigationView.menu.findItem(R.id.action_medcard).title = getString(R.string.btn_medcard)
+                }
             }
         } ?: run {
             onSessionException()
@@ -72,8 +81,21 @@ class MainActivity : AppCompatActivity() {
                 AccountFragment()
             }
             R.id.action_medcard -> {
-                if (topFragment is MedcardFragment) return
-                MedcardFragment()
+                session.runIfOpened { userInfo ->
+                    when (userInfo) {
+                        is DoctorModel -> {
+                            if (topFragment is DoctorMedcardsFragment) return
+                            DoctorMedcardsFragment()
+                        }
+                        is PatientModel -> {
+                            if (topFragment is MedcardFragment) return
+                            MedcardFragment()
+                        }
+                    }
+                } ?: run {
+                    onSessionException()
+                    return
+                }
             }
             R.id.action_find_doctor -> {
                 if (topFragment is FindDoctorFragment) return
@@ -81,12 +103,16 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_chat -> {
                 if (topFragment is ConversationsFragment) return
-                session.runIfOpened {
-                    ConversationsFragment.newInstance(requireNotNull(unwrapResponse(it.account)))
+                session.runIfOpened { userInfo ->
+                    ConversationsFragment.newInstance(userInfo)
                 } ?: run {
                     onSessionException()
                     return
                 }
+            }
+            R.id.action_restrictions -> {
+                if (topFragment is RestrictionsFragment) return
+                RestrictionsFragment()
             }
             else -> throw IllegalStateException("Unknown navigation item id")
         }

@@ -159,10 +159,10 @@ class DoctorActivity : AppCompatActivity() {
     }
 
     private fun openChatWithDoctor(doctor: DoctorModel) {
-        session.runIfOpened { sessionInfo ->
+        session.runIfOpened { userInfo ->
             ChatActivity.IntentBuilder(this)
                 .recipientUser(doctor)
-                .currentUser(requireNotNull(UserMapper.unwrapResponse(sessionInfo.account)))
+                .currentUser(userInfo)
                 .start()
         } ?: run {
             onSessionException()

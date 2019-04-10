@@ -1,5 +1,7 @@
 package com.edoctor.data.session
 
+import com.edoctor.data.entity.remote.model.user.UserModel
+import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.utils.SynchronizedDelegate
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -21,9 +23,14 @@ class SessionManager @Inject constructor(
     val info: SessionInfo
         get() = sessionInfo?.takeIf { it.isValid } ?: throw SessionNotOpenedException()
 
-    inline fun <R> runIfOpened(action: (SessionInfo) -> R): R? =
+    inline fun <R> runIfOpened(action: (UserModel) -> R): R? =
         if (isOpen) {
-            action(info)
+            val userInfo = unwrapResponse(info.account)
+            if (userInfo != null) {
+                action(userInfo)
+            } else {
+                null
+            }
         } else {
             null
         }

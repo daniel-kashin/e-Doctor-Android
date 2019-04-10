@@ -128,10 +128,10 @@ class PatientActivity : AppCompatActivity() {
     }
 
     private fun openChatWithPatient(patient: PatientModel) {
-        session.runIfOpened { sessionInfo ->
+        session.runIfOpened { userInfo ->
             ChatActivity.IntentBuilder(this)
                 .recipientUser(patient)
-                .currentUser(requireNotNull(UserMapper.unwrapResponse(sessionInfo.account)))
+                .currentUser(userInfo)
                 .start()
         } ?: run {
             onSessionException()
