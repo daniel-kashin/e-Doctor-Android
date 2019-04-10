@@ -101,6 +101,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             }
         }
 
+        iconCall.show(presenter.currentUser is DoctorModel)
         iconCall.setOnClickListener {
             presenter.initiateCall()
         }
