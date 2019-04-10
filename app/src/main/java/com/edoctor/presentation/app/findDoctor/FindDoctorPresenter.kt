@@ -34,7 +34,9 @@ class FindDoctorPresenter @Inject constructor(
                 .observeOn(observeScheduler)
                 .doOnSubscribe { setViewState(LoadingViewState) }
                 .subscribe(
-                    { setViewState(DoctorsViewState(it)) },
+                    {
+                        setViewState(DoctorsViewState(it))
+                    },
                     {
                         when {
                             it.isSessionException() -> sendEvent(Event.ShowSessionException)

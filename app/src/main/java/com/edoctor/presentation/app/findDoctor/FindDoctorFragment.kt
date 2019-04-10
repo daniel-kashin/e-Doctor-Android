@@ -17,6 +17,7 @@ import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.FindDoctorModule
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.presentation.app.chat.ChatActivity
+import com.edoctor.presentation.app.doctor.DoctorActivity
 import com.edoctor.presentation.app.findDoctor.FindDoctorPresenter.Event
 import com.edoctor.presentation.app.findDoctor.FindDoctorPresenter.Event.ShowSessionException
 import com.edoctor.presentation.app.findDoctor.FindDoctorPresenter.ViewState
@@ -91,7 +92,11 @@ class FindDoctorFragment : BaseFragment<FindDoctorPresenter, ViewState, Event>("
 
     private fun initializeRecyclerView(context: Context) {
         doctorsAdapter = FindDoctorAdapter().apply {
-            onDoctorClickListener = { openChatWithDoctor(it) }
+            onDoctorClickListener = { doctor ->
+                DoctorActivity.IntentBuilder(context)
+                    .doctor(doctor)
+                    .start()
+            }
         }
         recyclerView.adapter = doctorsAdapter
         recyclerView.addItemDecoration(SimpleDividerItemDecoration(context))

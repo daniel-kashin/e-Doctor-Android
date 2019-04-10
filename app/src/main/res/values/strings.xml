@@ -32,7 +32,7 @@
 
     <string name="download_excursion">Download excursion</string>
 
-    <string name="search_excursions">Name or email</string>
+    <string name="search_excursions">Name or specialization</string>
     <string name="type_search_excursions">Find doctor by name or email</string>
     <string name="nothing_was_found">There were found nothing. Try to change your request</string>
 

@@ -48,6 +48,10 @@
                 android:name="com.edoctor.presentation.app.chat.ChatActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
+        <activity
+                android:name=".presentation.app.doctor.DoctorActivity"
+                android:windowSoftInputMode="adjustPan"/>
+
         <activity android:name=".presentation.app.parameter.ParameterActivity"/>
 
 

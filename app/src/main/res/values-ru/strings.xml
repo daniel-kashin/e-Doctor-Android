@@ -27,7 +27,7 @@
     <string name="loading">Загрузка...</string>
     <string name="cancel">Остановить</string>
     <string name="download_excursion">Скачать экскурсию</string>
-    <string name="search_excursions">Имя или почта</string>
+    <string name="search_excursions">Имя или специализация</string>
     <string name="type_search_excursions">Найдите врача по имени или специализации</string>
     <string name="nothing_was_found">Ничего не найдено. Попробуйте изменить поисковый запрос</string>
     <string name="username_error">Как минимум 1 символ</string>

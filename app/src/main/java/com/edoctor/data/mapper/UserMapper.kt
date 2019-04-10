@@ -11,24 +11,26 @@ object UserMapper {
     fun withAbsoluteUrl(userModelWrapper: UserModelWrapper): UserModelWrapper? =
         when {
             userModelWrapper.doctorModel != null -> UserModelWrapper(
-                doctorModel = userModelWrapper.doctorModel.let {
-                    if (it.relativeImageUrl != null) {
-                        it.copy(relativeImageUrl = getAbsoluteImageUrl(it.relativeImageUrl))
-                    } else {
-                        it
-                    }
-                }
+                doctorModel = withAbsoluteUrl(userModelWrapper.doctorModel)
             )
             userModelWrapper.patientModel != null -> UserModelWrapper(
-                patientModel = userModelWrapper.patientModel.let {
-                    if (it.relativeImageUrl != null) {
-                        it.copy(relativeImageUrl = getAbsoluteImageUrl(it.relativeImageUrl))
-                    } else {
-                        it
-                    }
-                }
+                patientModel = withAbsoluteUrl(userModelWrapper.patientModel)
             )
             else -> null
+        }
+
+    fun withAbsoluteUrl(doctorModel: DoctorModel) =
+        if (doctorModel.relativeImageUrl != null) {
+            doctorModel.copy(relativeImageUrl = getAbsoluteImageUrl(doctorModel.relativeImageUrl))
+        } else {
+            doctorModel
+        }
+
+    fun withAbsoluteUrl(patientModel: PatientModel) =
+        if (patientModel.relativeImageUrl != null) {
+            patientModel.copy(relativeImageUrl = getAbsoluteImageUrl(patientModel.relativeImageUrl))
+        } else {
+            patientModel
         }
 
     fun unwrapResponse(userModelWrapper: UserModelWrapper): UserModel? =
