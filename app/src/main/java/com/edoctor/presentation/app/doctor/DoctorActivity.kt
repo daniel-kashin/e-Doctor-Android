@@ -113,7 +113,9 @@ class DoctorActivity : AppCompatActivity() {
             2 -> getString(R.string.doctor_second_category)
             else -> getString(R.string.doctor_no_category)
         }
-        val yearsOfExperienceText = doctor.yearsOfExperience?.let { ", ${getString(R.string.years_of_experince_param, it)}" }
+        val yearsOfExperienceText = doctor.yearsOfExperience
+            ?.let { ", ${getString(R.string.years_of_experince_param, it)}" }
+            ?: ""
         category.text = categoryText + yearsOfExperienceText
 
         if (doctor.clinicalInterests != null) {
