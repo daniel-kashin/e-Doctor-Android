@@ -184,17 +184,4 @@ class FindDoctorFragment : BaseFragment<FindDoctorPresenter, ViewState, Event>("
         recyclerView.visibility = View.INVISIBLE
     }
 
-    private fun openChatWithDoctor(doctor: DoctorModel) {
-        activity?.let { activity ->
-            activity.session.runIfOpened { sessionInfo ->
-                ChatActivity.IntentBuilder(this)
-                    .recipientUser(doctor)
-                    .currentUser(requireNotNull(unwrapResponse(sessionInfo.account)))
-                    .start()
-            } ?: run {
-                activity.onSessionException()
-            }
-        }
-    }
-
 }

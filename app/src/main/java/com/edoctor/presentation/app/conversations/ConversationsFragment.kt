@@ -68,11 +68,13 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
                     .into(imageView)
             }
         )
-        dialogsAdapter.setOnDialogClickListener {
-            ChatActivity.IntentBuilder(this)
-                .recipientUser(it.recipientUser)
-                .currentUser(it.currentUser)
-                .start()
+        context?.let { context ->
+            dialogsAdapter.setOnDialogClickListener { dialog ->
+                ChatActivity.IntentBuilder(context)
+                    .recipientUser(dialog.recipientUser)
+                    .currentUser(dialog.currentUser)
+                    .start()
+            }
         }
     }
 

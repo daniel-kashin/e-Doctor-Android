@@ -1,5 +1,6 @@
 package com.edoctor.presentation.app.chat
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
@@ -13,11 +14,14 @@ import com.edoctor.R
 import com.edoctor.data.entity.presentation.CallStatusMessage
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
 import com.edoctor.data.entity.presentation.Message
+import com.edoctor.data.entity.remote.model.user.DoctorModel
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ChatModule
 import com.edoctor.presentation.app.chat.ChatPresenter.Event
 import com.edoctor.presentation.app.chat.ChatPresenter.ViewState
+import com.edoctor.presentation.app.doctor.DoctorActivity
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.presentation.views.CallMessageContentChecker
 import com.edoctor.presentation.views.CallMessageContentChecker.Companion.CONTENT_TYPE_CALL
@@ -65,7 +69,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         val recipientUser = intent.getSerializableExtra(EXTRA_RECIPIENT_USER) as UserModel
         val currentUser = intent.getSerializableExtra(EXTRA_CURRENT_USER) as UserModel
         applicationComponent.plus(ChatModule(currentUser, recipientUser)).inject(this)
-        presenter.init(currentUser.email, recipientUser.email)
+        presenter.init(currentUser, recipientUser)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +77,26 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbarPrimaryText.text = presenter.recipientEmail
+
+        val recipientUser = presenter.recipientUser
+        toolbarPrimaryText.text = when {
+            recipientUser.fullName != null -> recipientUser.fullName
+            recipientUser is DoctorModel -> getString(R.string.doctor).capitalize()
+            recipientUser is PatientModel -> getString(R.string.patient).capitalize()
+            else -> null
+        }
+        toolbarPrimaryText.setOnClickListener {
+            when(recipientUser) {
+                is DoctorModel -> {
+                    DoctorActivity.IntentBuilder(this)
+                        .doctor(recipientUser)
+                        .start()
+                }
+                is PatientModel -> {
+                    // TODO
+                }
+            }
+        }
 
         iconCall.setOnClickListener {
             presenter.initiateCall()
@@ -100,7 +123,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
                 OutcomingCallMessageViewHolder::class.java, R.layout.item_outcoming_call_message,
                 CallMessageContentChecker()
             )
-        messagesAdapter = MessagesAdapter(presenter.currentUserEmail, holdersConfig)
+        messagesAdapter = MessagesAdapter(presenter.currentUser.email, holdersConfig)
         messagesList.setAdapter(messagesAdapter)
 
         jitsiMeetView = getMeetView()
@@ -165,7 +188,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
                 INITIATED -> {
                     hideJitsiMeetView()
                     callingView.bind(
-                        presenter.recipientEmail,
+                        presenter.recipientUser.email,
                         if (callStatusMessage.isFromCurrentUser) OUTCOMING else INCOMING
                     )
                     callingView.show()
@@ -222,7 +245,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         }
     }
 
-    class IntentBuilder(fragment: Fragment) : CheckedIntentBuilder(fragment) {
+    class IntentBuilder(context: Context) : CheckedIntentBuilder(context) {
 
         private var currentUser: UserModel? = null
         private var recipientUser: UserModel? = null

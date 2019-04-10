@@ -4,6 +4,7 @@ import com.edoctor.data.entity.presentation.CallActionRequest
 import com.edoctor.data.entity.presentation.CallActionRequest.CallAction.*
 import com.edoctor.data.entity.presentation.CallStatusMessage
 import com.edoctor.data.entity.presentation.Message
+import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.ChatRepository
 import com.edoctor.presentation.architecture.presenter.BasePresenter
@@ -23,8 +24,8 @@ class ChatPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ChatPresenter.ViewState, ChatPresenter.Event>() {
 
-    lateinit var currentUserEmail: String
-    lateinit var recipientEmail: String
+    lateinit var currentUser: UserModel
+    lateinit var recipientUser: UserModel
 
     private var connectivityDisposable by disposableDelegate
     private var currentMessagesDisposable by disposableDelegate
@@ -32,9 +33,9 @@ class ChatPresenter @Inject constructor(
 
     private var lastMessageUpdateTimestamp: Long = -1
 
-    fun init(currentUserEmail: String, recipientEmail: String) {
-        this.currentUserEmail = currentUserEmail
-        this.recipientEmail = recipientEmail
+    fun init(currentUser: UserModel, recipientUser: UserModel) {
+        this.currentUser = currentUser
+        this.recipientUser = recipientUser
 
         setViewState(ViewState())
     }

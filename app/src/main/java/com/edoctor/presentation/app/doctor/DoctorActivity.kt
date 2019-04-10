@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -22,9 +23,13 @@ import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.remote.model.user.DoctorModel
+import com.edoctor.data.mapper.UserMapper
+import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.utils.CheckedIntentBuilder
+import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.hide
 import com.edoctor.utils.lazyFind
+import com.edoctor.utils.session
 import com.google.android.material.textfield.TextInputEditText
 
 class DoctorActivity : AppCompatActivity() {
@@ -38,6 +43,7 @@ class DoctorActivity : AppCompatActivity() {
     private val name by lazyFind<TextView>(R.id.name)
     private val specialization by lazyFind<TextView>(R.id.specialization)
     private val category by lazyFind<TextView>(R.id.category)
+    private val openChat by lazyFind<Button>(R.id.open_chat)
 
     private val clinicalInterests by lazyFind<TextInputEditText>(R.id.clinical_interests)
     private val education by lazyFind<TextInputEditText>(R.id.education)
@@ -133,12 +139,26 @@ class DoctorActivity : AppCompatActivity() {
         } else {
             trainings.hideParent()
         }
+
+        openChat.setOnClickListener {
+            openChatWithDoctor(doctor)
+        }
+    }
+
+    private fun openChatWithDoctor(doctor: DoctorModel) {
+        session.runIfOpened { sessionInfo ->
+            ChatActivity.IntentBuilder(this)
+                .recipientUser(doctor)
+                .currentUser(requireNotNull(UserMapper.unwrapResponse(sessionInfo.account)))
+                .start()
+        } ?: run {
+            onSessionException()
+        }
     }
 
     private fun AppCompatEditText.hideParent() {
         (parent.parent as? View)?.hide()
     }
-
 
     class IntentBuilder(context: Context) : CheckedIntentBuilder(context) {
 
