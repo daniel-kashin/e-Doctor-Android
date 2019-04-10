@@ -45,6 +45,7 @@ class DoctorActivity : AppCompatActivity() {
     private val category by lazyFind<TextView>(R.id.category)
     private val openChat by lazyFind<Button>(R.id.open_chat)
 
+    private val labelCareer by lazyFind<TextView>(R.id.label_career)
     private val clinicalInterests by lazyFind<TextInputEditText>(R.id.clinical_interests)
     private val education by lazyFind<TextInputEditText>(R.id.education)
     private val workExperience by lazyFind<TextInputEditText>(R.id.work_experience)
@@ -103,9 +104,13 @@ class DoctorActivity : AppCompatActivity() {
             )
             .into(imageView)
 
-        name.text = doctor.fullName
+        name.text = doctor.fullName ?: getString(R.string.name_not_set)
 
-        specialization.text = doctor.specialization
+        if (doctor.specialization != null) {
+            specialization.text = doctor.specialization
+        } else {
+            specialization.hide()
+        }
 
         val categoryText = when (doctor.category) {
             0 -> getString(R.string.doctor_highest_category)
@@ -117,6 +122,12 @@ class DoctorActivity : AppCompatActivity() {
             ?.let { ", ${getString(R.string.years_of_experince_param, it)}" }
             ?: ""
         category.text = categoryText + yearsOfExperienceText
+
+        if (doctor.clinicalInterests == null && doctor.education == null &&
+            doctor.workExperience == null && doctor.trainings == null
+        ) {
+            labelCareer.hide()
+        }
 
         if (doctor.clinicalInterests != null) {
             clinicalInterests.setText(doctor.clinicalInterests)

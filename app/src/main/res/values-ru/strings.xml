@@ -147,4 +147,6 @@
     <string name="doctor_highest_category">Врач высшей категории</string>
     <string name="open_chat">Перейти к чату</string>
     <string name="years_of_experince_param">%1$d лет практического опыта</string>
+    <string name="years_param">%1$d лет</string>
+    <string name="name_not_set">Имя не указано</string>
 </resources>

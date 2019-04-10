@@ -15,8 +15,7 @@ class ConversationsRepository(
     fun getConversations(): Single<List<Conversation>> {
         return api.getConversations().map { result ->
             result.lastMessages
-                .mapNotNull { messageMapper.toPresentation(it, currentUser) }
-                .map { Conversation(currentUser, it) }
+                .mapNotNull { messageMapper.toConversation(it, currentUser) }
         }
     }
 

@@ -24,7 +24,18 @@ import com.edoctor.data.mapper.UserMapper.withAbsoluteUrl
 
 class MessageMapper(context: Context) {
 
-    val applicationContext = context.applicationContext
+    private val applicationContext: Context = context.applicationContext
+
+    fun toConversation(
+        messageWrapperResponse: MessageResponseWrapper,
+        currentUser: UserModel
+    ): Conversation? {
+        return toPresentation(messageWrapperResponse, currentUser)?.let {
+            val doctorString = applicationContext.getString(R.string.doctor).capitalize()
+            val patientString = applicationContext.getString(R.string.patient).capitalize()
+            Conversation(currentUser, doctorString, patientString, it)
+        }
+    }
 
     fun toPresentation(
         messagesResponse: MessagesResponse,
@@ -55,8 +66,10 @@ class MessageMapper(context: Context) {
         textMessageResult: TextMessageResponse
     ): TextMessage? =
         textMessageResult.run {
-            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser) ?: return@run null) ?: return@run null
-            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser) ?: return@run null) ?: return@run null
+            val senderUserUnwrapped =
+                unwrapResponse(withAbsoluteUrl(senderUser) ?: return@run null) ?: return@run null
+            val recipientUserUnwrapped =
+                unwrapResponse(withAbsoluteUrl(recipientUser) ?: return@run null) ?: return@run null
             TextMessage(
                 uuid,
                 senderUserUnwrapped,
@@ -72,8 +85,10 @@ class MessageMapper(context: Context) {
     ): CallStatusMessage? =
         callStatusMessage.run {
             val callStatus = getCallStatusFromValue(callStatus)
-            val senderUserUnwrapped = unwrapResponse(withAbsoluteUrl(senderUser) ?: return@run null) ?: return@run null
-            val recipientUserUnwrapped = unwrapResponse(withAbsoluteUrl(recipientUser) ?: return@run null) ?: return@run null
+            val senderUserUnwrapped =
+                unwrapResponse(withAbsoluteUrl(senderUser) ?: return@run null) ?: return@run null
+            val recipientUserUnwrapped =
+                unwrapResponse(withAbsoluteUrl(recipientUser) ?: return@run null) ?: return@run null
             val isFromCurrentUser = currentUser.email == senderUserUnwrapped.email
             val text = callStatus.toText(isFromCurrentUser)
             CallStatusMessage(

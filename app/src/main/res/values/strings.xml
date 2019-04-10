@@ -190,4 +190,8 @@
     <string name="open_chat">Open chat</string>
 
     <string name="years_of_experince_param">%1$d years of practical experience</string>
+
+    <string name="years_param">%1$d years</string>
+
+    <string name="name_not_set">Name not set</string>
 </resources>

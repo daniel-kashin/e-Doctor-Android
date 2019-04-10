@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:id="@+id/root_view"
+              android:background="@android:color/white"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="8dp"
+            android:background="@android:color/white"/>
+
+    <ScrollView
+            android:layout_weight="1"
+            android:layout_width="match_parent" android:layout_height="0dp">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:id="@+id/image_view"
+                    android:layout_width="175dp"
+                    android:layout_height="175dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@color/lightLightGrey"/>
+
+            <TextView
+                    android:id="@+id/name"
+                    android:textSize="26sp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Пупкин Василий Игоревич"/>
+
+            <TextView
+                    android:id="@+id/city_and_years"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:textSize="18sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Москва, 25 лет"/>
+
+            <TextView
+                    android:id="@+id/blood_group"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    tools:text="Группа крови: II+"/>
+
+            <Button
+                    android:id="@+id/open_chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/login_button_green"
+                    android:text="@string/open_chat"
+                    android:textColor="@color/primaryTextWhite"
+                    android:textSize="14sp"/>
+
+            <View
+                    android:id="@+id/main_info_delimiter"
+                    android:background="@color/lightGrey"
+                    android:layout_width="match_parent" android:layout_height="1dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

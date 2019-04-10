@@ -22,6 +22,7 @@ import com.edoctor.data.injection.ChatModule
 import com.edoctor.presentation.app.chat.ChatPresenter.Event
 import com.edoctor.presentation.app.chat.ChatPresenter.ViewState
 import com.edoctor.presentation.app.doctor.DoctorActivity
+import com.edoctor.presentation.app.patient.PatientActivity
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.presentation.views.CallMessageContentChecker
 import com.edoctor.presentation.views.CallMessageContentChecker.Companion.CONTENT_TYPE_CALL
@@ -93,7 +94,9 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
                         .start()
                 }
                 is PatientModel -> {
-                    // TODO
+                    PatientActivity.IntentBuilder(this)
+                        .patient(recipientUser)
+                        .start()
                 }
             }
         }
