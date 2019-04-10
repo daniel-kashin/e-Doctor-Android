@@ -71,7 +71,7 @@
     <string name="pick_from_gallery">Выбрать из галереи</string>
     <string name="main_information">Основная информация</string>
     <string name="career">Карьера</string>
-    <string name="years_of_experience_hint">Лет опыта</string>
+    <string name="years_of_experience_hint">Лет практического опыта</string>
     <string name="category_hint">Категория</string>
     <string name="specialization_hint">Специализация</string>
     <string name="clinical_interests_hint">Клинические интересы</string>
@@ -145,5 +145,6 @@
     <string name="doctor_second_category">Врач второй категории</string>
     <string name="doctor_first_category">Врач первой категории</string>
     <string name="doctor_highest_category">Врач высшей категории</string>
-
+    <string name="open_chat">Перейти к чату</string>
+    <string name="years_of_experince_param">%1$d лет практического опыта</string>
 </resources>

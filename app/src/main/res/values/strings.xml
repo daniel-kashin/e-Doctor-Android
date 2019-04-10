@@ -45,7 +45,7 @@
     <string name="city_hint">City</string>
     <string name="gender_hint">Gender</string>
     <string name="blood_group_hint">Blood group</string>
-    <string name="years_of_experience_hint">Years of experience</string>
+    <string name="years_of_experience_hint">Years of practical experience</string>
     <string name="category_hint">Category</string>
     <string name="specialization_hint">Specialization</string>
     <string name="clinical_interests_hint">Clinical interests</string>
@@ -186,4 +186,8 @@
     <string name="procedure">Procedure</string>
     <string name="doctor_visit">Doctor visit</string>
     <string name="sickness">Sickness</string>
+
+    <string name="open_chat">Open chat</string>
+
+    <string name="years_of_experince_param">%1$d years of practical experience</string>
 </resources>

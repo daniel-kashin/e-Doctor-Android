@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:id="@+id/root_view"
               android:background="@android:color/white"
@@ -13,44 +14,163 @@
             android:elevation="8dp"
             android:background="@android:color/white"/>
 
-    <ImageView
-            android:id="@+id/image_view"
-            android:layout_width="match_parent"
-            android:layout_height="175dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@color/lightLightGrey"/>
+    <ScrollView
+            android:layout_weight="1"
+            android:layout_width="match_parent" android:layout_height="0dp">
 
-    <TextView
-            android:id="@+id/name"
-            android:textSize="22sp"
-            android:textColor="@android:color/black"
-            android:textStyle="bold"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Пупкин Василий Игоревич"/>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <TextView
-            android:id="@+id/specialization"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Терапевт, Детский лор, Педиатр"/>
+            <ImageView
+                    android:id="@+id/image_view"
+                    android:layout_width="175dp"
+                    android:layout_height="175dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@color/lightLightGrey"/>
 
-    <TextView
-            android:id="@+id/category"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_width="wrap_content"
-            android:textSize="18sp"
-            android:layout_height="wrap_content"
-            tools:text="Врач высшей категории"/>
+            <TextView
+                    android:id="@+id/name"
+                    android:textSize="26sp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Пупкин Василий Игоревич"/>
 
+            <TextView
+                    android:id="@+id/specialization"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:textSize="18sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Терапевт, Детский лор, Педиатр"/>
+
+            <TextView
+                    android:id="@+id/category"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    tools:text="Врач высшей категории"/>
+
+            <Button
+                    android:id="@+id/save_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/login_button_green"
+                    android:text="@string/open_chat"
+                    android:textColor="@color/primaryTextWhite"
+                    android:textSize="14sp"/>
+
+            <View
+                    android:id="@+id/main_info_delimiter"
+                    android:background="@color/lightGrey"
+                    android:layout_width="match_parent" android:layout_height="1dp"/>
+
+            <TextView
+                    android:id="@+id/label_career"
+                    android:layout_marginTop="10dp"
+                    android:textSize="26sp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="12dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/career"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/clinical_interests_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="false"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/clinical_interests"
+                        android:inputType="textNoSuggestions|text|textMultiLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/clinical_interests_hint"
+                        android:background="@null"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/education_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    app:errorEnabled="false"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/education"
+                        android:inputType="textNoSuggestions|text|textMultiLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/education_hint"
+                        android:background="@null"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/work_experience_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    app:errorEnabled="false"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/work_experience"
+                        android:inputType="textNoSuggestions|text|textMultiLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/work_experience_hint"
+                        android:background="@null"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/trainings_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    app:errorEnabled="false"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/trainings"
+                        android:inputType="textNoSuggestions|text|textMultiLine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/trainings_hint"
+                        android:background="@null"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

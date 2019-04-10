@@ -1,21 +1,31 @@
 package com.edoctor.presentation.app.doctor
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
+import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.utils.CheckedIntentBuilder
+import com.edoctor.utils.hide
 import com.edoctor.utils.lazyFind
+import com.google.android.material.textfield.TextInputEditText
 
 class DoctorActivity : AppCompatActivity() {
 
@@ -23,14 +33,26 @@ class DoctorActivity : AppCompatActivity() {
         const val DOCTOR_PARAM = "doctor"
     }
 
+    private val toolbar by lazyFind<Toolbar>(R.id.toolbar)
     private val imageView by lazyFind<ImageView>(R.id.image_view)
     private val name by lazyFind<TextView>(R.id.name)
     private val specialization by lazyFind<TextView>(R.id.specialization)
     private val category by lazyFind<TextView>(R.id.category)
 
+    private val clinicalInterests by lazyFind<TextInputEditText>(R.id.clinical_interests)
+    private val education by lazyFind<TextInputEditText>(R.id.education)
+    private val workExperience by lazyFind<TextInputEditText>(R.id.work_experience)
+    private val trainings by lazyFind<TextInputEditText>(R.id.trainings)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_doctor)
+
+        try {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } catch (e: IllegalStateException) {
+            // NOTE: https://issuetracker.google.com/issues/68454482
+        }
 
         window.decorView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -40,15 +62,29 @@ class DoctorActivity : AppCompatActivity() {
             }
         })
 
+        setSupportActionBar(toolbar)
+        supportActionBar?.run {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            setBackgroundDrawable(ColorDrawable(Color.WHITE))
+            title = getString(R.string.doctor).capitalize()
+        }
 
-        imageView.viewTreeObserver.addOnGlobalLayoutListener({
-
-        })
+        clinicalInterests.isFocusable = false
+        education.isFocusable = false
+        workExperience.isFocusable = false
+        trainings.isFocusable = false
 
         val doctor = intent?.getSerializableExtra(DOCTOR_PARAM) as DoctorModel
         showDoctorInfo(doctor)
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun showDoctorInfo(doctor: DoctorModel) {
         Glide.with(this)
             .load(doctor.relativeImageUrl)
@@ -62,14 +98,47 @@ class DoctorActivity : AppCompatActivity() {
             .into(imageView)
 
         name.text = doctor.fullName
+
         specialization.text = doctor.specialization
-        category.text = when (doctor.category) {
+
+        val categoryText = when (doctor.category) {
             0 -> getString(R.string.doctor_highest_category)
             1 -> getString(R.string.doctor_first_category)
             2 -> getString(R.string.doctor_second_category)
             else -> getString(R.string.doctor_no_category)
         }
+        val yearsOfExperienceText = doctor.yearsOfExperience?.let { ", ${getString(R.string.years_of_experince_param, it)}" }
+        category.text = categoryText + yearsOfExperienceText
+
+        if (doctor.clinicalInterests != null) {
+            clinicalInterests.setText(doctor.clinicalInterests)
+        } else {
+            clinicalInterests.hideParent()
+        }
+
+        if (doctor.education != null) {
+            education.setText(doctor.education)
+        } else {
+            education.hideParent()
+        }
+
+        if (doctor.workExperience != null) {
+            workExperience.setText(doctor.workExperience)
+        } else {
+            workExperience.hideParent()
+        }
+
+        if (doctor.trainings != null) {
+            trainings.setText(doctor.trainings)
+        } else {
+            trainings.hideParent()
+        }
     }
+
+    private fun AppCompatEditText.hideParent() {
+        (parent.parent as? View)?.hide()
+    }
+
 
     class IntentBuilder(context: Context) : CheckedIntentBuilder(context) {
 
