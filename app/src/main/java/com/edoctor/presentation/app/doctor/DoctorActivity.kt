@@ -23,16 +23,18 @@ import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.remote.model.user.DoctorModel
+import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.mapper.UserMapper
 import com.edoctor.presentation.app.chat.ChatActivity
-import com.edoctor.utils.CheckedIntentBuilder
+import com.edoctor.presentation.app.doctor.DoctorPresenter.Event
+import com.edoctor.presentation.app.doctor.DoctorPresenter.ViewState
+import com.edoctor.presentation.architecture.activity.BaseActivity
+import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
-import com.edoctor.utils.hide
-import com.edoctor.utils.lazyFind
-import com.edoctor.utils.session
 import com.google.android.material.textfield.TextInputEditText
+import javax.inject.Inject
 
-class DoctorActivity : AppCompatActivity() {
+class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorActivity") {
 
     companion object {
         const val DOCTOR_PARAM = "doctor"
@@ -50,16 +52,29 @@ class DoctorActivity : AppCompatActivity() {
     private val education by lazyFind<TextInputEditText>(R.id.education)
     private val workExperience by lazyFind<TextInputEditText>(R.id.work_experience)
     private val trainings by lazyFind<TextInputEditText>(R.id.trainings)
+    private val careerDelimiter by lazyFind<View>(R.id.career_delimiter)
+
+    private val labelMedcard by lazyFind<TextView>(R.id.label_medcard)
+    private val medicalAccess by lazyFind<TextInputEditText>(R.id.medcard_access)
+    private val medcardDelimiter by lazyFind<View>(R.id.medcard_delimiter)
+
+    @Inject
+    override lateinit var presenter: DoctorPresenter
+
+    override val layoutRes: Int = R.layout.activity_doctor
+
+    override fun init(applicationComponent: ApplicationComponent) {
+        applicationComponent.medicalAccessesComponent.inject(this)
+        val doctor = intent?.getSerializableExtra(DOCTOR_PARAM) as DoctorModel
+        presenter.init(doctor)
+    }
+
+    override fun createScreenConfig(): ScreenConfig {
+        return ScreenConfig(isPortraitOrientationRequired = true, isOpenedSessionRequired = true)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_doctor)
-
-        try {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        } catch (e: IllegalStateException) {
-            // NOTE: https://issuetracker.google.com/issues/68454482
-        }
 
         window.decorView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -82,8 +97,38 @@ class DoctorActivity : AppCompatActivity() {
         workExperience.isFocusable = false
         trainings.isFocusable = false
 
-        val doctor = intent?.getSerializableExtra(DOCTOR_PARAM) as DoctorModel
-        showDoctorInfo(doctor)
+        medicalAccess.isFocusable = false
+
+        showDoctorInfo(presenter.doctor)
+    }
+
+    override fun render(viewState: ViewState) {
+        val access = viewState.medicalAccessForPatientModel
+        if (access == null) {
+            labelMedcard.hide()
+            medicalAccess.hideParent()
+            medcardDelimiter.hide()
+        } else {
+            medicalAccess.setText(
+                if (access.medicalRecordTypes.isEmpty()) {
+                    getString(R.string.doctor_has_no_access_to_medcard)
+                } else {
+                    access.medicalRecordTypes.size.toString()
+                }
+            )
+
+            medicalAccess.setOnClickListener {
+                toast("Manage medcard")
+            }
+
+            labelMedcard.show()
+            medicalAccess.showParent()
+            medcardDelimiter.show()
+        }
+    }
+
+    override fun showEvent(event: Event) {
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -127,6 +172,7 @@ class DoctorActivity : AppCompatActivity() {
             doctor.workExperience == null && doctor.trainings == null
         ) {
             labelCareer.hide()
+            careerDelimiter.hide()
         }
 
         if (doctor.clinicalInterests != null) {
@@ -171,6 +217,10 @@ class DoctorActivity : AppCompatActivity() {
 
     private fun AppCompatEditText.hideParent() {
         (parent.parent as? View)?.hide()
+    }
+
+    private fun AppCompatEditText.showParent() {
+        (parent.parent as? View)?.show()
     }
 
     class IntentBuilder(context: Context) : CheckedIntentBuilder(context) {

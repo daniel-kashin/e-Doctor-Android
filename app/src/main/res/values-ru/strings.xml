@@ -152,4 +152,7 @@
     <string name="btn_doctor_access">Права врачей</string>
     <string name="btn_medcards">Медкарты</string>
     <string name="empty_medical_accesses">Откройте профиль врача и дайте доступ к вашей медкарте хотя бы одному врачу</string>
+    <string name="medcard_access_hint">Доступ к вашей медкарте</string>
+    <string name="doctor_has_no_access_to_medcard">У врача нет доступа к вашей медкарте</string>
+
 </resources>

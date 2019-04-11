@@ -1,5 +1,6 @@
 package com.edoctor.data.repository
 
+import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessForPatientModel
 import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessesForDoctorModel
 import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessesForPatientModel
 import com.edoctor.data.remote.rest.MedicalAccessesRestApi
@@ -20,10 +21,15 @@ class MedicalAccessesRepository(
         return api.getMedicalAccessesForDoctor(patientUuid)
     }
 
-    fun getMedicalAccessesForPatient(
+    fun getMedicalAccessesForPatient() : Single<MedicalAccessesForPatientModel> {
+        return api.getMedicalAccessesForPatient(null)
+    }
+
+    fun getMedicalAccessForPatient(
         doctorUuid: String? = null
-    ) : Single<MedicalAccessesForPatientModel> {
+    ) : Single<MedicalAccessForPatientModel> {
         return api.getMedicalAccessesForPatient(doctorUuid)
+            .map { it.medicalAccesses.first { it.doctor.uuid == doctorUuid } }
     }
 
     fun postMedicalAccessesForPatient(

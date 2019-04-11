@@ -41,7 +41,7 @@ class WelcomeActivity : BaseActivity<WelcomePresenter, ViewState, Event>("Welcom
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        authButton.setOnClickListener { view ->
+        authButton.setOnClickListener {
             var success = true
 
             val email = email.text.toString()

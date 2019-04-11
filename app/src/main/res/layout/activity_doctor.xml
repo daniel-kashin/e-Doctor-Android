@@ -169,6 +169,52 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <View
+                    android:id="@+id/career_delimiter"
+                    android:background="@color/lightGrey"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
+            <TextView
+                    android:id="@+id/label_medcard"
+                    android:layout_marginTop="10dp"
+                    android:textSize="26sp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/btn_medcard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/medcard_access_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="false"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/medcard_access"
+                        android:inputType="textNoSuggestions|text|textMultiLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/medcard_access_hint"
+                        android:background="@null"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                    android:id="@+id/medcard_delimiter"
+                    android:background="@color/lightGrey"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
         </LinearLayout>
 
     </ScrollView>
