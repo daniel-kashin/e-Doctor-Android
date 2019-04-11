@@ -3,28 +3,23 @@ package com.edoctor.presentation.app.doctor
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
-import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.injection.ApplicationComponent
-import com.edoctor.data.mapper.UserMapper
 import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.presentation.app.doctor.DoctorPresenter.Event
 import com.edoctor.presentation.app.doctor.DoctorPresenter.ViewState
@@ -110,10 +105,10 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
             medcardDelimiter.hide()
         } else {
             medicalAccess.setText(
-                if (access.medicalRecordTypes.isEmpty()) {
+                if (access.availableTypes.isEmpty()) {
                     getString(R.string.doctor_has_no_access_to_medcard)
                 } else {
-                    access.medicalRecordTypes.size.toString()
+                    access.availableTypes.size.toString()
                 }
             )
 
