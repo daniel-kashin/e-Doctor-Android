@@ -73,8 +73,8 @@ class CallingView(context: Context, attrs: AttributeSet) : FrameLayout(context, 
 
         nameTextView.text = name
         statusTextView.text = when (callingType) {
-            CallType.INCOMING -> "ВХОДЯЩИЙ ВЫЗОВ..."
-            CallType.OUTCOMING -> "ОЖИДАНИЕ..."
+            CallType.INCOMING -> "ВХОДЯЩИЙ ВЫЗОВ..." // TODO
+            CallType.OUTCOMING -> "ОЖИДАНИЕ..." // TODO
         }
         acceptCallImageView.show(callingType == CallType.INCOMING)
     }

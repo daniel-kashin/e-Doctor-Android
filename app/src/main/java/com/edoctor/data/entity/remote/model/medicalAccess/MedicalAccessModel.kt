@@ -24,6 +24,6 @@ data class MedicalAccessForPatientModel(
 
 data class MedicalRecordTypeModel(
     val medicalRecordType: Int,
-    val customModelName: String?,
-    val customModelUnit: String?
+    val customModelName: String? = null,
+    val customModelUnit: String? = null
 )

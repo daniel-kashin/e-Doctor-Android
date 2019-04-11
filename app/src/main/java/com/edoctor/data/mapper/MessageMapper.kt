@@ -84,7 +84,7 @@ class MessageMapper(context: Context) {
         currentUser: UserModel
     ): CallStatusMessage? =
         callStatusMessage.run {
-            val callStatus = getCallStatusFromValue(callStatus)
+            val callStatus = getCallStatusFromValue(callStatus) ?: return@run null
             val senderUserUnwrapped =
                 unwrapResponse(withAbsoluteUrl(senderUser) ?: return@run null) ?: return@run null
             val recipientUserUnwrapped =
@@ -109,12 +109,12 @@ class MessageMapper(context: Context) {
         }
     }
 
-    private fun getCallStatusFromValue(value: Int): CallStatusMessage.CallStatus {
+    private fun getCallStatusFromValue(value: Int): CallStatusMessage.CallStatus? {
         return when (value) {
             CALL_STATUS_INITIATED -> INITIATED
             CALL_STATUS_CANCELLED -> CANCELLED
             CALL_STATUS_STARTED -> STARTED
-            else -> throw IllegalArgumentException()
+            else -> null
         }
     }
 

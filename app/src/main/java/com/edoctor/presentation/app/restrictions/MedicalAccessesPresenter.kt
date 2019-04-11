@@ -1,5 +1,6 @@
 package com.edoctor.presentation.app.restrictions
 
+import com.edoctor.data.entity.presentation.MedicalAccessesForPatient
 import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessesForPatientModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalAccessesRepository
@@ -55,7 +56,7 @@ class MedicalAccessesPresenter @Inject constructor(
 
     sealed class ViewState : Presenter.ViewState {
         data class MedicalAccessesViewState(
-            val medicalAccessesForPatientModel: MedicalAccessesForPatientModel
+            val medicalAccessesForPatient: MedicalAccessesForPatient
         ) : ViewState()
 
         object LoadingViewState : ViewState()

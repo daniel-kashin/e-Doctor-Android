@@ -84,12 +84,12 @@ class WelcomeActivity : BaseActivity<WelcomePresenter, ViewState, Event>("Welcom
 
     override fun showEvent(event: Event) {
         when (event) {
-            Event.NoInternetException -> toast("Нет интернета")
-            Event.PasswordIsWrong -> toast("Неверный пароль")
-            Event.UserNotFound -> toast("Пользователь с данной почтой не найден")
-            Event.UserAlreadyExists -> toast("Пользователь с данной почтой уже существует")
-            Event.UnknownException -> toast("Необычная ошибка")
-            Event.AuthSuccessEvent -> finish()
+            is Event.NoInternetException -> toast("Нет интернета")
+            is Event.PasswordIsWrong -> toast("Неверный пароль")
+            is Event.UserNotFound -> toast("Пользователь с данной почтой не найден")
+            is Event.UserAlreadyExists -> toast("Пользователь с данной почтой уже существует")
+            is Event.UnknownException -> toast("Необычная ошибка")
+            is Event.AuthSuccessEvent -> finish()
         }
     }
 }

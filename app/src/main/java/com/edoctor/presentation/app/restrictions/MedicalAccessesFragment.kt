@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.edoctor.R
+import com.edoctor.data.entity.presentation.MedicalAccessForPatient
 import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessForPatientModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.doctor.DoctorActivity
@@ -73,7 +74,7 @@ class MedicalAccessesFragment : BaseFragment<MedicalAccessesPresenter, ViewState
             is ViewState.LoadingViewState -> showLoading()
             is ViewState.UnknownExceptionViewState -> showUnhandledException()
             is ViewState.NetworkExceptionViewState -> showNetworkUnavailable()
-            is ViewState.MedicalAccessesViewState -> viewState.medicalAccessesForPatientModel.let {
+            is ViewState.MedicalAccessesViewState -> viewState.medicalAccessesForPatient.let {
                 if (it.medicalAccesses.isEmpty()) showEmptyMedicalAccesses() else showMedicalAccesses(it.medicalAccesses)
             }
         }
@@ -97,7 +98,7 @@ class MedicalAccessesFragment : BaseFragment<MedicalAccessesPresenter, ViewState
         recyclerView.visibility = View.INVISIBLE
     }
 
-    private fun showMedicalAccesses(medicalAccesses: List<MedicalAccessForPatientModel>) {
+    private fun showMedicalAccesses(medicalAccesses: List<MedicalAccessForPatient>) {
 //        doctorsAdapter.setDoctors(doctors)
 
         progressBar.visibility = View.INVISIBLE

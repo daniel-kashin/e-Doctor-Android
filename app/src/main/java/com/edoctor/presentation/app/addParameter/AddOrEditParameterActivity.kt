@@ -111,8 +111,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
         }
 
         val parameter = intent.getSerializableExtra(PARAMETER_PARAM) as? BodyParameterModel
-        val parameterType =
-            (intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as? BodyParameterType) ?: toType(parameter!!)
+        val parameterType = (intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as? BodyParameterType) ?: toType(parameter!!)
 
         if (parameter == null) {
             dateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(calendar.time.let { calendar.time }))

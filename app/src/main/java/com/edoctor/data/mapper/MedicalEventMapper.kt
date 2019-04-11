@@ -4,13 +4,13 @@ import com.dropbox.core.android.AuthActivity.result
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.remote.model.record.*
-import com.edoctor.data.entity.remote.model.record.MedicalEventWrapper.Companion.TYPE_ALLERGY
-import com.edoctor.data.entity.remote.model.record.MedicalEventWrapper.Companion.TYPE_ANALYSIS
-import com.edoctor.data.entity.remote.model.record.MedicalEventWrapper.Companion.TYPE_DOCTOR_VISIT
-import com.edoctor.data.entity.remote.model.record.MedicalEventWrapper.Companion.TYPE_NOTE
-import com.edoctor.data.entity.remote.model.record.MedicalEventWrapper.Companion.TYPE_PROCEDURE
-import com.edoctor.data.entity.remote.model.record.MedicalEventWrapper.Companion.TYPE_SICKNESS
-import com.edoctor.data.entity.remote.model.record.MedicalEventWrapper.Companion.TYPE_VACCINATION
+import com.edoctor.data.mapper.MedicalRecordTypeMapper.MEDICAL_EVENT_TYPE_ALLERGY
+import com.edoctor.data.mapper.MedicalRecordTypeMapper.MEDICAL_EVENT_TYPE_ANALYSIS
+import com.edoctor.data.mapper.MedicalRecordTypeMapper.MEDICAL_EVENT_TYPE_DOCTOR_VISIT
+import com.edoctor.data.mapper.MedicalRecordTypeMapper.MEDICAL_EVENT_TYPE_NOTE
+import com.edoctor.data.mapper.MedicalRecordTypeMapper.MEDICAL_EVENT_TYPE_PROCEDURE
+import com.edoctor.data.mapper.MedicalRecordTypeMapper.MEDICAL_EVENT_TYPE_SICKNESS
+import com.edoctor.data.mapper.MedicalRecordTypeMapper.MEDICAL_EVENT_TYPE_VACCINATION
 
 object MedicalEventMapper {
 
@@ -20,7 +20,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     timestamp = timestamp,
-                    type = TYPE_ANALYSIS,
+                    type = MEDICAL_EVENT_TYPE_ANALYSIS,
                     comment = comment,
                     clinic = clinic,
                     name = name,
@@ -31,7 +31,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     timestamp = timestamp,
-                    type = TYPE_ALLERGY,
+                    type = MEDICAL_EVENT_TYPE_ALLERGY,
                     comment = comment,
                     endTimestamp = endTimestamp,
                     name = allergenName,
@@ -42,7 +42,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     timestamp = timestamp,
-                    type = TYPE_NOTE,
+                    type = MEDICAL_EVENT_TYPE_NOTE,
                     comment = comment
                 )
             }
@@ -50,7 +50,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     timestamp = timestamp,
-                    type = TYPE_VACCINATION,
+                    type = MEDICAL_EVENT_TYPE_VACCINATION,
                     comment = comment,
                     clinic = clinic,
                     doctorName = doctorName,
@@ -62,7 +62,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     timestamp = timestamp,
-                    type = TYPE_PROCEDURE,
+                    type = MEDICAL_EVENT_TYPE_PROCEDURE,
                     comment = comment,
                     clinic = clinic,
                     doctorName = doctorName,
@@ -74,7 +74,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     timestamp = timestamp,
-                    type = TYPE_DOCTOR_VISIT,
+                    type = MEDICAL_EVENT_TYPE_DOCTOR_VISIT,
                     comment = comment,
                     clinic = clinic,
                     doctorName = doctorName,
@@ -88,7 +88,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     timestamp = timestamp,
-                    type = TYPE_SICKNESS,
+                    type = MEDICAL_EVENT_TYPE_SICKNESS,
                     comment = comment,
                     endTimestamp = endTimestamp,
                     symptoms = symptoms,
@@ -100,37 +100,37 @@ object MedicalEventMapper {
 
     fun fromWrapper(medicalEventWrapper: MedicalEventWrapper): MedicalEventModel? = medicalEventWrapper.run {
         when (this.type) {
-            TYPE_ANALYSIS -> {
+            MEDICAL_EVENT_TYPE_ANALYSIS -> {
                 name?.let {
                     Analysis(uuid, timestamp, comment, clinic, name, diagnosis)
                 }
             }
-            TYPE_ALLERGY -> {
+            MEDICAL_EVENT_TYPE_ALLERGY -> {
                 name?.let {
                     Allergy(uuid, timestamp, comment, endTimestamp, name, symptoms)
                 }
             }
-            TYPE_NOTE -> {
+            MEDICAL_EVENT_TYPE_NOTE -> {
                 Note(uuid, timestamp, comment)
             }
-            TYPE_VACCINATION -> {
+            MEDICAL_EVENT_TYPE_VACCINATION -> {
                 name?.let {
                     Vaccination(uuid, timestamp, comment, clinic, doctorName, doctorSpecialization, name)
                 }
             }
-            TYPE_PROCEDURE -> {
+            MEDICAL_EVENT_TYPE_PROCEDURE -> {
                 name?.let {
                     Procedure(uuid, timestamp, comment, clinic, doctorName, doctorSpecialization, name)
                 }
             }
-            TYPE_DOCTOR_VISIT -> {
+            MEDICAL_EVENT_TYPE_DOCTOR_VISIT -> {
                 if (symptoms != null && diagnosis != null) {
                     DoctorVisit(uuid, timestamp, comment, clinic, doctorName, doctorSpecialization, symptoms, diagnosis, recipe)
                 } else {
                     null
                 }
             }
-            TYPE_SICKNESS -> {
+            MEDICAL_EVENT_TYPE_SICKNESS -> {
                 diagnosis?.let {
                     Sickness(uuid, timestamp, comment, endTimestamp, symptoms, diagnosis)
                 }

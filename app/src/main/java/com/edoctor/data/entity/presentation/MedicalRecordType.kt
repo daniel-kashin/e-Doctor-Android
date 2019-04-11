@@ -2,9 +2,9 @@ package com.edoctor.data.entity.presentation
 
 import java.io.Serializable
 
-sealed class MedicalRecordType
+sealed class MedicalRecordType : Serializable
 
-sealed class BodyParameterType : MedicalRecordType(), Serializable {
+sealed class BodyParameterType : MedicalRecordType() {
 
     object Height : BodyParameterType()
 
@@ -26,7 +26,7 @@ sealed class BodyParameterType : MedicalRecordType(), Serializable {
 
 }
 
-sealed class MedicalEventType : MedicalRecordType(), Serializable {
+sealed class MedicalEventType : MedicalRecordType() {
 
     object Analysis : MedicalEventType()
 

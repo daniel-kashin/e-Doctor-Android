@@ -13,14 +13,4 @@ data class MedicalEventWrapper(
     val diagnosis: String? = null,
     val recipe: String? = null,
     val comment: String? = null
-) {
-    companion object {
-        const val TYPE_ANALYSIS = 0
-        const val TYPE_ALLERGY = 1
-        const val TYPE_NOTE = 2
-        const val TYPE_VACCINATION = 3
-        const val TYPE_PROCEDURE = 4
-        const val TYPE_DOCTOR_VISIT = 5
-        const val TYPE_SICKNESS = 6
-    }
-}
+)

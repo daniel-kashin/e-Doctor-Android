@@ -78,13 +78,13 @@ class AddOrEditEventActivity : AppCompatActivity() {
             setDisplayShowHomeEnabled(true)
             setBackgroundDrawable(ColorDrawable(Color.WHITE))
             title = when (eventType) {
-                MedicalEventType.Analysis -> getString(R.string.analysis)
-                MedicalEventType.Allergy -> getString(R.string.allergy)
-                MedicalEventType.Note -> getString(R.string.note)
-                MedicalEventType.Vaccination -> getString(R.string.vaccination)
-                MedicalEventType.Procedure -> getString(R.string.procedure)
-                MedicalEventType.DoctorVisit -> getString(R.string.doctor_visit)
-                MedicalEventType.Sickness -> getString(R.string.sickness)
+                is MedicalEventType.Analysis -> getString(R.string.analysis)
+                is MedicalEventType.Allergy -> getString(R.string.allergy)
+                is MedicalEventType.Note -> getString(R.string.note)
+                is MedicalEventType.Vaccination -> getString(R.string.vaccination)
+                is MedicalEventType.Procedure -> getString(R.string.procedure)
+                is MedicalEventType.DoctorVisit -> getString(R.string.doctor_visit)
+                is MedicalEventType.Sickness -> getString(R.string.sickness)
             }
         }
 

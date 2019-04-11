@@ -80,13 +80,13 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
                 val namesToTypes: List<Pair<String, MedicalEventType>> =
                     info.availableMedicalEventTypes.map {
                         val name = when (it) {
-                            Analysis -> getString(R.string.analysis)
-                            Allergy -> getString(R.string.allergy)
-                            Note -> getString(R.string.note)
-                            Vaccination -> getString(R.string.vaccination)
-                            Procedure -> getString(R.string.procedure)
-                            DoctorVisit -> getString(R.string.doctor_visit)
-                            Sickness -> getString(R.string.sickness)
+                            is Analysis -> getString(R.string.analysis)
+                            is Allergy -> getString(R.string.allergy)
+                            is Note -> getString(R.string.note)
+                            is Vaccination -> getString(R.string.vaccination)
+                            is Procedure -> getString(R.string.procedure)
+                            is DoctorVisit -> getString(R.string.doctor_visit)
+                            is Sickness -> getString(R.string.sickness)
                         }
                         name to it
                     }
