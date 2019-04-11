@@ -4,8 +4,7 @@ import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 
 data class MedicalAccessesForDoctorModel(
-    val medicalAccesses: List<MedicalAccessForDoctorModel>,
-    val allTypes: List<MedicalRecordType>
+    val medicalAccesses: List<MedicalAccessForDoctorModel>
 )
 
 data class MedicalAccessesForPatientModel(
