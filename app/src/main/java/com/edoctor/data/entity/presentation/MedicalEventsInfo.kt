@@ -7,7 +7,7 @@ class MedicalEventsInfo(
     val availableMedicalEventTypes: List<MedicalEventType>
 ) {
     companion object {
-        val ALL_MEDICAL_EVENTS_TYPES =  listOf(
+        val ALL_MEDICAL_EVENT_TYPES =  listOf(
             MedicalEventType.Analysis,
             MedicalEventType.Allergy,
             MedicalEventType.DoctorVisit,
@@ -17,6 +17,6 @@ class MedicalEventsInfo(
             MedicalEventType.Vaccination
         )
 
-        val EMPTY = MedicalEventsInfo(emptyList(), ALL_MEDICAL_EVENTS_TYPES)
+        val EMPTY = MedicalEventsInfo(emptyList(), ALL_MEDICAL_EVENT_TYPES)
     }
 }

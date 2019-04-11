@@ -7,7 +7,7 @@ class LatestBodyParametersInfo(
     val availableBodyParametesTypes: List<BodyParameterType>
 ) {
     companion object {
-        val NON_CUSTOM_TYPES = listOf(
+        val NON_CUSTOM_BODY_PARAMETER_TYPES = listOf(
             BodyParameterType.Height,
             BodyParameterType.Weight,
             BodyParameterType.BloodOxygen,
@@ -18,7 +18,7 @@ class LatestBodyParametersInfo(
 
         val EMPTY = LatestBodyParametersInfo(
             emptyList(),
-            NON_CUSTOM_TYPES
+            NON_CUSTOM_BODY_PARAMETER_TYPES
         )
     }
 }

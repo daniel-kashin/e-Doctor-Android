@@ -5,7 +5,7 @@ import com.edoctor.data.entity.presentation.LatestBodyParametersInfo
 import com.edoctor.data.entity.remote.model.record.*
 import com.edoctor.data.entity.presentation.BodyParameterType.*
 import com.edoctor.data.entity.presentation.BodyParameterType.Custom.Companion.NEW
-import com.edoctor.data.entity.presentation.LatestBodyParametersInfo.Companion.NON_CUSTOM_TYPES
+import com.edoctor.data.entity.presentation.LatestBodyParametersInfo.Companion.NON_CUSTOM_BODY_PARAMETER_TYPES
 import com.edoctor.data.entity.presentation.MedicalEventsInfo
 import com.edoctor.data.mapper.BodyParameterMapper
 import com.edoctor.data.mapper.BodyParameterMapper.fromWrapperModel
@@ -29,7 +29,7 @@ class MedicalRecordsRepository(
                 it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.fromWrapper(wrapper) }
             }
             .map {
-                MedicalEventsInfo(it, MedicalEventsInfo.ALL_MEDICAL_EVENTS_TYPES)
+                MedicalEventsInfo(it, MedicalEventsInfo.ALL_MEDICAL_EVENT_TYPES)
             }
 
     fun addOrEditEvent(event: MedicalEventModel): Single<MedicalEventModel> =
@@ -62,7 +62,7 @@ class MedicalRecordsRepository(
                     .distinct()
                     .toMutableList()
 
-                val availableTypes = customTypes + NON_CUSTOM_TYPES + NEW
+                val availableTypes = customTypes + NON_CUSTOM_BODY_PARAMETER_TYPES + NEW
 
                 LatestBodyParametersInfo(it, availableTypes)
             }
