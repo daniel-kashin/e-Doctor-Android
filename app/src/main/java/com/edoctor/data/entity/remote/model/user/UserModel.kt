@@ -3,6 +3,7 @@ package com.edoctor.data.entity.remote.model.user
 import java.io.Serializable
 
 sealed class UserModel : Serializable {
+    abstract val uuid: String
     abstract val email: String
     abstract val fullName: String?
     abstract val city: String?
@@ -12,6 +13,7 @@ sealed class UserModel : Serializable {
 }
 
 data class DoctorModel(
+    override val uuid: String,
     override val email: String,
     override val fullName: String?,
     override val city: String?,
@@ -28,6 +30,7 @@ data class DoctorModel(
 ) : UserModel()
 
 data class PatientModel(
+    override val uuid: String,
     override val email: String,
     override val fullName: String?,
     override val city: String?,
