@@ -151,4 +151,5 @@
     <string name="name_not_set">Имя не указано</string>
     <string name="btn_doctor_access">Права врачей</string>
     <string name="btn_medcards">Медкарты</string>
+    <string name="empty_medical_accesses">Откройте профиль врача и дайте доступ к вашей медкарте хотя бы одному врачу</string>
 </resources>

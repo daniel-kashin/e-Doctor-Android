@@ -14,7 +14,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class FindDoctorPresenter @Inject constructor(
-    val findDoctorRepository: FindDoctorRepository,
+    private val findDoctorRepository: FindDoctorRepository,
     @Named(ApplicationModule.MAIN_THREAD_SCHEDULER)
     private val observeScheduler: Scheduler,
     @Named(ApplicationModule.IO_THREAD_SCHEDULER)
