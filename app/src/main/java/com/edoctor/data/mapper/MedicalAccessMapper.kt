@@ -8,6 +8,7 @@ import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessForDoctor
 import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessForPatientModel
 import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessesForDoctorModel
 import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessesForPatientModel
+import com.edoctor.data.mapper.UserMapper.withAbsoluteUrl
 
 object MedicalAccessMapper {
 
@@ -18,7 +19,7 @@ object MedicalAccessMapper {
             val presentationAvailableTypes = it.availableTypes.mapNotNull {
                 MedicalRecordTypeMapper.toPresentation(it)
             }
-            MedicalAccessForDoctor(it.patient, presentationAvailableTypes)
+            MedicalAccessForDoctor(withAbsoluteUrl(it.patient), presentationAvailableTypes)
         }
 
         return MedicalAccessesForDoctor(presentationAccesses)
@@ -27,15 +28,15 @@ object MedicalAccessMapper {
     fun toPresentationForPatient(
         medicalAccessesForPatientModel: MedicalAccessesForPatientModel
     ): MedicalAccessesForPatient {
-        val presentationAllTypes = medicalAccessesForPatientModel.allTypes.mapNotNull {
-            MedicalRecordTypeMapper.toPresentation(it)
-        }
+        val presentationAllTypes = medicalAccessesForPatientModel.allTypes
+            .sortedBy { it.medicalRecordType }
+            .mapNotNull { MedicalRecordTypeMapper.toPresentation(it) }
 
         val presentationAccesses = medicalAccessesForPatientModel.medicalAccesses.map {
             val presentationAvailableTypes = it.availableTypes.mapNotNull {
                 MedicalRecordTypeMapper.toPresentation(it)
             }
-            MedicalAccessForPatient(it.doctor, presentationAvailableTypes)
+            MedicalAccessForPatient(withAbsoluteUrl(it.doctor), presentationAvailableTypes)
         }
 
         return MedicalAccessesForPatient(presentationAccesses, presentationAllTypes)

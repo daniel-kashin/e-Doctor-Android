@@ -78,8 +78,8 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
         fab.setOnClickListener {
             PopupMenu(fab.context, fab).apply {
                 val namesToTypes: List<Pair<String, MedicalEventType>> =
-                    info.availableMedicalEventTypes.map {
-                        val name = when (it) {
+                    info.availableMedicalEventTypes.map { type ->
+                        val name = when (type) {
                             is Analysis -> getString(R.string.analysis)
                             is Allergy -> getString(R.string.allergy)
                             is Note -> getString(R.string.note)
@@ -88,7 +88,7 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
                             is DoctorVisit -> getString(R.string.doctor_visit)
                             is Sickness -> getString(R.string.sickness)
                         }
-                        name to it
+                        name to type
                     }
 
                 namesToTypes.forEach {

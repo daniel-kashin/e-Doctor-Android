@@ -1,5 +1,6 @@
 package com.edoctor.data.entity.presentation
 
+import com.edoctor.data.entity.presentation.BodyParameterType.Companion.NON_CUSTOM_BODY_PARAMETER_TYPES
 import com.edoctor.data.entity.remote.model.record.BodyParameterModel
 
 class LatestBodyParametersInfo(
@@ -7,15 +8,6 @@ class LatestBodyParametersInfo(
     val availableBodyParametesTypes: List<BodyParameterType>
 ) {
     companion object {
-        val NON_CUSTOM_BODY_PARAMETER_TYPES = listOf(
-            BodyParameterType.Height,
-            BodyParameterType.Weight,
-            BodyParameterType.BloodOxygen,
-            BodyParameterType.BloodSugar,
-            BodyParameterType.BloodPressure,
-            BodyParameterType.Temperature
-        )
-
         val EMPTY = LatestBodyParametersInfo(
             emptyList(),
             NON_CUSTOM_BODY_PARAMETER_TYPES

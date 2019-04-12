@@ -46,7 +46,6 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
 
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.medicalRecordsComponent.inject(this)
-
         val parameterType = intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as BodyParameterType
         presenter.init(parameterType)
     }

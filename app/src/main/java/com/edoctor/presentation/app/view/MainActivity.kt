@@ -12,7 +12,7 @@ import com.edoctor.presentation.app.account.AccountFragment
 import com.edoctor.presentation.app.conversations.ConversationsFragment
 import com.edoctor.presentation.app.findDoctor.FindDoctorFragment
 import com.edoctor.presentation.app.medcard.MedcardFragment
-import com.edoctor.presentation.app.restrictions.MedicalAccessesFragment
+import com.edoctor.presentation.app.medicalAccessesForPatient.MedicalAccessesForPatientFragment
 import com.edoctor.presentation.app.doctorMedcards.DoctorMedcardsFragment
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.disposableDelegate
@@ -110,8 +110,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             R.id.action_restrictions -> {
-                if (topFragment is MedicalAccessesFragment) return
-                MedicalAccessesFragment()
+                if (topFragment is MedicalAccessesForPatientFragment) return
+                MedicalAccessesForPatientFragment()
             }
             else -> throw IllegalStateException("Unknown navigation item id")
         }

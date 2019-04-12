@@ -1,6 +1,7 @@
 package com.edoctor.presentation.app.doctor
 
-import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessForPatientModel
+import com.edoctor.data.entity.presentation.MedicalAccessForPatient
+import com.edoctor.data.entity.presentation.MedicalRecordType
 import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalAccessesRepository
@@ -35,14 +36,14 @@ class DoctorPresenter @Inject constructor(
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
-                setViewState { copy(medicalAccessForPatientModel = it) }
+                setViewState { copy(medicalAccessInfo = it) }
             }, {
                 nothing()
             })
     }
 
     data class ViewState(
-        val medicalAccessForPatientModel: MedicalAccessForPatientModel?
+        val medicalAccessInfo: Pair<List<MedicalRecordType>, MedicalAccessForPatient>?
     ) : Presenter.ViewState
 
     class Event : Presenter.Event

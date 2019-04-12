@@ -2,7 +2,6 @@ package com.edoctor.presentation.app.conversations
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -12,14 +11,12 @@ import com.edoctor.data.entity.presentation.Conversation
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ConversationsModule
-import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.presentation.app.conversations.ConversationsPresenter.Event
 import com.edoctor.presentation.app.conversations.ConversationsPresenter.ViewState
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.DialogsAdapter
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
-import com.edoctor.utils.session
 import com.edoctor.utils.toast
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.dialogs.DialogsList
@@ -95,7 +92,7 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
 
     override fun showEvent(event: Event) {
         when (event) {
-            is Event.ShowUnknownException -> context.toast(event.throwable.toString())
+            is Event.ShowUnknownException -> context.toast(getString(R.string.unhandled_error_message))
             is Event.ShowNoNetworkException -> context.toast(getString(R.string.network_error_message))
             is Event.ShowSessionException -> activity?.onSessionException()
         }

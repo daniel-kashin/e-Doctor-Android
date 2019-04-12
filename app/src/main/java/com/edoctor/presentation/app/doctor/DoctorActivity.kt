@@ -23,6 +23,7 @@ import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.presentation.app.doctor.DoctorPresenter.Event
 import com.edoctor.presentation.app.doctor.DoctorPresenter.ViewState
+import com.edoctor.presentation.app.editMedicalAccess.EditMedicalAccessActivity
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
@@ -59,7 +60,7 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
     override val layoutRes: Int = R.layout.activity_doctor
 
     override fun init(applicationComponent: ApplicationComponent) {
-        applicationComponent.medicalAccessesComponent.inject(this)
+        applicationComponent.medicalAccessComponent.inject(this)
         val doctor = intent?.getSerializableExtra(DOCTOR_PARAM) as DoctorModel
         presenter.init(doctor)
     }
@@ -98,22 +99,25 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
     }
 
     override fun render(viewState: ViewState) {
-        val access = viewState.medicalAccessForPatientModel
+        val access = viewState.medicalAccessInfo
         if (access == null) {
             labelMedcard.hide()
             medicalAccess.hideParent()
             medcardDelimiter.hide()
         } else {
             medicalAccess.setText(
-                if (access.availableTypes.isEmpty()) {
+                if (access.second.availableTypes.isEmpty()) {
                     getString(R.string.doctor_has_no_access_to_medcard)
                 } else {
-                    access.availableTypes.size.toString()
+                    getString(R.string.read_access_types_count_param, access.second.availableTypes.size, access.first.size)
                 }
             )
 
             medicalAccess.setOnClickListener {
-                toast("Manage medcard")
+                EditMedicalAccessActivity.IntentBuilder(this)
+                    .allMedicalRecordTypes(access.first)
+                    .medicalAccessesForPatient(access.second)
+                    .start()
             }
 
             labelMedcard.show()

@@ -1,9 +1,9 @@
 package com.edoctor.data.repository
 
+import com.edoctor.data.entity.presentation.MedicalAccessForPatient
+import com.edoctor.data.entity.presentation.MedicalAccessesForDoctor
 import com.edoctor.data.entity.presentation.MedicalAccessesForPatient
-import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessForPatientModel
-import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessesForDoctorModel
-import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessesForPatientModel
+import com.edoctor.data.entity.presentation.MedicalRecordType
 import com.edoctor.data.mapper.MedicalAccessMapper
 import com.edoctor.data.remote.rest.MedicalAccessesRestApi
 import io.reactivex.Completable
@@ -15,8 +15,9 @@ class MedicalAccessesRepository(
 
     fun getMedicalAccessesForDoctor(
         patientUuid: String? = null
-    ): Single<MedicalAccessesForDoctorModel> {
+    ): Single<MedicalAccessesForDoctor> {
         return api.getMedicalAccessesForDoctor(patientUuid)
+            .map { MedicalAccessMapper.toPresentationForDoctor(it) }
     }
 
     fun getMedicalAccessesForPatient(): Single<MedicalAccessesForPatient> {
@@ -26,15 +27,18 @@ class MedicalAccessesRepository(
 
     fun getMedicalAccessForPatient(
         doctorUuid: String? = null
-    ): Single<MedicalAccessForPatientModel> {
+    ): Single<Pair<List<MedicalRecordType>, MedicalAccessForPatient>> {
         return api.getMedicalAccessesForPatient(doctorUuid)
-            .map { it.medicalAccesses.first { it.doctor.uuid == doctorUuid } }
+            .map { MedicalAccessMapper.toPresentationForPatient(it) }
+            .map { it.allTypes to it.medicalAccesses.first { it.doctor.uuid == doctorUuid } }
     }
 
     fun postMedicalAccessesForPatient(
-        medicalAccesses: MedicalAccessesForPatientModel
-    ): Completable {
-        return api.postMedicalAccessesForPatient(medicalAccesses)
+        medicalAccesses: MedicalAccessesForPatient
+    ): Completable = Completable.defer {
+        api.postMedicalAccessesForPatient(
+            MedicalAccessMapper.toModelForPatient(medicalAccesses)
+        )
     }
 
 }

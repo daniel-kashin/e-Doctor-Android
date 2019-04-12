@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import javax.inject.Named
 
 @Module
-class MedicalAccessesModule {
+class MedicalAccessModule {
 
     @Provides
     internal fun provideMedicalAccessesRestApi(

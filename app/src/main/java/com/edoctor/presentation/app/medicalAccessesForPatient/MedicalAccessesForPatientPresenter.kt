@@ -1,28 +1,29 @@
-package com.edoctor.presentation.app.restrictions
+package com.edoctor.presentation.app.medicalAccessesForPatient
 
+import com.edoctor.data.entity.presentation.MedicalAccessForPatient
 import com.edoctor.data.entity.presentation.MedicalAccessesForPatient
-import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessesForPatientModel
+import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalAccessesRepository
-import com.edoctor.presentation.app.findDoctor.FindDoctorPresenter
-import com.edoctor.presentation.app.restrictions.MedicalAccessesPresenter.Event
-import com.edoctor.presentation.app.restrictions.MedicalAccessesPresenter.ViewState
+import com.edoctor.presentation.app.medicalAccessesForPatient.MedicalAccessesForPatientPresenter.Event
+import com.edoctor.presentation.app.medicalAccessesForPatient.MedicalAccessesForPatientPresenter.ViewState
 import com.edoctor.utils.SessionExceptionHelper.isSessionException
 import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.disposableDelegate
 import com.edoctor.utils.isNoNetworkError
+import com.edoctor.utils.plusAssign
 import io.reactivex.Scheduler
 import javax.inject.Inject
 import javax.inject.Named
 
-class MedicalAccessesPresenter @Inject constructor(
+class MedicalAccessesForPatientPresenter @Inject constructor(
     private val medicalAccessesRepository: MedicalAccessesRepository,
     @Named(ApplicationModule.MAIN_THREAD_SCHEDULER)
     private val observeScheduler: Scheduler,
     @Named(ApplicationModule.IO_THREAD_SCHEDULER)
     private val subscribeScheduler: Scheduler
-) : BasePresenter<ViewState, Event>("MedicalAccessesPresenter") {
+) : BasePresenter<ViewState, Event>("MedicalAccessesForPatientPresenter") {
 
     private var loadRestrictionsDisposable by disposableDelegate
 
@@ -49,6 +50,30 @@ class MedicalAccessesPresenter @Inject constructor(
                 })
     }
 
+    fun deleteMedicalAccessForDoctor(doctor: DoctorModel) {
+        val emptyDoctorAccesses = MedicalAccessesForPatient(listOf(MedicalAccessForPatient(doctor, emptyList())), emptyList())
+
+        disposables += medicalAccessesRepository.postMedicalAccessesForPatient(emptyDoctorAccesses)
+            .subscribeOn(subscribeScheduler)
+            .observeOn(observeScheduler)
+            .subscribe({
+                (viewStateSnapshot() as? ViewState.MedicalAccessesViewState)?.let { viewState ->
+                    val medicalAccessesWithoutDoctor = viewState.medicalAccessesForPatient.copy(
+                        medicalAccesses = viewState.medicalAccessesForPatient.medicalAccesses.filter {
+                            it.doctor.uuid != doctor.uuid
+                        }
+                    )
+                    setViewState(ViewState.MedicalAccessesViewState(medicalAccessesWithoutDoctor))
+                }
+            }, {
+                when {
+                    it.isSessionException() -> sendEvent(Event.ShowSessionException)
+                    it.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
+                    else -> sendEvent(Event.ShowUnknownException(it))
+                }
+            })
+    }
+
     override fun destroy() {
         loadRestrictionsDisposable = null
         super.destroy()
@@ -68,6 +93,8 @@ class MedicalAccessesPresenter @Inject constructor(
 
     sealed class Event : Presenter.Event {
         object ShowSessionException : Event()
+        class ShowUnknownException(val throwable: Throwable) : Event()
+        object ShowNoNetworkException : Event()
     }
 
 }

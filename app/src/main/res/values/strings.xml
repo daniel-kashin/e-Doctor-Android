@@ -82,6 +82,8 @@
     <string name="map_and_media">Media</string>
     <string name="guide">Guide</string>
     <string name="network_error_message">An error while downloading data. Please, check your connection.</string>
+    <string name="medcard_access_changed">Medcard access settings were changed</string>
+    <string name="read_access_types_count_param">Read access to %1$d record types out of %2$d</string>
     <string name="image_upload_error_message">An error while uploading image</string>
     <string name="personal_recommendation">Your personal recommendation</string>
     <string name="default_sort">Default</string>
@@ -135,6 +137,7 @@
     <string name="tab_events">Events</string>
     <string name="tab_parameters">Parameters</string>
     <string name="parameter">Parameter</string>
+    <string name="event">Event</string>
 
     <string name="height">Height</string>
     <string name="weight">Weight</string>
@@ -199,4 +202,6 @@
     <string name="years_param">%1$d years</string>
 
     <string name="name_not_set">Name not set</string>
+    <string name="doctor_access">Doctor access</string>
+    <string name="choose_medical_record_types">Choose medical records that the doctor will be able to read. You can change these settings anytime</string>
 </resources>
