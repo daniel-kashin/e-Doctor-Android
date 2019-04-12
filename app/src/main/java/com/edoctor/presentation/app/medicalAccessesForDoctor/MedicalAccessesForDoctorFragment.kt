@@ -1,4 +1,4 @@
-package com.edoctor.presentation.app.medicalAccessesForPatient
+package com.edoctor.presentation.app.medicalAccessesForDoctor
 
 import android.content.Context
 import android.os.Bundle
@@ -8,32 +8,31 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.edoctor.R
-import com.edoctor.data.entity.presentation.MedicalAccessesForPatient
+import com.edoctor.data.entity.presentation.MedicalAccessesForDoctor
 import com.edoctor.data.injection.ApplicationComponent
-import com.edoctor.presentation.app.doctor.DoctorActivity
-import com.edoctor.presentation.app.medicalAccessesForPatient.MedicalAccessesForPatientPresenter.Event
-import com.edoctor.presentation.app.medicalAccessesForPatient.MedicalAccessesForPatientPresenter.ViewState
+import com.edoctor.presentation.app.medicalAccessesForDoctor.MedicalAccessesForDoctorPresenter.Event
+import com.edoctor.presentation.app.medicalAccessesForDoctor.MedicalAccessesForDoctorPresenter.ViewState
+import com.edoctor.presentation.app.patient.PatientActivity
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.SimpleDividerItemDecoration
 import com.edoctor.utils.invisible
-import com.edoctor.utils.toast
 import javax.inject.Inject
 
-class MedicalAccessesForPatientFragment :
-    BaseFragment<MedicalAccessesForPatientPresenter, ViewState, Event>("MedicalAccessesForPatientFragment") {
+class MedicalAccessesForDoctorFragment :
+    BaseFragment<MedicalAccessesForDoctorPresenter, ViewState, Event>("MedicalAccessesForDoctorFragment") {
 
     @Inject
-    override lateinit var presenter: MedicalAccessesForPatientPresenter
+    override lateinit var presenter: MedicalAccessesForDoctorPresenter
 
-    override val layoutRes: Int = R.layout.fragment_medical_accesses_for_patient
+    override val layoutRes: Int = R.layout.fragment_medical_accesses_for_doctor
 
     private lateinit var tryAgain: TextView
     private lateinit var progressBar: ProgressBar
     private lateinit var errorMessage: TextView
     private lateinit var recyclerView: RecyclerView
 
-    private lateinit var adapter: MedicalAccessesForPatientAdapter
+    private lateinit var adapter: MedicalAccessesForDoctorAdapter
 
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.medicalAccessComponent.inject(this)
@@ -57,13 +56,10 @@ class MedicalAccessesForPatientFragment :
     }
 
     private fun initializeRecyclerView(context: Context) {
-        adapter = MedicalAccessesForPatientAdapter().apply {
-            onDeletePatientMedicalAccessClickListener = {
-                presenter.deleteMedicalAccessForDoctor(it.doctor)
-            }
-            onPatientMedicalAccessClickListener = {
-                DoctorActivity.IntentBuilder(context)
-                    .doctor(it.doctor)
+        adapter = MedicalAccessesForDoctorAdapter().apply {
+            onMedicalAccessForDoctorClickListener = {
+                PatientActivity.IntentBuilder(context)
+                    .patient(it.patient)
                     .start()
             }
         }
@@ -77,7 +73,7 @@ class MedicalAccessesForPatientFragment :
             is ViewState.LoadingViewState -> showLoading()
             is ViewState.UnknownExceptionViewState -> showUnhandledException()
             is ViewState.NetworkExceptionViewState -> showNetworkUnavailable()
-            is ViewState.MedicalAccessesViewState -> viewState.medicalAccessesForPatient.let {
+            is ViewState.MedicalAccessesViewState -> viewState.medicalAccessesForDoctor.let {
                 if (it.medicalAccesses.isEmpty()) {
                     showEmptyMedicalAccesses()
                 } else {
@@ -90,8 +86,6 @@ class MedicalAccessesForPatientFragment :
     override fun showEvent(event: Event) {
         when (event) {
             is Event.ShowSessionException -> activity?.onSessionException()
-            is Event.ShowUnknownException -> activity?.toast(getString(R.string.unhandled_error_message))
-            is Event.ShowNoNetworkException -> activity?.toast(getString(R.string.network_error_message))
         }
     }
 
@@ -107,8 +101,8 @@ class MedicalAccessesForPatientFragment :
         recyclerView.visibility = View.INVISIBLE
     }
 
-    private fun showMedicalAccesses(medicalAccesses: MedicalAccessesForPatient) {
-        adapter.medicalAccessesForPatient = medicalAccesses
+    private fun showMedicalAccesses(medicalAccesses: MedicalAccessesForDoctor) {
+        adapter.medicalAccessesForDoctor = medicalAccesses
 
         progressBar.visibility = View.INVISIBLE
         tryAgain.visibility = View.INVISIBLE

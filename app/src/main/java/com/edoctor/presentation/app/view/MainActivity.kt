@@ -13,7 +13,7 @@ import com.edoctor.presentation.app.conversations.ConversationsFragment
 import com.edoctor.presentation.app.findDoctor.FindDoctorFragment
 import com.edoctor.presentation.app.medcard.MedcardFragment
 import com.edoctor.presentation.app.medicalAccessesForPatient.MedicalAccessesForPatientFragment
-import com.edoctor.presentation.app.doctorMedcards.DoctorMedcardsFragment
+import com.edoctor.presentation.app.medicalAccessesForDoctor.MedicalAccessesForDoctorFragment
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.disposableDelegate
 import com.edoctor.utils.lazyFind
@@ -83,8 +83,8 @@ class MainActivity : AppCompatActivity() {
                 session.runIfOpened { userInfo ->
                     when (userInfo) {
                         is DoctorModel -> {
-                            if (topFragment is DoctorMedcardsFragment) return
-                            DoctorMedcardsFragment()
+                            if (topFragment is MedicalAccessesForDoctorFragment) return
+                            MedicalAccessesForDoctorFragment()
                         }
                         is PatientModel -> {
                             if (topFragment is MedcardFragment) return

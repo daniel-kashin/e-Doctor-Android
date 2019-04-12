@@ -25,7 +25,7 @@ class MedicalAccessesForPatientPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ViewState, Event>("MedicalAccessesForPatientPresenter") {
 
-    private var loadRestrictionsDisposable by disposableDelegate
+    private var loadMedicalAccessesDisposable by disposableDelegate
 
     init {
         setViewState(ViewState.LoadingViewState)
@@ -33,7 +33,7 @@ class MedicalAccessesForPatientPresenter @Inject constructor(
     }
 
     fun loadMedicalAccesses() {
-        loadRestrictionsDisposable = medicalAccessesRepository.getMedicalAccessesForPatient()
+        loadMedicalAccessesDisposable = medicalAccessesRepository.getMedicalAccessesForPatient()
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .doOnSubscribe { setViewState(ViewState.LoadingViewState) }
@@ -75,7 +75,7 @@ class MedicalAccessesForPatientPresenter @Inject constructor(
     }
 
     override fun destroy() {
-        loadRestrictionsDisposable = null
+        loadMedicalAccessesDisposable = null
         super.destroy()
     }
 
