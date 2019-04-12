@@ -4,7 +4,6 @@ import com.edoctor.data.entity.presentation.MedicalAccessForDoctor
 import com.edoctor.data.entity.presentation.MedicalAccessForPatient
 import com.edoctor.data.entity.presentation.MedicalAccessesForDoctor
 import com.edoctor.data.entity.presentation.MedicalAccessesForPatient
-import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessForDoctorModel
 import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessForPatientModel
 import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessesForDoctorModel
 import com.edoctor.data.entity.remote.model.medicalAccess.MedicalAccessesForPatientModel
@@ -19,7 +18,11 @@ object MedicalAccessMapper {
             val presentationAvailableTypes = it.availableTypes.mapNotNull {
                 MedicalRecordTypeMapper.toPresentation(it)
             }
-            MedicalAccessForDoctor(withAbsoluteUrl(it.patient), presentationAvailableTypes)
+            val presentationAllTypes = it.allTypes.mapNotNull {
+                MedicalRecordTypeMapper.toPresentation(it)
+            }
+
+            MedicalAccessForDoctor(withAbsoluteUrl(it.patient), presentationAvailableTypes, presentationAllTypes)
         }
 
         return MedicalAccessesForDoctor(presentationAccesses)
@@ -40,19 +43,6 @@ object MedicalAccessMapper {
         }
 
         return MedicalAccessesForPatient(presentationAccesses, presentationAllTypes)
-    }
-
-    fun toModelForDoctor(
-        medicalAccessesForDoctor: MedicalAccessesForDoctor
-    ): MedicalAccessesForDoctorModel {
-        val modelAccesses = medicalAccessesForDoctor.medicalAccesses.map {
-            val presentationAvailableTypes = it.availableTypes.mapNotNull {
-                MedicalRecordTypeMapper.toModel(it)
-            }
-            MedicalAccessForDoctorModel(it.patient, presentationAvailableTypes)
-        }
-
-        return MedicalAccessesForDoctorModel(modelAccesses)
     }
 
     fun toModelForPatient(

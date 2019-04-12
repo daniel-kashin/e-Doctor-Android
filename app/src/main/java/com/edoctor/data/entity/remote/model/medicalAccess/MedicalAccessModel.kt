@@ -14,7 +14,8 @@ data class MedicalAccessesForPatientModel(
 
 data class MedicalAccessForDoctorModel(
     val patient: PatientModel,
-    val availableTypes: List<MedicalRecordTypeModel>
+    val availableTypes: List<MedicalRecordTypeModel>,
+    val allTypes: List<MedicalRecordTypeModel>
 )
 
 data class MedicalAccessForPatientModel(

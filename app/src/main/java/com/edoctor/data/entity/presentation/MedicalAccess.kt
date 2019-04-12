@@ -15,7 +15,8 @@ data class MedicalAccessesForPatient(
 
 data class MedicalAccessForDoctor(
     val patient: PatientModel,
-    val availableTypes: List<MedicalRecordType>
+    val availableTypes: List<MedicalRecordType>,
+    val allTypes: List<MedicalRecordType>
 ) : Serializable
 
 data class MedicalAccessForPatient(
