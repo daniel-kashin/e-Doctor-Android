@@ -37,7 +37,8 @@
     <string name="search_excursions">Name or specialization</string>
     <string name="type_search_excursions">Find doctor by name or email</string>
     <string name="nothing_was_found">There were found nothing. Try to change your request</string>
-    <string name="empty_medical_accesses">Open doctor\'s profile and give access to your medcard to at least one doctor</string>
+    <string name="empty_medical_accesses_for_patient">Open doctor\'s profile and give access to your medcard to at least one doctor</string>
+    <string name="empty_medical_accesses_for_doctor">Neither of patients gave you access to his medcard yet</string>
 
     <string name="username_error">At least 1 character</string>
     <string name="password_hint">Password</string>
@@ -52,8 +53,10 @@
     <string name="category_hint">Category</string>
     <string name="specialization_hint">Specialization</string>
     <string name="clinical_interests_hint">Clinical interests</string>
-    <string name="medcard_access_hint">Access to your medcard</string>
+    <string name="medcard_access_for_patient_hint">Access to your medcard</string>
+    <string name="medcard_access_for_doctor_hint">Access to patient medcard</string>
     <string name="doctor_has_no_access_to_medcard">Doctor has no read access to your medcard</string>
+    <string name="you_have_no_access_to_medcard">You have no read access to patient medcard</string>
     <string name="education_hint">Education</string>
     <string name="work_experience_hint">Work experience</string>
     <string name="trainings_hint">Trainings</string>

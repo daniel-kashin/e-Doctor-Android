@@ -152,13 +152,15 @@
     <string name="name_not_set">Имя не указано</string>
     <string name="btn_doctor_access">Права врачей</string>
     <string name="btn_medcards">Медкарты</string>
-    <string name="empty_medical_accesses">Откройте профиль врача и дайте доступ к вашей медкарте хотя бы одному врачу</string>
-    <string name="medcard_access_hint">Доступ к вашей медкарте</string>
+    <string name="empty_medical_accesses_for_patient">Откройте профиль врача и дайте доступ к вашей медкарте хотя бы одному врачу</string>
+    <string name="medcard_access_for_patient_hint">Доступ к вашей медкарте</string>
     <string name="doctor_has_no_access_to_medcard">У врача нет прав на чтение вашей медкарты</string>
     <string name="doctor_access">Права врача</string>
     <string name="choose_medical_record_types">Выберите медицинские записи, которые врач сможет читать. Вы можете изменить эти настройки в любое время</string>
     <string name="event">Событие</string>
     <string name="medcard_access_changed">Настройки доступа к медкарте были изменены</string>
     <string name="read_access_types_count_param">Чтение %1$d типов записей из %2$d</string>
-
+    <string name="medcard_access_for_doctor_hint">Доступ к медкарте пациента</string>
+    <string name="you_have_no_access_to_medcard">У вас нет доступа к медкарте пациента</string>
+    <string name="empty_medical_accesses_for_doctor">Ни один из пациентов еще не дал вам доступ к своей медкарте</string>
 </resources>

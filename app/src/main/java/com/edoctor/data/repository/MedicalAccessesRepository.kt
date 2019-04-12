@@ -1,9 +1,6 @@
 package com.edoctor.data.repository
 
-import com.edoctor.data.entity.presentation.MedicalAccessForPatient
-import com.edoctor.data.entity.presentation.MedicalAccessesForDoctor
-import com.edoctor.data.entity.presentation.MedicalAccessesForPatient
-import com.edoctor.data.entity.presentation.MedicalRecordType
+import com.edoctor.data.entity.presentation.*
 import com.edoctor.data.mapper.MedicalAccessMapper
 import com.edoctor.data.remote.rest.MedicalAccessesRestApi
 import io.reactivex.Completable
@@ -13,11 +10,17 @@ class MedicalAccessesRepository(
     private val api: MedicalAccessesRestApi
 ) {
 
-    fun getMedicalAccessesForDoctor(
-        patientUuid: String? = null
-    ): Single<MedicalAccessesForDoctor> {
+    fun getMedicalAccessesForDoctor(): Single<MedicalAccessesForDoctor> {
+        return api.getMedicalAccessesForDoctor(null)
+            .map { MedicalAccessMapper.toPresentationForDoctor(it) }
+    }
+
+    fun getMedicalAccessForDoctor(
+        patientUuid: String
+    ): Single<MedicalAccessForDoctor> {
         return api.getMedicalAccessesForDoctor(patientUuid)
             .map { MedicalAccessMapper.toPresentationForDoctor(it) }
+            .map { it.medicalAccesses.first { it.patient.uuid == patientUuid } }
     }
 
     fun getMedicalAccessesForPatient(): Single<MedicalAccessesForPatient> {
@@ -26,7 +29,7 @@ class MedicalAccessesRepository(
     }
 
     fun getMedicalAccessForPatient(
-        doctorUuid: String? = null
+        doctorUuid: String
     ): Single<Pair<List<MedicalRecordType>, MedicalAccessForPatient>> {
         return api.getMedicalAccessesForPatient(doctorUuid)
             .map { MedicalAccessMapper.toPresentationForPatient(it) }

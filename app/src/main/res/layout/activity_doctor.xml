@@ -203,7 +203,7 @@
                         android:inputType="textNoSuggestions|text|textMultiLine"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/medcard_access_hint"
+                        android:hint="@string/medcard_access_for_patient_hint"
                         android:background="@null"/>
 
             </com.google.android.material.textfield.TextInputLayout>

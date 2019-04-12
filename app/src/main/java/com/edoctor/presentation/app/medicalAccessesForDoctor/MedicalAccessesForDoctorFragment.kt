@@ -90,7 +90,7 @@ class MedicalAccessesForDoctorFragment :
     }
 
     private fun showEmptyMedicalAccesses() {
-        errorMessage.text = getString(R.string.empty_medical_accesses)
+        errorMessage.text = getString(R.string.empty_medical_accesses_for_doctor)
         tryAgain.setOnClickListener {
             presenter.loadMedicalAccesses()
         }
