@@ -154,7 +154,7 @@
     <string name="btn_medcards">Медкарты</string>
     <string name="empty_medical_accesses">Откройте профиль врача и дайте доступ к вашей медкарте хотя бы одному врачу</string>
     <string name="medcard_access_hint">Доступ к вашей медкарте</string>
-    <string name="doctor_has_no_access_to_medcard">У врача нет доступа к вашей медкарте</string>
+    <string name="doctor_has_no_access_to_medcard">У врача нет прав на чтение вашей медкарты</string>
     <string name="doctor_access">Права врача</string>
     <string name="choose_medical_record_types">Выберите медицинские записи, которые врач сможет читать. Вы можете изменить эти настройки в любое время</string>
     <string name="event">Событие</string>

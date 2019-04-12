@@ -53,7 +53,7 @@
     <string name="specialization_hint">Specialization</string>
     <string name="clinical_interests_hint">Clinical interests</string>
     <string name="medcard_access_hint">Access to your medcard</string>
-    <string name="doctor_has_no_access_to_medcard">Doctor has no access to your medcard</string>
+    <string name="doctor_has_no_access_to_medcard">Doctor has no read access to your medcard</string>
     <string name="education_hint">Education</string>
     <string name="work_experience_hint">Work experience</string>
     <string name="trainings_hint">Trainings</string>
