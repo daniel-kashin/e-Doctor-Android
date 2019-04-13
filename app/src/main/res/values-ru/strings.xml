@@ -161,13 +161,15 @@
     <string name="medcard_access_changed">Настройки доступа к медкарте были изменены</string>
     <string name="read_access_types_count_param">Чтение %1$d типов записей из %2$d</string>
     <string name="medcard_access_for_doctor_hint">Доступ к медкарте пациента</string>
-    <string name="you_have_no_access_to_medcard">У вас нет доступа к медкарте пациента</string>
+    <string name="you_have_no_access_to_medcard">У вас нет доступа на чтение к медкарте пациента</string>
     <string name="empty_medical_accesses_for_doctor">Ни один из пациентов еще не дал вам доступ к своей медкарте</string>
     <string name="record_request_for_patient_hint">Записи от врача</string>
-    <string name="record_request_for_doctor_hint">Записи отправленные пациенту</string>
+    <string name="record_request_for_doctor_hint">Ваши записи</string>
     <string name="record_request_for_patient_emtpy">Доктор не отправил в вашу медкарту ни одной записи</string>
     <string name="record_request_for_patient_param">Доктор отправил в вашу медкарту %1$d записей</string>
     <string name="requested_records_from_doctor_disclaimer">Эти записи были получены от доктора. Вы можете удалить их или отправить в свою медкарту</string>
     <string name="records_from_doctor">Записи от доктора</string>
+    <string name="record_request_for_doctor_emtpy">Вы не отправили пациенту ни одной записи</string>
+    <string name="record_request_for_doctor_param">Вы отправили пациенту %1$d записей</string>
 
 </resources>

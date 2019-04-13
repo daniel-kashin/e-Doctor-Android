@@ -55,9 +55,11 @@
     <string name="clinical_interests_hint">Clinical interests</string>
     <string name="medcard_access_for_patient_hint">Access to your medcard</string>
     <string name="record_request_for_patient_hint">Records from doctor</string>
-    <string name="record_request_for_doctor_hint">Records sent to patient</string>
+    <string name="record_request_for_doctor_hint">Your records</string>
     <string name="record_request_for_patient_emtpy">Doctor did not send any records to your medcard</string>
     <string name="record_request_for_patient_param">Doctor sent %1$d records to your medcard</string>
+    <string name="record_request_for_doctor_emtpy">You did not send any records to patient medcard</string>
+    <string name="record_request_for_doctor_param">You sent %1$d records to patient medcard</string>
     <string name="medcard_access_for_doctor_hint">Access to patient medcard</string>
     <string name="doctor_has_no_access_to_medcard">Doctor has no read access to your medcard</string>
     <string name="you_have_no_access_to_medcard">You have no read access to patient medcard</string>

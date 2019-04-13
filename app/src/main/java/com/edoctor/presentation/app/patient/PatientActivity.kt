@@ -45,6 +45,7 @@ class PatientActivity : BaseActivity<PatientPresenter, ViewState, Event>("Patien
 
     private val labelMedcard by lazyFind<TextView>(R.id.label_medcard)
     private val medicalAccess by lazyFind<TextInputEditText>(R.id.medcard_access)
+    private val recordRequest by lazyFind<TextInputEditText>(R.id.record_request)
     private val medcardDelimiter by lazyFind<View>(R.id.medcard_delimiter)
 
     @Inject
@@ -80,25 +81,26 @@ class PatientActivity : BaseActivity<PatientPresenter, ViewState, Event>("Patien
         }
 
         medicalAccess.isFocusable = false
+        recordRequest.isFocusable = false
 
         showPatientInfo(presenter.patient)
     }
 
     override fun render(viewState: ViewState) {
-        val access = viewState.medicalAccessForDoctor
-        if (access == null) {
+        val medcardInfo = viewState.medcardInfo
+        if (medcardInfo == null) {
             labelMedcard.hide()
             medicalAccess.hideParent()
             medcardDelimiter.hide()
         } else {
             medicalAccess.setText(
-                if (access.availableTypes.isEmpty()) {
+                if (medcardInfo.first.availableTypes.isEmpty()) {
                     getString(R.string.you_have_no_access_to_medcard)
                 } else {
                     getString(
                         R.string.read_access_types_count_param,
-                        access.availableTypes.size,
-                        access.allTypes.size
+                        medcardInfo.first.availableTypes.size,
+                        medcardInfo.first.allTypes.size
                     )
                 }
             )
@@ -109,8 +111,21 @@ class PatientActivity : BaseActivity<PatientPresenter, ViewState, Event>("Patien
                     .start()
             }
 
+            recordRequest.setText(
+                if (medcardInfo.second.isEmpty()) {
+                    getString(R.string.record_request_for_doctor_emtpy)
+                } else {
+                    getString(R.string.record_request_for_patient_param, medcardInfo.second.size)
+                }
+            )
+
+            recordRequest.setOnClickListener {
+                // TODO
+            }
+
             labelMedcard.show()
             medicalAccess.showParent()
+            recordRequest.showParent()
             medcardDelimiter.show()
         }
     }
