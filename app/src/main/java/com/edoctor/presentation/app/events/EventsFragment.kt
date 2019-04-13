@@ -94,7 +94,7 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
             }
         }
 
-        if (info.availableMedicalEventTypes.isNotEmpty()) {
+        if (info.availableMedicalEventTypes.isNotEmpty() && presenter.canBeModified) {
             fab.show()
             fab.setOnClickListener {
                 PopupMenu(fab.context, fab).apply {
