@@ -255,12 +255,12 @@ class AddOrEditEventActivity : AppCompatActivity() {
                                 name = name,
                                 result = diagnosisEditText.notEmptyText()
                             ) ?: Analysis(
-                                randomUUID().toString(),
-                                timestamp,
-                                commentEditText.notEmptyText(),
-                                clinicEditText.notEmptyText(),
-                                name,
-                                diagnosisEditText.notEmptyText()
+                                uuid = randomUUID().toString(),
+                                timestamp = timestamp,
+                                comment = commentEditText.notEmptyText(),
+                                clinic = clinicEditText.notEmptyText(),
+                                name = name,
+                                result = diagnosisEditText.notEmptyText()
                             )
                         )
                     }
@@ -293,12 +293,12 @@ class AddOrEditEventActivity : AppCompatActivity() {
                                 allergenName = name,
                                 symptoms = symptomsEditText.notEmptyText()
                             ) ?: Allergy(
-                                randomUUID().toString(),
-                                timestamp,
-                                commentEditText.notEmptyText(),
-                                endTimestamp,
-                                name,
-                                symptomsEditText.notEmptyText()
+                                uuid = randomUUID().toString(),
+                                timestamp = timestamp,
+                                comment = commentEditText.notEmptyText(),
+                                endTimestamp = endTimestamp,
+                                allergenName = name,
+                                symptoms = symptomsEditText.notEmptyText()
                             )
                         )
                     }
@@ -325,9 +325,9 @@ class AddOrEditEventActivity : AppCompatActivity() {
                                 timestamp = timestamp,
                                 comment = comment
                             ) ?: Note(
-                                randomUUID().toString(),
-                                timestamp,
-                                comment
+                                uuid = randomUUID().toString(),
+                                timestamp = timestamp,
+                                comment = comment
                             )
                         )
                     }
