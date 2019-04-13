@@ -28,14 +28,16 @@ class EventsPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ViewState, Event>() {
 
+    private var isRequestedRecords: Boolean = false
+    private var addOrEditEventAction: ((MedicalEventModel) -> Single<MedicalEventModel>)? = null
+    private var deleteEventAction: ((MedicalEventModel) -> Completable)? = null
+
     var patient: PatientModel? = null
     var doctor: DoctorModel? = null
-    var isRequestedRecords: Boolean = false
-    var addOrEditEventAction: ((MedicalEventModel) -> Single<MedicalEventModel>)? = null
-    var deleteEventAction: ((MedicalEventModel) -> Completable)? = null
 
-    val canBeModified: Boolean
-        get() = addOrEditEventAction != null && deleteEventAction != null
+    val canBeAdded: Boolean
+        get() = addOrEditEventAction != null
+    var canBeEdited: Boolean = false
 
     fun init(patient: PatientModel?, doctor: DoctorModel?, isRequestedRecords: Boolean) {
         this.patient = patient
@@ -49,7 +51,12 @@ class EventsPresenter @Inject constructor(
                     val single = medicalRecordsRepository.getRequestedMedicalEventsForPatient(doctor.uuid)
                     viewState to single
                 }
-                patient != null -> TODO()
+                patient != null -> {
+                    addOrEditEventAction = { event -> medicalRecordsRepository.addMedicalEventForDoctor(event, patient.uuid) }
+                    val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES))
+                    val single = medicalRecordsRepository.getRequestedMedicalEventsForDoctor(patient.uuid)
+                    viewState to single
+                }
                 else -> throw IllegalStateException("")
             }
         } else {
@@ -60,6 +67,7 @@ class EventsPresenter @Inject constructor(
                     viewState to single
                 }
                 else -> {
+                    canBeEdited = true
                     addOrEditEventAction = { event -> medicalRecordsRepository.addOrEditEventForPatient(event) }
                     deleteEventAction = { event -> medicalRecordsRepository.deleteEventForPatient(event) }
                     val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES))

@@ -72,6 +72,10 @@
                 android:name=".presentation.app.recordsFromDoctor.RecordsFromDoctorActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
+        <activity
+                android:name=".presentation.app.recordsForPatient.RecordsForPatientActivity"
+                android:windowSoftInputMode="adjustPan"/>
+
     </application>
 
 

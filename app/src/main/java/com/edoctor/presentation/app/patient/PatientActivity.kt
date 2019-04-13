@@ -24,6 +24,7 @@ import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.presentation.app.medcardForDoctor.MedcardForDoctorActivity
 import com.edoctor.presentation.app.patient.PatientPresenter.Event
 import com.edoctor.presentation.app.patient.PatientPresenter.ViewState
+import com.edoctor.presentation.app.recordsForPatient.RecordsForPatientActivity
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
@@ -115,12 +116,14 @@ class PatientActivity : BaseActivity<PatientPresenter, ViewState, Event>("Patien
                 if (medcardInfo.second.isEmpty()) {
                     getString(R.string.record_request_for_doctor_emtpy)
                 } else {
-                    getString(R.string.record_request_for_patient_param, medcardInfo.second.size)
+                    getString(R.string.record_request_for_doctor_param, medcardInfo.second.size)
                 }
             )
 
             recordRequest.setOnClickListener {
-                // TODO
+                RecordsForPatientActivity.IntentBuilder(this)
+                    .patient(presenter.patient)
+                    .start()
             }
 
             labelMedcard.show()

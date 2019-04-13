@@ -169,7 +169,9 @@
     <string name="record_request_for_patient_param">Доктор отправил в вашу медкарту %1$d записей</string>
     <string name="requested_records_from_doctor_disclaimer">Эти записи были получены от доктора. Вы можете удалить их или отправить в свою медкарту</string>
     <string name="records_from_doctor">Записи от доктора</string>
+    <string name="records_for_patient">Записи для пациента</string>
     <string name="record_request_for_doctor_emtpy">Вы не отправили пациенту ни одной записи</string>
     <string name="record_request_for_doctor_param">Вы отправили пациенту %1$d записей</string>
+    <string name="requested_records_for_patient_disclaimer">Вы можете отправить записи пациенту. Пациент сможет удалить их или добавить в свою медкарту</string>
 
 </resources>

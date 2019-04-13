@@ -536,7 +536,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
             Intent(context, AddOrEditEventActivity::class.java)
                 .putExtra(EVENT_TYPE_PARAM, eventType)
                 .putExtra(EVENT_PARAM, event)
-                .putExtra(READ_ONLY_PARAM, event)
+                .putExtra(READ_ONLY_PARAM, readOnly)
 
     }
 

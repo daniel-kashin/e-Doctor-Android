@@ -19,6 +19,7 @@ import com.edoctor.presentation.app.events.EventsPresenter.Event
 import com.edoctor.presentation.app.events.EventsPresenter.ViewState
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.SimpleDividerItemDecoration
+import com.edoctor.utils.nothing
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import javax.inject.Inject
 
@@ -87,14 +88,14 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
                 startActivityForResult(
                     AddOrEditEventActivity.IntentBuilder(it)
                         .event(event)
-                        .readOnly(!presenter.canBeModified)
+                        .readOnly(!presenter.canBeEdited)
                         .get(),
                     REQUEST_ADD_OR_EDIT_PARAMETER
                 )
             }
         }
 
-        if (info.availableMedicalEventTypes.isNotEmpty() && presenter.canBeModified) {
+        if (info.availableMedicalEventTypes.isNotEmpty() && presenter.canBeAdded) {
             fab.show()
             fab.setOnClickListener {
                 PopupMenu(fab.context, fab).apply {
@@ -122,7 +123,7 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
                             startActivityForResult(
                                 AddOrEditEventActivity.IntentBuilder(it)
                                     .eventType(type)
-                                    .readOnly(!presenter.canBeModified)
+                                    .readOnly(false)
                                     .get(),
                                 REQUEST_ADD_OR_EDIT_PARAMETER
                             )
@@ -137,9 +138,7 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
         }
     }
 
-    override fun showEvent(event: Event) {
-
-    }
+    override fun showEvent(event: Event) = nothing()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

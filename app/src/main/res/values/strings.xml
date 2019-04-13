@@ -215,4 +215,7 @@
     <string name="choose_medical_record_types">Choose medical records that the doctor will be able to read. You can change these settings anytime</string>
     <string name="requested_records_from_doctor_disclaimer">These records were send you by the doctor. You can delete them or move to your medcard</string>
     <string name="records_from_doctor">Records from doctor</string>
+    <string name="records_for_patient">Records for patient</string>
+
+    <string name="requested_records_for_patient_disclaimer">You can send records to the patient. Patient will be able to delete them or move to the medcard</string>
 </resources>

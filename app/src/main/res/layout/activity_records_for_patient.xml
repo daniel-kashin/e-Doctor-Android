@@ -18,7 +18,7 @@
     <TextView
             android:textSize="16sp"
             android:layout_margin="10dp"
-            android:text="@string/requested_records_from_doctor_disclaimer"
+            android:text="@string/requested_records_for_patient_disclaimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
