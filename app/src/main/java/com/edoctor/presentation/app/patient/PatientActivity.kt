@@ -21,6 +21,7 @@ import com.edoctor.R
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.chat.ChatActivity
+import com.edoctor.presentation.app.medcardForDoctor.MedcardForDoctorActivity
 import com.edoctor.presentation.app.patient.PatientPresenter.Event
 import com.edoctor.presentation.app.patient.PatientPresenter.ViewState
 import com.edoctor.presentation.architecture.activity.BaseActivity
@@ -103,7 +104,9 @@ class PatientActivity : BaseActivity<PatientPresenter, ViewState, Event>("Patien
             )
 
             medicalAccess.setOnClickListener {
-                // TODO
+                MedcardForDoctorActivity.IntentBuilder(this)
+                    .patient(presenter.patient)
+                    .start()
             }
 
             labelMedcard.show()

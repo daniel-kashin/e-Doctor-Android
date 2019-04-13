@@ -19,7 +19,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme" tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
-        <activity android:name=".presentation.app.view.LaunchActivity">
+        <activity android:name=".presentation.app.launch.LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -33,7 +33,7 @@
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.view.MainActivity"
+                android:name=".presentation.app.main.MainActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
@@ -62,6 +62,10 @@
 
         <activity
                 android:name=".presentation.app.parameter.ParameterActivity"
+                android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+                android:name=".presentation.app.medcardForDoctor.MedcardForDoctorActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
     </application>

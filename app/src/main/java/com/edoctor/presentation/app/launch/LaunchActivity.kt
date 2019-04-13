@@ -1,8 +1,9 @@
-package com.edoctor.presentation.app.view
+package com.edoctor.presentation.app.launch
 
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import com.edoctor.presentation.app.main.MainActivity
 import com.edoctor.presentation.app.welcome.WelcomeActivity
 import com.edoctor.utils.session
 

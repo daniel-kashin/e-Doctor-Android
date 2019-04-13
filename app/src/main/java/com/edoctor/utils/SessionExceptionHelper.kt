@@ -5,7 +5,7 @@ import android.app.Activity
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.edoctor.data.session.SessionManager
-import com.edoctor.presentation.app.view.LaunchActivity
+import com.edoctor.presentation.app.launch.LaunchActivity
 import retrofit2.HttpException
 
 object SessionExceptionHelper {

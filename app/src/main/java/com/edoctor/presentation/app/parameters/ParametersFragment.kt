@@ -13,9 +13,11 @@ import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.entity.remote.model.record.*
 import com.edoctor.data.entity.presentation.BodyParameterType.*
 import com.edoctor.data.entity.presentation.BodyParameterType.Custom.Companion.NEW
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.mapper.BodyParameterMapper.toType
 import com.edoctor.presentation.app.addParameter.AddOrEditParameterActivity
+import com.edoctor.presentation.app.events.EventsFragment
 import com.edoctor.presentation.app.parameter.ParameterActivity
 import com.edoctor.presentation.app.parameters.ParametersPresenter.Event
 import com.edoctor.presentation.app.parameters.ParametersPresenter.ViewState
@@ -30,6 +32,14 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
         const val PARAMETER_PARAM = "parameter"
         const val IS_REMOVED_PARAM = "is_removed"
         const val REQUEST_ADD_OR_EDIT_PARAMETER = 12300
+
+        private const val PATIENT_PARAM = "patient"
+
+        fun newInstance(patient: PatientModel?) = EventsFragment().apply {
+            arguments = Bundle().apply {
+                putSerializable(PATIENT_PARAM, patient)
+            }
+        }
     }
 
     @Inject
@@ -44,6 +54,8 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
 
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.medicalRecordsComponent.inject(this)
+        val patient = arguments?.getSerializable(PATIENT_PARAM) as? PatientModel
+        presenter.init(patient)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,40 +83,42 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
                 .start()
         }
 
-        fab.show()
-        fab.setOnClickListener {
-            PopupMenu(fab.context, fab).apply {
-                val namesToTypes: List<Pair<String, BodyParameterType>> =
-                    info.availableBodyParametesTypes.map {
-                        val name = when (it) {
-                            is Height -> getString(R.string.height)
-                            is Weight -> getString(R.string.weight)
-                            is BloodPressure -> getString(R.string.blood_pressure)
-                            is BloodSugar -> getString(R.string.blood_sugar)
-                            is Temperature -> getString(R.string.temperature)
-                            is BloodOxygen -> getString(R.string.blood_oxygen)
-                            is Custom -> if (it == NEW) getString(R.string.new_parameter) else "${it.name} (${it.unit})"
+        if (info.availableBodyParametesTypes.isNotEmpty()) {
+            fab.show()
+            fab.setOnClickListener {
+                PopupMenu(fab.context, fab).apply {
+                    val namesToTypes: List<Pair<String, BodyParameterType>> =
+                        info.availableBodyParametesTypes.map {
+                            val name = when (it) {
+                                is Height -> getString(R.string.height)
+                                is Weight -> getString(R.string.weight)
+                                is BloodPressure -> getString(R.string.blood_pressure)
+                                is BloodSugar -> getString(R.string.blood_sugar)
+                                is Temperature -> getString(R.string.temperature)
+                                is BloodOxygen -> getString(R.string.blood_oxygen)
+                                is Custom -> if (it == NEW) getString(R.string.new_parameter) else "${it.name} (${it.unit})"
+                            }
+                            name to it
                         }
-                        name to it
+
+                    namesToTypes.forEach {
+                        menu.add(it.first)
                     }
 
-                namesToTypes.forEach {
-                    menu.add(it.first)
-                }
-
-                setOnMenuItemClickListener { item ->
-                    val type = namesToTypes.first { it.first == item.title }.second
-                    context?.let {
-                        startActivityForResult(
-                            AddOrEditParameterActivity.IntentBuilder(it)
-                                .parameterType(type)
-                                .get(),
-                            REQUEST_ADD_OR_EDIT_PARAMETER
-                        )
+                    setOnMenuItemClickListener { item ->
+                        val type = namesToTypes.first { it.first == item.title }.second
+                        context?.let {
+                            startActivityForResult(
+                                AddOrEditParameterActivity.IntentBuilder(it)
+                                    .parameterType(type)
+                                    .get(),
+                                REQUEST_ADD_OR_EDIT_PARAMETER
+                            )
+                        }
+                        true
                     }
-                    true
+                    show()
                 }
-                show()
             }
         }
     }

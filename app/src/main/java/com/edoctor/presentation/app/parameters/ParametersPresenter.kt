@@ -2,6 +2,7 @@ package com.edoctor.presentation.app.parameters
 
 import com.edoctor.data.entity.presentation.LatestBodyParametersInfo
 import com.edoctor.data.entity.remote.model.record.BodyParameterModel
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalRecordsRepository
 import com.edoctor.presentation.app.parameters.ParametersPresenter.Event
@@ -21,7 +22,11 @@ class ParametersPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : Presenter<ViewState, Event>() {
 
-    init {
+    private var patient: PatientModel? = null
+
+    fun init(patient: PatientModel?) {
+        this.patient = patient
+
         setViewState(ViewState(LatestBodyParametersInfo.EMPTY))
 
         disposables += medicalRecordsRepository.getLatestBodyParametersInfo()
@@ -36,29 +41,33 @@ class ParametersPresenter @Inject constructor(
     }
 
     fun addOrEditParameter(parameter: BodyParameterModel) {
-        disposables += medicalRecordsRepository.addOrEditParameter(parameter)
-            .subscribeOn(subscribeScheduler)
-            .observeOn(observeScheduler)
-            .subscribe({
-                // TODO
-                nothing()
-            }, {
-                // TODO
-                nothing()
-            })
+        if (patient == null) {
+            disposables += medicalRecordsRepository.addOrEditParameter(parameter)
+                .subscribeOn(subscribeScheduler)
+                .observeOn(observeScheduler)
+                .subscribe({
+                    // TODO
+                    nothing()
+                }, {
+                    // TODO
+                    nothing()
+                })
+        }
     }
 
     fun removeParameter(parameter: BodyParameterModel) {
-        disposables += medicalRecordsRepository.removeParameter(parameter)
-            .subscribeOn(subscribeScheduler)
-            .observeOn(observeScheduler)
-            .subscribe({
-                // TODO
-                nothing()
-            }, {
-                // TODO
-                nothing()
-            })
+        if (patient == null) {
+            disposables += medicalRecordsRepository.removeParameter(parameter)
+                .subscribeOn(subscribeScheduler)
+                .observeOn(observeScheduler)
+                .subscribe({
+                    // TODO
+                    nothing()
+                }, {
+                    // TODO
+                    nothing()
+                })
+        }
     }
 
     data class ViewState(

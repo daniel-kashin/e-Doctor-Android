@@ -1,4 +1,4 @@
-package com.edoctor.presentation.app.view
+package com.edoctor.presentation.app.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         is PatientModel -> {
                             if (topFragment is MedcardFragment) return
-                            MedcardFragment()
+                            MedcardFragment.newInstance(null)
                         }
                     }
                 } ?: run {

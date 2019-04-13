@@ -10,14 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.presentation.MedicalEventType.*
-import com.edoctor.data.entity.remote.model.record.BodyParameterModel
 import com.edoctor.data.entity.remote.model.record.MedicalEventModel
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.addEvent.AddOrEditEventActivity
 import com.edoctor.presentation.app.events.EventsPresenter.Event
 import com.edoctor.presentation.app.events.EventsPresenter.ViewState
-import com.edoctor.presentation.app.parameter.ParameterActivity
-import com.edoctor.presentation.app.parameters.ParametersFragment
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.SimpleDividerItemDecoration
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -29,6 +27,14 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
         const val EVENT_PARAM = "event"
         const val IS_REMOVED_PARAM = "is_removed"
         const val REQUEST_ADD_OR_EDIT_PARAMETER = 12301
+
+        private const val PATIENT_PARAM = "patient"
+
+        fun newInstance(patient: PatientModel?) = EventsFragment().apply {
+            arguments = Bundle().apply {
+                putSerializable(PATIENT_PARAM, patient)
+            }
+        }
     }
 
     @Inject
@@ -43,6 +49,8 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
 
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.medicalRecordsComponent.inject(this)
+        val patient = arguments?.getSerializable(PATIENT_PARAM) as? PatientModel
+        presenter.init(patient)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,40 +82,42 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
             }
         }
 
-        fab.show()
-        fab.setOnClickListener {
-            PopupMenu(fab.context, fab).apply {
-                val namesToTypes: List<Pair<String, MedicalEventType>> =
-                    info.availableMedicalEventTypes.map { type ->
-                        val name = when (type) {
-                            is Analysis -> getString(R.string.analysis)
-                            is Allergy -> getString(R.string.allergy)
-                            is Note -> getString(R.string.note)
-                            is Vaccination -> getString(R.string.vaccination)
-                            is Procedure -> getString(R.string.procedure)
-                            is DoctorVisit -> getString(R.string.doctor_visit)
-                            is Sickness -> getString(R.string.sickness)
+        if (info.availableMedicalEventTypes.isNotEmpty()) {
+            fab.show()
+            fab.setOnClickListener {
+                PopupMenu(fab.context, fab).apply {
+                    val namesToTypes: List<Pair<String, MedicalEventType>> =
+                        info.availableMedicalEventTypes.map { type ->
+                            val name = when (type) {
+                                is Analysis -> getString(R.string.analysis)
+                                is Allergy -> getString(R.string.allergy)
+                                is Note -> getString(R.string.note)
+                                is Vaccination -> getString(R.string.vaccination)
+                                is Procedure -> getString(R.string.procedure)
+                                is DoctorVisit -> getString(R.string.doctor_visit)
+                                is Sickness -> getString(R.string.sickness)
+                            }
+                            name to type
                         }
-                        name to type
+
+                    namesToTypes.forEach {
+                        menu.add(it.first)
                     }
 
-                namesToTypes.forEach {
-                    menu.add(it.first)
-                }
-
-                setOnMenuItemClickListener { item ->
-                    val type = namesToTypes.first { it.first == item.title }.second
-                    context?.let {
-                        startActivityForResult(
-                            AddOrEditEventActivity.IntentBuilder(it)
-                                .eventType(type)
-                                .get(),
-                            REQUEST_ADD_OR_EDIT_PARAMETER
-                        )
+                    setOnMenuItemClickListener { item ->
+                        val type = namesToTypes.first { it.first == item.title }.second
+                        context?.let {
+                            startActivityForResult(
+                                AddOrEditEventActivity.IntentBuilder(it)
+                                    .eventType(type)
+                                    .get(),
+                                REQUEST_ADD_OR_EDIT_PARAMETER
+                            )
+                        }
+                        true
                     }
-                    true
+                    show()
                 }
-                show()
             }
         }
     }

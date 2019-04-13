@@ -2,6 +2,7 @@ package com.edoctor.presentation.app.events
 
 import com.edoctor.data.entity.presentation.MedicalEventsInfo
 import com.edoctor.data.entity.remote.model.record.MedicalEventModel
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalRecordsRepository
 import com.edoctor.presentation.app.events.EventsPresenter.Event
@@ -22,7 +23,11 @@ class EventsPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ViewState, Event>() {
 
-    init {
+    private var patient: PatientModel? = null
+
+    fun init(patient: PatientModel?) {
+        this.patient = patient
+
         setViewState(ViewState(MedicalEventsInfo.EMPTY))
 
         disposables += medicalRecordsRepository.getMedicalEvents()
@@ -37,29 +42,33 @@ class EventsPresenter @Inject constructor(
     }
 
     fun addOrEditEvent(event: MedicalEventModel) {
-        disposables += medicalRecordsRepository.addOrEditEvent(event)
-            .subscribeOn(subscribeScheduler)
-            .observeOn(observeScheduler)
-            .subscribe({
-                // TODO
-                nothing()
-            }, {
-                // TODO
-                nothing()
-            })
+        if (patient == null) {
+            disposables += medicalRecordsRepository.addOrEditEvent(event)
+                .subscribeOn(subscribeScheduler)
+                .observeOn(observeScheduler)
+                .subscribe({
+                    // TODO
+                    nothing()
+                }, {
+                    // TODO
+                    nothing()
+                })
+        }
     }
 
     fun removeEvent(event: MedicalEventModel) {
-        disposables += medicalRecordsRepository.removeEvent(event)
-            .subscribeOn(subscribeScheduler)
-            .observeOn(observeScheduler)
-            .subscribe({
-                // TODO
-                nothing()
-            }, {
-                // TODO
-                nothing()
-            })
+        if (patient == null) {
+            disposables += medicalRecordsRepository.removeEvent(event)
+                .subscribeOn(subscribeScheduler)
+                .observeOn(observeScheduler)
+                .subscribe({
+                    // TODO
+                    nothing()
+                }, {
+                    // TODO
+                    nothing()
+                })
+        }
     }
 
     data class ViewState(
