@@ -80,6 +80,7 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
         adapter.onParameterClickListener = { parameter ->
             ParameterActivity.IntentBuilder(this)
                 .parameterType(toType(parameter))
+                .patient(presenter.patient)
                 .start()
         }
 
@@ -120,6 +121,8 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
                     show()
                 }
             }
+        } else {
+            fab.hide()
         }
     }
 

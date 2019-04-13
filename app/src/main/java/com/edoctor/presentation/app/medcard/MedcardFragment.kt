@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.user.PatientModel
+import com.google.android.material.tabs.TabLayout
 
 class MedcardFragment : Fragment() {
 
@@ -33,14 +34,16 @@ class MedcardFragment : Fragment() {
 
         val patient = arguments?.getSerializable(PATIENT_PARAM) as? PatientModel
 
-        childFragmentManager.let { fragmentManager ->
-            view.findViewById<ViewPager>(R.id.view_pager).adapter =
-                    MedcardPagerAdapter(
-                        fragmentManager,
-                        listOf(getString(R.string.tab_events), getString(R.string.tab_parameters)),
-                        patient
-                    )
-        }
+        val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
+        val viewPager = view.findViewById<ViewPager>(R.id.view_pager)
+
+        tabLayout.setupWithViewPager(viewPager)
+
+        viewPager.adapter = MedcardPagerAdapter(
+            childFragmentManager,
+            listOf(getString(R.string.tab_events), getString(R.string.tab_parameters)),
+            patient
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

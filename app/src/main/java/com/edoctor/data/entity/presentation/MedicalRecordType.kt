@@ -8,26 +8,26 @@ sealed class BodyParameterType : MedicalRecordType() {
 
     companion object {
         val NON_CUSTOM_BODY_PARAMETER_TYPES = listOf(
-            BodyParameterType.Height,
-            BodyParameterType.Weight,
-            BodyParameterType.BloodOxygen,
-            BodyParameterType.BloodSugar,
-            BodyParameterType.BloodPressure,
-            BodyParameterType.Temperature
+            BodyParameterType.Height(),
+            BodyParameterType.Weight(),
+            BodyParameterType.BloodOxygen(),
+            BodyParameterType.BloodSugar(),
+            BodyParameterType.BloodPressure(),
+            BodyParameterType.Temperature()
         )
     }
 
-    object Height : BodyParameterType()
+    class Height : BodyParameterType()
 
-    object Weight : BodyParameterType()
+    class Weight : BodyParameterType()
 
-    object BloodOxygen : BodyParameterType()
+    class BloodOxygen : BodyParameterType()
 
-    object BloodSugar : BodyParameterType()
+    class BloodSugar : BodyParameterType()
 
-    object BloodPressure : BodyParameterType()
+    class BloodPressure : BodyParameterType()
 
-    object Temperature : BodyParameterType()
+    class Temperature : BodyParameterType()
 
     data class Custom(val name: String, val unit: String) : BodyParameterType() {
         companion object {
@@ -41,28 +41,28 @@ sealed class MedicalEventType : MedicalRecordType() {
 
     companion object {
         val ALL_MEDICAL_EVENT_TYPES = listOf(
-            MedicalEventType.Analysis,
-            MedicalEventType.Allergy,
-            MedicalEventType.DoctorVisit,
-            MedicalEventType.Note,
-            MedicalEventType.Procedure,
-            MedicalEventType.Sickness,
-            MedicalEventType.Vaccination
+            MedicalEventType.Analysis(),
+            MedicalEventType.Allergy(),
+            MedicalEventType.DoctorVisit(),
+            MedicalEventType.Note(),
+            MedicalEventType.Procedure(),
+            MedicalEventType.Sickness(),
+            MedicalEventType.Vaccination()
         )
     }
 
-    object Analysis : MedicalEventType()
+    class Analysis : MedicalEventType()
 
-    object Allergy : MedicalEventType()
+    class Allergy : MedicalEventType()
 
-    object Note : MedicalEventType()
+    class Note : MedicalEventType()
 
-    object Vaccination : MedicalEventType()
+    class Vaccination : MedicalEventType()
 
-    object Procedure : MedicalEventType()
+    class Procedure : MedicalEventType()
 
-    object DoctorVisit : MedicalEventType()
+    class DoctorVisit : MedicalEventType()
 
-    object Sickness : MedicalEventType()
+    class Sickness : MedicalEventType()
 
 }

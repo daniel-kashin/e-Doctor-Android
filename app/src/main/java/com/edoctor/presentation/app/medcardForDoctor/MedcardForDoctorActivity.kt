@@ -26,15 +26,15 @@ class MedcardForDoctorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_medcard_for_doctor)
 
+        val patient = intent?.getSerializableExtra(PatientActivity.PATIENT_PARAM) as PatientModel
+
         setSupportActionBar(toolbar)
         supportActionBar?.run {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             setBackgroundDrawable(ColorDrawable(Color.WHITE))
-            title = getString(R.string.patient).capitalize()
+            title = patient.fullName ?: getString(R.string.patient).capitalize()
         }
-
-        val patient = intent?.getSerializableExtra(PatientActivity.PATIENT_PARAM) as PatientModel
 
         if (supportFragmentManager.findFragmentById(R.id.fragment_container) == null) {
             supportFragmentManager
@@ -42,6 +42,11 @@ class MedcardForDoctorActivity : AppCompatActivity() {
                 .replace(R.id.fragment_container, MedcardFragment.newInstance(patient))
                 .commit()
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     class IntentBuilder(context: Context) : CheckedIntentBuilder(context) {

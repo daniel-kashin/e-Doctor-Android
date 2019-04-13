@@ -1,5 +1,6 @@
 package com.edoctor.presentation.app.parameters
 
+import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.entity.presentation.LatestBodyParametersInfo
 import com.edoctor.data.entity.remote.model.record.BodyParameterModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
@@ -22,12 +23,16 @@ class ParametersPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : Presenter<ViewState, Event>() {
 
-    private var patient: PatientModel? = null
+    var patient: PatientModel? = null
 
     fun init(patient: PatientModel?) {
         this.patient = patient
 
-        setViewState(ViewState(LatestBodyParametersInfo.EMPTY))
+        if (patient == null) {
+            setViewState(ViewState(LatestBodyParametersInfo(emptyList(), BodyParameterType.NON_CUSTOM_BODY_PARAMETER_TYPES)))
+        } else {
+            setViewState(ViewState(LatestBodyParametersInfo(emptyList(), emptyList())))
+        }
 
         val getParametersSingle = if (patient == null) {
             medicalRecordsRepository.getLatestBodyParametersInfoForPatient()

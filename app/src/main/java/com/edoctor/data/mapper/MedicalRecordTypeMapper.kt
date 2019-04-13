@@ -82,12 +82,12 @@ object MedicalRecordTypeMapper {
 
     fun toPresentation(model: MedicalRecordTypeModel): MedicalRecordType? =
         when (model.medicalRecordType) {
-            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_HEIGHT -> BodyParameterType.Height
-            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_WEIGHT -> BodyParameterType.Weight
-            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_BLOOD_PRESSURE -> BodyParameterType.BloodPressure
-            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_BLOOD_SUGAR -> BodyParameterType.BloodSugar
-            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_BLOOD_OXYGEN -> BodyParameterType.BloodOxygen
-            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_TEMPERATURE -> BodyParameterType.Temperature
+            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_HEIGHT -> BodyParameterType.Height()
+            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_WEIGHT -> BodyParameterType.Weight()
+            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_BLOOD_PRESSURE -> BodyParameterType.BloodPressure()
+            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_BLOOD_SUGAR -> BodyParameterType.BloodSugar()
+            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_BLOOD_OXYGEN -> BodyParameterType.BloodOxygen()
+            BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_TEMPERATURE -> BodyParameterType.Temperature()
             BODY_PARAMETERS_OFFSET + BODY_PARAMETER_TYPE_CUSTOM -> {
                 if (model.customModelName != null && model.customModelUnit != null) {
                     BodyParameterType.Custom(model.customModelName, model.customModelUnit)
@@ -96,13 +96,13 @@ object MedicalRecordTypeMapper {
                 }
             }
 
-            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_ANALYSIS -> MedicalEventType.Analysis
-            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_ALLERGY -> MedicalEventType.Allergy
-            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_NOTE -> MedicalEventType.Note
-            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_VACCINATION -> MedicalEventType.Vaccination
-            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_PROCEDURE -> MedicalEventType.Procedure
-            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_DOCTOR_VISIT -> MedicalEventType.DoctorVisit
-            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_SICKNESS -> MedicalEventType.Sickness
+            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_ANALYSIS -> MedicalEventType.Analysis()
+            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_ALLERGY -> MedicalEventType.Allergy()
+            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_NOTE -> MedicalEventType.Note()
+            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_VACCINATION -> MedicalEventType.Vaccination()
+            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_PROCEDURE -> MedicalEventType.Procedure()
+            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_DOCTOR_VISIT -> MedicalEventType.DoctorVisit()
+            MEDICAL_EVENTS_OFFSET + MEDICAL_EVENT_TYPE_SICKNESS -> MedicalEventType.Sickness()
 
             else -> null
         }

@@ -136,7 +136,7 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
         private var patient: PatientModel? = null
 
         fun parameterType(parameterType: BodyParameterType) = apply { this.parameterType = parameterType }
-        fun patient(patient: PatientModel) = apply { this.patient = patient }
+        fun patient(patient: PatientModel?) = apply { this.patient = patient }
 
         override fun areParamsValid() = parameterType != null
 

@@ -1,5 +1,6 @@
 package com.edoctor.presentation.app.events
 
+import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.presentation.MedicalEventsInfo
 import com.edoctor.data.entity.remote.model.record.MedicalEventModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
@@ -28,7 +29,11 @@ class EventsPresenter @Inject constructor(
     fun init(patient: PatientModel?) {
         this.patient = patient
 
-        setViewState(ViewState(MedicalEventsInfo.EMPTY))
+        if (patient == null) {
+            setViewState(ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES)))
+        } else {
+            setViewState(ViewState(MedicalEventsInfo(emptyList(), emptyList())))
+        }
 
         val getEventsSingle = if (patient == null) {
             medicalRecordsRepository.getMedicalEventsForPatient()

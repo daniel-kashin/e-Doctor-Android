@@ -119,6 +119,8 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
                     show()
                 }
             }
+        } else {
+            fab.hide()
         }
     }
 

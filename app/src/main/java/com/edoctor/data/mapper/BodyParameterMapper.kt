@@ -97,12 +97,12 @@ object BodyParameterMapper {
 
     fun toType(bodyParameterModel: BodyParameterModel): BodyParameterType {
         return when (bodyParameterModel) {
-            is HeightModel -> Height
-            is WeightModel -> Weight
-            is BloodOxygenModel -> BloodOxygen
-            is BloodSugarModel -> BloodSugar
-            is TemperatureModel -> Temperature
-            is BloodPressureModel -> BloodPressure
+            is HeightModel -> Height()
+            is WeightModel -> Weight()
+            is BloodOxygenModel -> BloodOxygen()
+            is BloodSugarModel -> BloodSugar()
+            is TemperatureModel -> Temperature()
+            is BloodPressureModel -> BloodPressure()
             is CustomBodyParameterModel -> Custom(bodyParameterModel.name, bodyParameterModel.unit)
         }
     }
