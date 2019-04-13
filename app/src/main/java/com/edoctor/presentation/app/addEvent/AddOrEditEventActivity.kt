@@ -208,7 +208,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
         }
 
         when (eventType) {
-            MedicalEventType.Analysis -> {
+            is MedicalEventType.Analysis -> {
                 endDateEditText.hideParentAndNextView()
                 endTimeEditText.hideParentAndNextView()
                 doctorNameEditText.hideParentAndNextView()
@@ -247,7 +247,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                     }
                 }
             }
-            MedicalEventType.Allergy -> {
+            is MedicalEventType.Allergy -> {
                 clinicEditText.hideParentAndNextView()
                 doctorNameEditText.hideParentAndNextView()
                 doctorSpecializationEditText.hideParentAndNextView()
@@ -285,7 +285,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                     }
                 }
             }
-            MedicalEventType.Note -> {
+            is MedicalEventType.Note -> {
                 endDateEditText.hideParentAndNextView()
                 endTimeEditText.hideParentAndNextView()
                 nameEditText.hideParentAndNextView()
@@ -314,7 +314,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                     }
                 }
             }
-            MedicalEventType.Sickness -> {
+            is MedicalEventType.Sickness -> {
                 nameEditText.hideParentAndNextView()
                 clinicEditText.hideParentAndNextView()
                 doctorNameEditText.hideParentAndNextView()
@@ -350,7 +350,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                     }
                 }
             }
-            MedicalEventType.Procedure -> {
+            is MedicalEventType.Procedure -> {
                 endDateEditText.hideParentAndNextView()
                 endTimeEditText.hideParentAndNextView()
                 symptomsEditText.hideParentAndNextView()
@@ -387,7 +387,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                     }
                 }
             }
-            MedicalEventType.Vaccination -> {
+            is MedicalEventType.Vaccination -> {
                 endDateEditText.hideParentAndNextView()
                 endTimeEditText.hideParentAndNextView()
                 symptomsEditText.hideParentAndNextView()
@@ -424,7 +424,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                     }
                 }
             }
-            MedicalEventType.DoctorVisit -> {
+            is MedicalEventType.DoctorVisit -> {
                 endDateEditText.hideParentAndNextView()
                 endTimeEditText.hideParentAndNextView()
                 nameEditText.hideParentAndNextView()
