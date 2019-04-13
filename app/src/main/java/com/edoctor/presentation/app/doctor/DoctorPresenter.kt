@@ -40,7 +40,7 @@ class DoctorPresenter @Inject constructor(
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
-                setViewState { copy(medcardInfo = it) }
+                setViewState { copy(medcardInfo = it.first to it.second.medicalEvents) }
             }, {
                 nothing()
             })

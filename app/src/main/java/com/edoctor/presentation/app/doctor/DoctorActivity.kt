@@ -24,6 +24,7 @@ import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.presentation.app.doctor.DoctorPresenter.Event
 import com.edoctor.presentation.app.doctor.DoctorPresenter.ViewState
 import com.edoctor.presentation.app.editMedicalAccess.EditMedicalAccessActivity
+import com.edoctor.presentation.app.recordsFromDoctor.RecordsFromDoctorActivity
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
@@ -135,7 +136,9 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
             )
 
             recordRequest.setOnClickListener {
-                // TODO
+                RecordsFromDoctorActivity.IntentBuilder(this)
+                    .doctor(presenter.doctor)
+                    .start()
             }
 
             labelMedcard.show()
@@ -145,9 +148,7 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
         }
     }
 
-    override fun showEvent(event: Event) {
-
-    }
+    override fun showEvent(event: Event) = nothing()
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()

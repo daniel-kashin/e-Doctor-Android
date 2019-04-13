@@ -3,6 +3,7 @@ package com.edoctor.presentation.app.events
 import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.presentation.MedicalEventsInfo
 import com.edoctor.data.entity.remote.model.record.MedicalEventModel
+import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalRecordsRepository
@@ -12,7 +13,10 @@ import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.nothing
 import com.edoctor.utils.plusAssign
+import io.reactivex.Completable
 import io.reactivex.Scheduler
+import io.reactivex.Single
+import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -25,21 +29,47 @@ class EventsPresenter @Inject constructor(
 ) : BasePresenter<ViewState, Event>() {
 
     var patient: PatientModel? = null
+    var doctor: DoctorModel? = null
+    var isRequestedRecords: Boolean = false
+    var addOrEditEventAction: ((MedicalEventModel) -> Single<MedicalEventModel>)? = null
+    var deleteEventAction: ((MedicalEventModel) -> Completable)? = null
 
-    fun init(patient: PatientModel?) {
+    val canBeModified: Boolean
+        get() = addOrEditEventAction != null && deleteEventAction != null
+
+    fun init(patient: PatientModel?, doctor: DoctorModel?, isRequestedRecords: Boolean) {
         this.patient = patient
+        this.doctor = doctor
+        this.isRequestedRecords = isRequestedRecords
 
-        if (patient == null) {
-            setViewState(ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES)))
+        val (initialViewState, getEventsSingle) = if (isRequestedRecords) {
+            when {
+                doctor != null -> {
+                    val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList()))
+                    val single = medicalRecordsRepository.getRequestedMedicalEventsForPatient(doctor.uuid)
+                    viewState to single
+                }
+                patient != null -> TODO()
+                else -> throw IllegalStateException("")
+            }
         } else {
-            setViewState(ViewState(MedicalEventsInfo(emptyList(), emptyList())))
+            when {
+                patient != null -> {
+                    val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList()))
+                    val single = medicalRecordsRepository.getMedicalEventsForDoctor(patient.uuid)
+                    viewState to single
+                }
+                else -> {
+                    addOrEditEventAction = { event -> medicalRecordsRepository.addOrEditEventForPatient(event) }
+                    deleteEventAction = { event -> medicalRecordsRepository.deleteEventForPatient(event) }
+                    val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES))
+                    val single = medicalRecordsRepository.getMedicalEventsForPatient()
+                    viewState to single
+                }
+            }
         }
 
-        val getEventsSingle = if (patient == null) {
-            medicalRecordsRepository.getMedicalEventsForPatient()
-        } else {
-            medicalRecordsRepository.getMedicalEventsForDoctor(patient.uuid)
-        }
+        setViewState(initialViewState)
 
         disposables += getEventsSingle
             .subscribeOn(subscribeScheduler)
@@ -53,8 +83,8 @@ class EventsPresenter @Inject constructor(
     }
 
     fun addOrEditEvent(event: MedicalEventModel) {
-        if (patient == null) {
-            disposables += medicalRecordsRepository.addOrEditEventForPatient(event)
+        addOrEditEventAction?.let {
+            disposables += it.invoke(event)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
@@ -67,9 +97,9 @@ class EventsPresenter @Inject constructor(
         }
     }
 
-    fun removeEvent(event: MedicalEventModel) {
-        if (patient == null) {
-            disposables += medicalRecordsRepository.deleteEventForPatient(event)
+    fun deleteEvent(event: MedicalEventModel) {
+        deleteEventAction?.let {
+            disposables += it.invoke(event)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({

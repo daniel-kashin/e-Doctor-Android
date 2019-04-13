@@ -23,7 +23,7 @@ class MedcardPagerAdapter(
 
     override fun getItem(position: Int): Fragment? =
         when (position) {
-            0 -> EventsFragment.newInstance(patient)
+            0 -> EventsFragment.newInstance(patient, null, false)
             1 -> ParametersFragment.newInstance(patient)
             else -> null
         }

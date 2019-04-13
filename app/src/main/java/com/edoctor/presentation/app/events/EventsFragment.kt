@@ -11,6 +11,7 @@ import com.edoctor.R
 import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.presentation.MedicalEventType.*
 import com.edoctor.data.entity.remote.model.record.MedicalEventModel
+import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.addEvent.AddOrEditEventActivity
@@ -29,10 +30,18 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
         const val REQUEST_ADD_OR_EDIT_PARAMETER = 12301
 
         private const val PATIENT_PARAM = "patient"
+        private const val DOCTOR_PARAM = "doctor"
+        private const val IS_REQUESTED_RECORDS = "is_requested_records"
 
-        fun newInstance(patient: PatientModel?) = EventsFragment().apply {
+        fun newInstance(
+            patient: PatientModel?,
+            doctor: DoctorModel?,
+            isRequestedRecords: Boolean
+        ) = EventsFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(PATIENT_PARAM, patient)
+                putSerializable(DOCTOR_PARAM, doctor)
+                putBoolean(IS_REQUESTED_RECORDS, isRequestedRecords)
             }
         }
     }
@@ -49,8 +58,10 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
 
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.medicalRecordsComponent.inject(this)
-        val patient = arguments?.getSerializable(PATIENT_PARAM) as? PatientModel
-        presenter.init(patient)
+        val patient = arguments!!.getSerializable(PATIENT_PARAM) as? PatientModel
+        val doctor = arguments!!.getSerializable(DOCTOR_PARAM) as? DoctorModel
+        val isRequestedParams = arguments!!.getBoolean(IS_REQUESTED_RECORDS)
+        presenter.init(patient, doctor, isRequestedParams)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,7 +87,7 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
                 startActivityForResult(
                     AddOrEditEventActivity.IntentBuilder(it)
                         .event(event)
-                        .readOnly(presenter.patient != null)
+                        .readOnly(!presenter.canBeModified)
                         .get(),
                     REQUEST_ADD_OR_EDIT_PARAMETER
                 )
@@ -111,7 +122,7 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
                             startActivityForResult(
                                 AddOrEditEventActivity.IntentBuilder(it)
                                     .eventType(type)
-                                    .readOnly(presenter.patient != null)
+                                    .readOnly(!presenter.canBeModified)
                                     .get(),
                                 REQUEST_ADD_OR_EDIT_PARAMETER
                             )
@@ -138,7 +149,7 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
                 if (event != null) {
                     val isRemoved = data.getBooleanExtra(IS_REMOVED_PARAM, false)
                     if (isRemoved) {
-                        presenter.removeEvent(event)
+                        presenter.deleteEvent(event)
                     } else {
                         presenter.addOrEditEvent(event)
                     }

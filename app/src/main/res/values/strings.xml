@@ -211,4 +211,6 @@
     <string name="name_not_set">Name not set</string>
     <string name="doctor_access">Doctor access</string>
     <string name="choose_medical_record_types">Choose medical records that the doctor will be able to read. You can change these settings anytime</string>
+    <string name="requested_records_from_doctor_disclaimer">These records were send you by the doctor. You can delete them or move to your medcard</string>
+    <string name="records_from_doctor">Records from doctor</string>
 </resources>
