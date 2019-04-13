@@ -76,6 +76,7 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
                 startActivityForResult(
                     AddOrEditEventActivity.IntentBuilder(it)
                         .event(event)
+                        .readOnly(presenter.patient != null)
                         .get(),
                     REQUEST_ADD_OR_EDIT_PARAMETER
                 )
@@ -110,6 +111,7 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
                             startActivityForResult(
                                 AddOrEditEventActivity.IntentBuilder(it)
                                     .eventType(type)
+                                    .readOnly(presenter.patient != null)
                                     .get(),
                                 REQUEST_ADD_OR_EDIT_PARAMETER
                             )

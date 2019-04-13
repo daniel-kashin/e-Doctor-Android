@@ -112,6 +112,7 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
                             startActivityForResult(
                                 AddOrEditParameterActivity.IntentBuilder(it)
                                     .parameterType(type)
+                                    .readOnly(presenter.patient != null)
                                     .get(),
                                 REQUEST_ADD_OR_EDIT_PARAMETER
                             )

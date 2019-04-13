@@ -31,6 +31,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
     companion object {
         const val EVENT_TYPE_PARAM = "event_type"
         const val EVENT_PARAM = "event"
+        const val READ_ONLY_PARAM = "read_only"
         const val IS_REMOVED_PARAM = "is_removed"
     }
 
@@ -71,6 +72,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
 
         val event = intent.getSerializableExtra(EVENT_PARAM) as? MedicalEventModel
         val eventType = (intent.getSerializableExtra(EVENT_TYPE_PARAM) as? MedicalEventType) ?: toType(event!!)
+        val readOnly = intent.getBooleanExtra(READ_ONLY_PARAM, true)
 
         setSupportActionBar(toolbar)
         supportActionBar?.run {
@@ -174,6 +176,23 @@ class AddOrEditEventActivity : AppCompatActivity() {
                 endCalendar.get(Calendar.MINUTE),
                 true
             ).show()
+        }
+
+        if (readOnly) {
+            saveButton.hide()
+            deleteButton.hide()
+            dateEditText.isEnabled = false
+            timeEditText.isEnabled = false
+            endDateEditText.isEnabled = false
+            endTimeEditText.isEnabled = false
+            nameEditText.isEnabled = false
+            clinicEditText.isEnabled = false
+            doctorNameEditText.isEnabled = false
+            doctorSpecializationEditText.isEnabled = false
+            symptomsEditText.isEnabled = false
+            diagnosisEditText.isEnabled = false
+            recipeEditText.isEnabled = false
+            commentEditText.isEnabled = false
         }
 
         if (event == null) {
@@ -505,16 +524,19 @@ class AddOrEditEventActivity : AppCompatActivity() {
 
         private var eventType: MedicalEventType? = null
         private var event: MedicalEventModel? = null
+        private var readOnly: Boolean? = null
 
         fun eventType(eventType: MedicalEventType) = apply { this.eventType = eventType }
         fun event(event: MedicalEventModel) = apply { this.event = event }
+        fun readOnly(readOnly: Boolean) = apply { this.readOnly = readOnly }
 
-        override fun areParamsValid() = eventType != null || event != null
+        override fun areParamsValid() = (eventType != null || event != null) && readOnly != null
 
         override fun get(): Intent =
             Intent(context, AddOrEditEventActivity::class.java)
                 .putExtra(EVENT_TYPE_PARAM, eventType)
                 .putExtra(EVENT_PARAM, event)
+                .putExtra(READ_ONLY_PARAM, event)
 
     }
 

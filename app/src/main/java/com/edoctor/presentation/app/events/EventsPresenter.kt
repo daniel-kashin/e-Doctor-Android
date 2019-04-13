@@ -24,7 +24,7 @@ class EventsPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ViewState, Event>() {
 
-    private var patient: PatientModel? = null
+    var patient: PatientModel? = null
 
     fun init(patient: PatientModel?) {
         this.patient = patient

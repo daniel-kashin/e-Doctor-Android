@@ -20,6 +20,7 @@ import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.entity.remote.model.record.*
 import com.edoctor.data.entity.presentation.BodyParameterType.Custom.Companion.NEW
 import com.edoctor.data.mapper.BodyParameterMapper.toType
+import com.edoctor.presentation.app.addEvent.AddOrEditEventActivity
 import com.edoctor.utils.*
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
@@ -31,6 +32,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
     companion object {
         const val PARAMETER_TYPE_PARAM = "parameter_type"
         const val PARAMETER_PARAM = "parameter"
+        const val READ_ONLY_PARAM = "read_only"
         const val IS_REMOVED_PARAM = "is_removed"
     }
 
@@ -112,6 +114,21 @@ class AddOrEditParameterActivity : AppCompatActivity() {
 
         val parameter = intent.getSerializableExtra(PARAMETER_PARAM) as? BodyParameterModel
         val parameterType = (intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as? BodyParameterType) ?: toType(parameter!!)
+        val readOnly = intent.getBooleanExtra(READ_ONLY_PARAM, true)
+
+        if (readOnly) {
+            saveButton.hide()
+            deleteButton.hide()
+            dateEditText.isEnabled = false
+            timeEditText.isEnabled = false
+            nameEditText.isEnabled = false
+            unitEditText.isEnabled = false
+            firstValueEditText.isEnabled = false
+            secondValueEditText.isEnabled = false
+            firstValueLayout.isEnabled = false
+            secondValueLayout.isEnabled = false
+            secondValueDelimiter.isEnabled = false
+        }
 
         if (parameter == null) {
             dateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(calendar.time.let { calendar.time }))
@@ -348,16 +365,19 @@ class AddOrEditParameterActivity : AppCompatActivity() {
 
         private var parameterType: BodyParameterType? = null
         private var parameter: BodyParameterModel? = null
+        private var readOnly: Boolean? = null
 
         fun parameterType(parameterType: BodyParameterType) = apply { this.parameterType = parameterType }
         fun parameter(parameter: BodyParameterModel) = apply { this.parameter = parameter }
+        fun readOnly(readOnly: Boolean) = apply { this.readOnly = readOnly }
 
-        override fun areParamsValid() = parameterType != null || parameter != null
+        override fun areParamsValid() = (parameterType != null || parameter != null) && readOnly != null
 
         override fun get(): Intent =
             Intent(context, AddOrEditParameterActivity::class.java)
                 .putExtra(PARAMETER_TYPE_PARAM, parameterType)
                 .putExtra(PARAMETER_PARAM, parameter)
+                .putExtra(READ_ONLY_PARAM, readOnly)
 
     }
 

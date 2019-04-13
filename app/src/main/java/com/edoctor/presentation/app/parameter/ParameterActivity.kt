@@ -84,6 +84,7 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
             fab.setOnClickListener {
                 AddOrEditParameterActivity.IntentBuilder(this)
                     .parameterType(presenter.parameterType)
+                    .readOnly(false)
                     .startForResult(REQUEST_ADD_OR_EDIT_PARAMETER)
             }
         } else {
@@ -98,14 +99,11 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
 
     override fun render(viewState: ViewState) {
         adapter.parameters = viewState.parameters
-        if (presenter.patient == null) {
-            adapter.onParameterClickListener = { parameter ->
-                AddOrEditParameterActivity.IntentBuilder(this)
-                    .parameter(parameter)
-                    .startForResult(REQUEST_ADD_OR_EDIT_PARAMETER)
-            }
-        } else {
-            adapter.onParameterClickListener = null
+        adapter.onParameterClickListener = { parameter ->
+            AddOrEditParameterActivity.IntentBuilder(this)
+                .parameter(parameter)
+                .readOnly(presenter.patient != null)
+                .startForResult(REQUEST_ADD_OR_EDIT_PARAMETER)
         }
     }
 
