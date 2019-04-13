@@ -11,15 +11,15 @@ import retrofit2.http.POST
 interface MedicalEventsRestApi {
 
     @GET("/medicalEventsForPatient")
-    fun getEvents() : Single<MedicalEventsResponse>
+    fun getEventsForPatient() : Single<MedicalEventsResponse>
 
     @POST("/addOrEditMedicalEventForPatient")
-    fun addOrEditMedicalEvent(
+    fun addOrEditMedicalEventForPatient(
         @Body medicalEvent: MedicalEventWrapper
     ) : Single<MedicalEventWrapper>
 
     @POST("/deleteMedicalEventForPatient")
-    fun deleteMedicalEvent(
+    fun deleteMedicalEventForPatient(
         @Body parameter: MedicalEventWrapper
     ) : Completable
 

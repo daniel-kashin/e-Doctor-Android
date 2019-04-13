@@ -25,7 +25,7 @@ class MedicalRecordsRepository(
 
     fun getMedicalEvents(): Single<MedicalEventsInfo> =
         medicalEventsApi
-            .getEvents()
+            .getEventsForPatient()
             .map {
                 it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.fromWrapper(wrapper) }
             }
@@ -36,14 +36,14 @@ class MedicalRecordsRepository(
     fun addOrEditEvent(event: MedicalEventModel): Single<MedicalEventModel> =
         Single
             .defer {
-                medicalEventsApi.addOrEditMedicalEvent(MedicalEventMapper.toWrapper(event))
+                medicalEventsApi.addOrEditMedicalEventForPatient(MedicalEventMapper.toWrapper(event))
             }
             .map { MedicalEventMapper.fromWrapper(it) }
 
     fun removeEvent(event: MedicalEventModel): Completable =
         Completable
             .defer {
-                medicalEventsApi.deleteMedicalEvent(MedicalEventMapper.toWrapper(event))
+                medicalEventsApi.deleteMedicalEventForPatient(MedicalEventMapper.toWrapper(event))
             }
 
     // endregion
@@ -52,7 +52,7 @@ class MedicalRecordsRepository(
 
     fun getLatestBodyParametersInfo(): Single<LatestBodyParametersInfo> =
         parametersApi
-            .getLatestParametersOfEachType()
+            .getLatestParametersOfEachTypeForPatient()
             .map {
                 it.bodyParameters.mapNotNull { wrapper -> fromWrapperModel(wrapper) }
             }
@@ -73,7 +73,7 @@ class MedicalRecordsRepository(
     ): Single<List<BodyParameterModel>> =
         Single
             .defer {
-                parametersApi.getParameters(BodyParameterMapper.toWrapperType(bodyParameterType))
+                parametersApi.getParametersForPatient(BodyParameterMapper.toWrapperType(bodyParameterType))
             }
             .map {
                 it.bodyParameters.mapNotNull { wrapper -> BodyParameterMapper.fromWrapperModel(wrapper) }
@@ -82,14 +82,14 @@ class MedicalRecordsRepository(
     fun addOrEditParameter(parameter: BodyParameterModel): Single<BodyParameterModel> =
         Single
             .defer {
-                parametersApi.addOrEditParameter(BodyParameterMapper.toWrapperModel(parameter))
+                parametersApi.addOrEditParameterForPatient(BodyParameterMapper.toWrapperModel(parameter))
             }
             .map { BodyParameterMapper.fromWrapperModel(it) }
 
     fun removeParameter(parameter: BodyParameterModel): Completable =
         Completable
             .defer {
-                parametersApi.deleteParameter(BodyParameterMapper.toWrapperModel(parameter))
+                parametersApi.deleteParameterForPatient(BodyParameterMapper.toWrapperModel(parameter))
             }
 
     // endregion
