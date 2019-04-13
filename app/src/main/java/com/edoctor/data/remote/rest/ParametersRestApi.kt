@@ -11,20 +11,20 @@ import retrofit2.http.POST
 
 interface ParametersRestApi {
 
-    @POST("/parameters")
+    @POST("/parametersForPatient")
     fun getParameters(
         @Body type: BodyParameterTypeWrapper
     ) : Single<BodyParametersResponse>
 
-    @GET("/latestParameters")
+    @GET("/latestParametersForPatient")
     fun getLatestParametersOfEachType() : Single<BodyParametersResponse>
 
-    @POST("/addOrEditParameter")
+    @POST("/addOrEditParameterForPatient")
     fun addOrEditParameter(
         @Body parameter: BodyParameterWrapper
     ) : Single<BodyParameterWrapper>
 
-    @POST("/deleteParameter")
+    @POST("/deleteParameterForPatient")
     fun deleteParameter(
         @Body parameter: BodyParameterWrapper
     ) : Completable
