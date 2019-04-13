@@ -201,9 +201,11 @@ class AddOrEditEventActivity : AppCompatActivity() {
 
             deleteButton.hide()
         } else {
-            dateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(event.timestamp.unixTimeToJavaTime()))
-            timeEditText.setText(SimpleDateFormat("HH:mm").format(event.timestamp.unixTimeToJavaTime()))
-            calendar.time = Date(event.timestamp)
+            event.timestamp.unixTimeToJavaTime().let {
+                dateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(it))
+                timeEditText.setText(SimpleDateFormat("HH:mm").format(it))
+                calendar.time = Date(it)
+            }
 
             if (event is EndDateSpecific) {
                 event.endTimestamp?.unixTimeToJavaTime()?.let {
