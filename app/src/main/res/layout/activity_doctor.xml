@@ -208,6 +208,25 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/record_request_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:errorEnabled="false"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/record_request"
+                        android:inputType="textNoSuggestions|text|textMultiLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/record_request_for_patient_hint"
+                        android:background="@null"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
             <View
                     android:id="@+id/medcard_delimiter"
                     android:background="@color/lightGrey"

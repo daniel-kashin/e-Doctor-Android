@@ -30,10 +30,10 @@ class MedicalAccessesRepository(
 
     fun getMedicalAccessForPatient(
         doctorUuid: String
-    ): Single<Pair<List<MedicalRecordType>, MedicalAccessForPatient>> {
+    ): Single<MedicalAccessInfo> {
         return api.getMedicalAccessesForPatient(doctorUuid)
             .map { MedicalAccessMapper.toPresentationForPatient(it) }
-            .map { it.allTypes to it.medicalAccesses.first { it.doctor.uuid == doctorUuid } }
+            .map { MedicalAccessInfo(it.medicalAccesses.first { it.doctor.uuid == doctorUuid }, it.allTypes) }
     }
 
     fun postMedicalAccessesForPatient(

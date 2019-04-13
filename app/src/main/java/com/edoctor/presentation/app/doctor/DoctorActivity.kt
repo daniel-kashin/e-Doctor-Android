@@ -52,6 +52,7 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
 
     private val labelMedcard by lazyFind<TextView>(R.id.label_medcard)
     private val medicalAccess by lazyFind<TextInputEditText>(R.id.medcard_access)
+    private val recordRequest by lazyFind<TextInputEditText>(R.id.record_request)
     private val medcardDelimiter by lazyFind<View>(R.id.medcard_delimiter)
 
     @Inject
@@ -94,34 +95,52 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
         trainings.isFocusable = false
 
         medicalAccess.isFocusable = false
+        recordRequest.isFocusable = false
 
         showDoctorInfo(presenter.doctor)
     }
 
     override fun render(viewState: ViewState) {
-        val access = viewState.medicalAccessInfo
-        if (access == null) {
+        val medcardInfo = viewState.medcardInfo
+        if (medcardInfo == null) {
             labelMedcard.hide()
             medicalAccess.hideParent()
+            recordRequest.hideParent()
             medcardDelimiter.hide()
         } else {
+            val availableTypes = medcardInfo.first.medicalAccess.availableTypes
+            val allTypes = medcardInfo.first.allTypes
+
             medicalAccess.setText(
-                if (access.second.availableTypes.isEmpty()) {
+                if (availableTypes.isEmpty()) {
                     getString(R.string.doctor_has_no_access_to_medcard)
                 } else {
-                    getString(R.string.read_access_types_count_param, access.second.availableTypes.size, access.first.size)
+                    getString(R.string.read_access_types_count_param, availableTypes.size, allTypes.size)
                 }
             )
 
             medicalAccess.setOnClickListener {
                 EditMedicalAccessActivity.IntentBuilder(this)
-                    .allMedicalRecordTypes(access.first)
-                    .medicalAccessesForPatient(access.second)
+                    .allMedicalRecordTypes(allTypes)
+                    .medicalAccessesForPatient(medcardInfo.first.medicalAccess)
                     .start()
+            }
+
+            recordRequest.setText(
+                if (medcardInfo.second.isEmpty()) {
+                    getString(R.string.record_request_for_patient_emtpy)
+                } else {
+                    getString(R.string.record_request_for_patient_param, medcardInfo.second.size)
+                }
+            )
+
+            recordRequest.setOnClickListener {
+                // TODO
             }
 
             labelMedcard.show()
             medicalAccess.showParent()
+            recordRequest.showParent()
             medcardDelimiter.show()
         }
     }

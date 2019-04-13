@@ -26,13 +26,13 @@ class MedicalRecordsRepository(
 
     // region requested events
 
-    fun getRequestedEventsForPatient(doctorUuid: String): Single<List<MedicalEventModel>> =
+    fun getRequestedMedicalEventsForPatient(doctorUuid: String): Single<List<MedicalEventModel>> =
         requestedEventsRestApi.getRequestedEventsForPatient(doctorUuid)
             .map {
                 it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.fromWrapper(wrapper) }
             }
 
-    fun getRequestedEventsForDoctor(patientUuid: String): Single<MedicalEventsInfo> =
+    fun getRequestedMedicalEventsForDoctor(patientUuid: String): Single<MedicalEventsInfo> =
         requestedEventsRestApi.getRequestedEventsForDoctor(patientUuid)
             .map {
                 it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.fromWrapper(wrapper) }
