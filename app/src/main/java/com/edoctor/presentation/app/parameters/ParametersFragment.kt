@@ -35,7 +35,7 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
 
         private const val PATIENT_PARAM = "patient"
 
-        fun newInstance(patient: PatientModel?) = EventsFragment().apply {
+        fun newInstance(patient: PatientModel?) = ParametersFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(PATIENT_PARAM, patient)
             }
