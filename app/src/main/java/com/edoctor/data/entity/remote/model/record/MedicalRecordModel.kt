@@ -27,7 +27,7 @@ interface Commentable {
 
 interface CreatableByDoctor {
     val doctorCreatorUuid: String?
-    val isAddedFromDoctor: Boolean
+    var isAddedFromDoctor: Boolean
 }
 
 interface DocumentAttachable {

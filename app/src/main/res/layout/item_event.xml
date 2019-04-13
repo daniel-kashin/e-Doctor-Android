@@ -8,6 +8,20 @@
         android:layout_margin="10dp">
 
     <TextView
+            android:id="@+id/status"
+            android:textSize="18sp"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingBottom="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/date"
+            app:layout_constraintHorizontal_bias="0.0"
+            tools:text="Добавлено в медкарту"/>
+
+    <TextView
             android:id="@+id/name"
             android:textSize="22sp"
             android:textColor="@android:color/black"
@@ -17,6 +31,7 @@
             android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/date"
+            app:layout_constraintTop_toBottomOf="@+id/status"
             app:layout_constraintHorizontal_bias="0.0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

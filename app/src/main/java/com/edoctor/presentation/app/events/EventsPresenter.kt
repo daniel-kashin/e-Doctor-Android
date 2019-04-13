@@ -28,10 +28,10 @@ class EventsPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ViewState, Event>() {
 
-    private var isRequestedRecords: Boolean = false
     private var addOrEditEventAction: ((MedicalEventModel) -> Single<MedicalEventModel>)? = null
     private var deleteEventAction: ((MedicalEventModel) -> Completable)? = null
 
+    var isRequestedRecords: Boolean = false
     var patient: PatientModel? = null
     var doctor: DoctorModel? = null
 
@@ -47,12 +47,19 @@ class EventsPresenter @Inject constructor(
         val (initialViewState, getEventsSingle) = if (isRequestedRecords) {
             when {
                 doctor != null -> {
+                    canBeEdited = true
+                    addOrEditEventAction = { event ->
+                        medicalRecordsRepository.addOrEditEventForPatient(event.apply { isAddedFromDoctor = true })
+                    }
+                    deleteEventAction = { event -> medicalRecordsRepository.deleteEventForPatient(event) }
                     val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList()))
                     val single = medicalRecordsRepository.getRequestedMedicalEventsForPatient(doctor.uuid)
                     viewState to single
                 }
                 patient != null -> {
-                    addOrEditEventAction = { event -> medicalRecordsRepository.addMedicalEventForDoctor(event, patient.uuid) }
+                    addOrEditEventAction = { event ->
+                        medicalRecordsRepository.addMedicalEventForDoctor(event, patient.uuid)
+                    }
                     val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES))
                     val single = medicalRecordsRepository.getRequestedMedicalEventsForDoctor(patient.uuid)
                     viewState to single

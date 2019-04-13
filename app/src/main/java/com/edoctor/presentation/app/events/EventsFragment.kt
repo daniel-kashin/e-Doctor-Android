@@ -73,7 +73,7 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
 
         fab.hide()
 
-        adapter = EventsAdapter()
+        adapter = EventsAdapter(presenter.isRequestedRecords)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
         recyclerView.addItemDecoration(SimpleDividerItemDecoration(view.context))

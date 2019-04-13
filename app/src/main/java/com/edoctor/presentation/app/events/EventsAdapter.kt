@@ -10,12 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.record.*
 import com.edoctor.presentation.app.events.EventsAdapter.ViewHolder
-import com.edoctor.utils.dispatchUpdatesTo
-import com.edoctor.utils.lazyFind
-import com.edoctor.utils.unixTimeToJavaTime
+import com.edoctor.utils.*
 import java.text.SimpleDateFormat
 
-class EventsAdapter : RecyclerView.Adapter<ViewHolder>() {
+class EventsAdapter(val showStatus: Boolean) : RecyclerView.Adapter<ViewHolder>() {
 
     var onEventClickListener: ((MedicalEventModel) -> Unit)? = null
 
@@ -51,7 +49,7 @@ class EventsAdapter : RecyclerView.Adapter<ViewHolder>() {
     override fun getItemCount(): Int = events.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(events[position])
+        holder.bind(events[position], showStatus)
     }
 
     class ViewHolder(
@@ -59,12 +57,13 @@ class EventsAdapter : RecyclerView.Adapter<ViewHolder>() {
         private val onEventClickListener: (MedicalEventModel) -> Unit
     ) : RecyclerView.ViewHolder(rootView) {
 
+        private val status by rootView.lazyFind<TextView>(R.id.status)
         private val name by rootView.lazyFind<TextView>(R.id.name)
         private val date by rootView.lazyFind<TextView>(R.id.date)
         private val comment by rootView.lazyFind<TextView>(R.id.comment)
 
         @SuppressLint("SimpleDateFormat")
-        fun bind(medicalEventModel: MedicalEventModel) = medicalEventModel.let {
+        fun bind(medicalEventModel: MedicalEventModel, showStatus: Boolean) = medicalEventModel.let {
             val (nameText: String, typeText: String) = rootView.context.run {
                 when (it) {
                     is Analysis -> {
@@ -94,7 +93,28 @@ class EventsAdapter : RecyclerView.Adapter<ViewHolder>() {
             }
 
             name.text = nameText
+
+            val (statusText, textColorRes) = if (showStatus) {
+                when {
+                    medicalEventModel.isAddedFromDoctor -> {
+                        rootView.context.getString(R.string.added_to_medcard) to R.color.accept_call
+                    }
+                    else -> null to null
+                }
+            } else {
+                null to null
+            }
+
+            if (statusText != null && textColorRes != null) {
+                status.show()
+                status.text = statusText
+                status.textColorRes = textColorRes
+            } else {
+                status.hide()
+            }
+
             comment.text = typeText
+
             date.text = SimpleDateFormat("dd MMM, HH:mm").format(it.timestamp.unixTimeToJavaTime())
 
             rootView.setOnClickListener {

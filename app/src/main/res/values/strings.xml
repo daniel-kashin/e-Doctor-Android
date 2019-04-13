@@ -218,4 +218,6 @@
     <string name="records_for_patient">Records for patient</string>
 
     <string name="requested_records_for_patient_disclaimer">You can send records to the patient. Patient will be able to delete them or move to the medcard</string>
+
+    <string name="added_to_medcard">Added to medcard</string>
 </resources>
