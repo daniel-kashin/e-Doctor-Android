@@ -107,5 +107,4 @@ object MedicalRecordTypeMapper {
             else -> null
         }
 
-
 }

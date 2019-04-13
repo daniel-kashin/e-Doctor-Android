@@ -30,7 +30,13 @@ class EventsPresenter @Inject constructor(
 
         setViewState(ViewState(MedicalEventsInfo.EMPTY))
 
-        disposables += medicalRecordsRepository.getMedicalEvents()
+        val getEventsSingle = if (patient == null) {
+            medicalRecordsRepository.getMedicalEventsForPatient()
+        } else {
+            medicalRecordsRepository.getMedicalEventsForDoctor(patient.uuid)
+        }
+
+        disposables += getEventsSingle
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
@@ -43,7 +49,7 @@ class EventsPresenter @Inject constructor(
 
     fun addOrEditEvent(event: MedicalEventModel) {
         if (patient == null) {
-            disposables += medicalRecordsRepository.addOrEditEvent(event)
+            disposables += medicalRecordsRepository.addOrEditEventForPatient(event)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
@@ -58,7 +64,7 @@ class EventsPresenter @Inject constructor(
 
     fun removeEvent(event: MedicalEventModel) {
         if (patient == null) {
-            disposables += medicalRecordsRepository.removeEvent(event)
+            disposables += medicalRecordsRepository.deleteEventForPatient(event)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({

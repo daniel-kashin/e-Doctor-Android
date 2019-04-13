@@ -8,6 +8,7 @@ import io.reactivex.Single
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ParametersRestApi {
 
@@ -16,8 +17,19 @@ interface ParametersRestApi {
         @Body type: BodyParameterTypeWrapper
     ) : Single<BodyParametersResponse>
 
+    @POST("/parametersForDoctor")
+    fun getParametersForDoctor(
+        @Body type: BodyParameterTypeWrapper,
+        @Query("patientUuid") patientUuid: String
+    ) : Single<BodyParametersResponse>
+
     @GET("/latestParametersForPatient")
     fun getLatestParametersOfEachTypeForPatient() : Single<BodyParametersResponse>
+
+    @GET("/latestParametersForDoctor")
+    fun getLatestParametersOfEachTypeForDoctor(
+        @Query("patientUuid") patientUuid: String
+    ): Single<BodyParametersResponse>
 
     @POST("/addOrEditParameterForPatient")
     fun addOrEditParameterForPatient(

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.record.BodyParameterModel
 import com.edoctor.data.entity.presentation.BodyParameterType
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.addParameter.AddOrEditParameterActivity
 import com.edoctor.presentation.app.parameter.ParameterPresenter.Event
@@ -27,6 +28,7 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
 
     companion object {
         const val PARAMETER_TYPE_PARAM = "parameter_type"
+        const val PATIENT_PARAM = "patient"
 
         const val PARAMETER_PARAM = "parameter"
         const val IS_REMOVED_PARAM = "is_removed"
@@ -47,7 +49,8 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.medicalRecordsComponent.inject(this)
         val parameterType = intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as BodyParameterType
-        presenter.init(parameterType)
+        val patient = intent.getSerializableExtra(PATIENT_PARAM) as? PatientModel
+        presenter.init(parameterType, patient)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,10 +80,14 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
             }
         }
 
-        fab.setOnClickListener {
-            AddOrEditParameterActivity.IntentBuilder(this)
-                .parameterType(presenter.parameterType)
-                .startForResult(REQUEST_ADD_OR_EDIT_PARAMETER)
+        if (presenter.patient == null) {
+            fab.setOnClickListener {
+                AddOrEditParameterActivity.IntentBuilder(this)
+                    .parameterType(presenter.parameterType)
+                    .startForResult(REQUEST_ADD_OR_EDIT_PARAMETER)
+            }
+        } else {
+            fab.hide()
         }
 
         adapter = ParameterAdapter()
@@ -126,13 +133,16 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
     class IntentBuilder(fragment: Fragment) : CheckedIntentBuilder(fragment) {
 
         private var parameterType: BodyParameterType? = null
+        private var patient: PatientModel? = null
 
         fun parameterType(parameterType: BodyParameterType) = apply { this.parameterType = parameterType }
+        fun patient(patient: PatientModel) = apply { this.patient = patient }
 
         override fun areParamsValid() = parameterType != null
 
         override fun get(): Intent = Intent(context, ParameterActivity::class.java)
             .putExtra(PARAMETER_TYPE_PARAM, parameterType)
+            .putExtra(PATIENT_PARAM, patient)
 
     }
 

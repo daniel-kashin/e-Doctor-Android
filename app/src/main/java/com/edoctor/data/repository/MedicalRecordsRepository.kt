@@ -23,7 +23,7 @@ class MedicalRecordsRepository(
 
     // region events
 
-    fun getMedicalEvents(): Single<MedicalEventsInfo> =
+    fun getMedicalEventsForPatient(): Single<MedicalEventsInfo> =
         medicalEventsApi
             .getEventsForPatient()
             .map {
@@ -33,14 +33,24 @@ class MedicalRecordsRepository(
                 MedicalEventsInfo(it, ALL_MEDICAL_EVENT_TYPES)
             }
 
-    fun addOrEditEvent(event: MedicalEventModel): Single<MedicalEventModel> =
+    fun getMedicalEventsForDoctor(patientUuid: String): Single<MedicalEventsInfo> =
+        medicalEventsApi
+            .getEventsForDoctor(patientUuid)
+            .map {
+                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.fromWrapper(wrapper) }
+            }
+            .map {
+                MedicalEventsInfo(it, emptyList())
+            }
+
+    fun addOrEditEventForPatient(event: MedicalEventModel): Single<MedicalEventModel> =
         Single
             .defer {
                 medicalEventsApi.addOrEditMedicalEventForPatient(MedicalEventMapper.toWrapper(event))
             }
             .map { MedicalEventMapper.fromWrapper(it) }
 
-    fun removeEvent(event: MedicalEventModel): Completable =
+    fun deleteEventForPatient(event: MedicalEventModel): Completable =
         Completable
             .defer {
                 medicalEventsApi.deleteMedicalEventForPatient(MedicalEventMapper.toWrapper(event))
@@ -50,7 +60,7 @@ class MedicalRecordsRepository(
 
     // region body parameters
 
-    fun getLatestBodyParametersInfo(): Single<LatestBodyParametersInfo> =
+    fun getLatestBodyParametersInfoForPatient(): Single<LatestBodyParametersInfo> =
         parametersApi
             .getLatestParametersOfEachTypeForPatient()
             .map {
@@ -68,7 +78,17 @@ class MedicalRecordsRepository(
                 LatestBodyParametersInfo(it, availableTypes)
             }
 
-    fun getAllParametersOfType(
+    fun getLatestBodyParametersInfoForDoctor(patientUuid: String): Single<LatestBodyParametersInfo> =
+        parametersApi
+            .getLatestParametersOfEachTypeForDoctor(patientUuid)
+            .map {
+                it.bodyParameters.mapNotNull { wrapper -> fromWrapperModel(wrapper) }
+            }
+            .map {
+                LatestBodyParametersInfo(it, emptyList())
+            }
+
+    fun getAllParametersOfTypeForPatient(
         bodyParameterType: BodyParameterType
     ): Single<List<BodyParameterModel>> =
         Single
@@ -79,14 +99,26 @@ class MedicalRecordsRepository(
                 it.bodyParameters.mapNotNull { wrapper -> BodyParameterMapper.fromWrapperModel(wrapper) }
             }
 
-    fun addOrEditParameter(parameter: BodyParameterModel): Single<BodyParameterModel> =
+    fun getAllParametersOfTypeForDoctor(
+        bodyParameterType: BodyParameterType,
+        patientUuid: String
+    ): Single<List<BodyParameterModel>> =
+        Single
+            .defer {
+                parametersApi.getParametersForDoctor(BodyParameterMapper.toWrapperType(bodyParameterType), patientUuid)
+            }
+            .map {
+                it.bodyParameters.mapNotNull { wrapper -> BodyParameterMapper.fromWrapperModel(wrapper) }
+            }
+
+    fun addOrEditParameterPatient(parameter: BodyParameterModel): Single<BodyParameterModel> =
         Single
             .defer {
                 parametersApi.addOrEditParameterForPatient(BodyParameterMapper.toWrapperModel(parameter))
             }
             .map { BodyParameterMapper.fromWrapperModel(it) }
 
-    fun removeParameter(parameter: BodyParameterModel): Completable =
+    fun removeParameterForPatient(parameter: BodyParameterModel): Completable =
         Completable
             .defer {
                 parametersApi.deleteParameterForPatient(BodyParameterMapper.toWrapperModel(parameter))
