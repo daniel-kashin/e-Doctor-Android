@@ -2,10 +2,12 @@ package com.edoctor.data.entity.remote.model.record
 
 import java.io.Serializable
 
-sealed class MedicalEventModel : MedicalRecordModel(), DateSpecific, Commentable, Serializable
+sealed class MedicalEventModel : MedicalRecordModel(), DateSpecific, Commentable, Serializable, CreatableByDoctor
 
 data class Analysis(
     override val uuid: String,
+    override val doctorCreatorUuid: String?,
+    override val isAddedFromDoctor: Boolean,
     override val timestamp: Long,
     override val comment: String?,
     override val clinic: String?,
@@ -15,6 +17,8 @@ data class Analysis(
 
 data class Allergy(
     override val uuid: String,
+    override val doctorCreatorUuid: String?,
+    override val isAddedFromDoctor: Boolean,
     override val timestamp: Long,
     override val comment: String?,
     override val endTimestamp: Long?,
@@ -24,12 +28,16 @@ data class Allergy(
 
 data class Note(
     override val uuid: String,
+    override val doctorCreatorUuid: String?,
+    override val isAddedFromDoctor: Boolean,
     override val timestamp: Long,
     override val comment: String?
 ) : MedicalEventModel()
 
 data class Vaccination(
     override val uuid: String,
+    override val doctorCreatorUuid: String?,
+    override val isAddedFromDoctor: Boolean,
     override val timestamp: Long,
     override val comment: String?,
     override val clinic: String?,
@@ -40,6 +48,8 @@ data class Vaccination(
 
 data class Procedure(
     override val uuid: String,
+    override val doctorCreatorUuid: String?,
+    override val isAddedFromDoctor: Boolean,
     override val timestamp: Long,
     override val comment: String?,
     override val clinic: String?,
@@ -50,6 +60,8 @@ data class Procedure(
 
 data class DoctorVisit(
     override val uuid: String,
+    override val doctorCreatorUuid: String?,
+    override val isAddedFromDoctor: Boolean,
     override val timestamp: Long,
     override val comment: String?,
     override val clinic: String?,
@@ -62,6 +74,8 @@ data class DoctorVisit(
 
 data class Sickness(
     override val uuid: String,
+    override val doctorCreatorUuid: String?,
+    override val isAddedFromDoctor: Boolean,
     override val timestamp: Long,
     override val comment: String?,
     override val endTimestamp: Long?,

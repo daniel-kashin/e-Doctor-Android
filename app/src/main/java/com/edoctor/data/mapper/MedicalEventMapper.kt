@@ -1,7 +1,5 @@
 package com.edoctor.data.mapper
 
-import com.dropbox.core.android.AuthActivity.result
-import com.edoctor.R
 import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.remote.model.record.*
 import com.edoctor.data.mapper.MedicalRecordTypeMapper.MEDICAL_EVENT_TYPE_ALLERGY
@@ -19,6 +17,8 @@ object MedicalEventMapper {
             is Analysis -> {
                 MedicalEventWrapper(
                     uuid = uuid,
+                    doctorCreatorUuid = doctorCreatorUuid,
+                    isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_ANALYSIS,
                     comment = comment,
@@ -30,6 +30,8 @@ object MedicalEventMapper {
             is Allergy -> {
                 MedicalEventWrapper(
                     uuid = uuid,
+                    doctorCreatorUuid = doctorCreatorUuid,
+                    isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_ALLERGY,
                     comment = comment,
@@ -41,6 +43,8 @@ object MedicalEventMapper {
             is Note -> {
                 MedicalEventWrapper(
                     uuid = uuid,
+                    doctorCreatorUuid = doctorCreatorUuid,
+                    isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_NOTE,
                     comment = comment
@@ -49,6 +53,8 @@ object MedicalEventMapper {
             is Vaccination -> {
                 MedicalEventWrapper(
                     uuid = uuid,
+                    doctorCreatorUuid = doctorCreatorUuid,
+                    isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_VACCINATION,
                     comment = comment,
@@ -61,6 +67,8 @@ object MedicalEventMapper {
             is Procedure -> {
                 MedicalEventWrapper(
                     uuid = uuid,
+                    doctorCreatorUuid = doctorCreatorUuid,
+                    isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_PROCEDURE,
                     comment = comment,
@@ -73,6 +81,8 @@ object MedicalEventMapper {
             is DoctorVisit -> {
                 MedicalEventWrapper(
                     uuid = uuid,
+                    doctorCreatorUuid = doctorCreatorUuid,
+                    isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_DOCTOR_VISIT,
                     comment = comment,
@@ -87,6 +97,8 @@ object MedicalEventMapper {
             is Sickness -> {
                 MedicalEventWrapper(
                     uuid = uuid,
+                    doctorCreatorUuid = doctorCreatorUuid,
+                    isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_SICKNESS,
                     comment = comment,
@@ -102,37 +114,37 @@ object MedicalEventMapper {
         when (this.type) {
             MEDICAL_EVENT_TYPE_ANALYSIS -> {
                 name?.let {
-                    Analysis(uuid, timestamp, comment, clinic, name, diagnosis)
+                    Analysis(uuid, doctorCreatorUuid, isAddedFromDoctor, timestamp, comment, clinic, name, diagnosis)
                 }
             }
             MEDICAL_EVENT_TYPE_ALLERGY -> {
                 name?.let {
-                    Allergy(uuid, timestamp, comment, endTimestamp, name, symptoms)
+                    Allergy(uuid, doctorCreatorUuid, isAddedFromDoctor, timestamp, comment, endTimestamp, name, symptoms)
                 }
             }
             MEDICAL_EVENT_TYPE_NOTE -> {
-                Note(uuid, timestamp, comment)
+                Note(uuid, doctorCreatorUuid, isAddedFromDoctor, timestamp, comment)
             }
             MEDICAL_EVENT_TYPE_VACCINATION -> {
                 name?.let {
-                    Vaccination(uuid, timestamp, comment, clinic, doctorName, doctorSpecialization, name)
+                    Vaccination(uuid, doctorCreatorUuid, isAddedFromDoctor,  timestamp, comment, clinic, doctorName, doctorSpecialization, name)
                 }
             }
             MEDICAL_EVENT_TYPE_PROCEDURE -> {
                 name?.let {
-                    Procedure(uuid, timestamp, comment, clinic, doctorName, doctorSpecialization, name)
+                    Procedure(uuid, doctorCreatorUuid, isAddedFromDoctor, timestamp, comment, clinic, doctorName, doctorSpecialization, name)
                 }
             }
             MEDICAL_EVENT_TYPE_DOCTOR_VISIT -> {
                 if (symptoms != null && diagnosis != null) {
-                    DoctorVisit(uuid, timestamp, comment, clinic, doctorName, doctorSpecialization, symptoms, diagnosis, recipe)
+                    DoctorVisit(uuid, doctorCreatorUuid, isAddedFromDoctor, timestamp, comment, clinic, doctorName, doctorSpecialization, symptoms, diagnosis, recipe)
                 } else {
                     null
                 }
             }
             MEDICAL_EVENT_TYPE_SICKNESS -> {
                 diagnosis?.let {
-                    Sickness(uuid, timestamp, comment, endTimestamp, symptoms, diagnosis)
+                    Sickness(uuid, doctorCreatorUuid, isAddedFromDoctor, timestamp, comment, endTimestamp, symptoms, diagnosis)
                 }
             }
             else -> null
