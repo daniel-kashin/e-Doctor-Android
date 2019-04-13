@@ -8,18 +8,47 @@ import com.edoctor.data.entity.presentation.BodyParameterType.Companion.NON_CUST
 import com.edoctor.data.entity.presentation.BodyParameterType.Custom.Companion.NEW
 import com.edoctor.data.entity.presentation.MedicalEventType.Companion.ALL_MEDICAL_EVENT_TYPES
 import com.edoctor.data.entity.presentation.MedicalEventsInfo
+import com.edoctor.data.entity.remote.response.MedicalEventsResponse
 import com.edoctor.data.mapper.BodyParameterMapper
 import com.edoctor.data.mapper.BodyParameterMapper.fromWrapperModel
 import com.edoctor.data.mapper.MedicalEventMapper
 import com.edoctor.data.remote.rest.MedicalEventsRestApi
 import com.edoctor.data.remote.rest.ParametersRestApi
+import com.edoctor.data.remote.rest.RequestedEventsRestApi
 import io.reactivex.Completable
 import io.reactivex.Single
 
 class MedicalRecordsRepository(
     private val parametersApi: ParametersRestApi,
-    private val medicalEventsApi: MedicalEventsRestApi
+    private val medicalEventsApi: MedicalEventsRestApi,
+    private val requestedEventsRestApi: RequestedEventsRestApi
 ) {
+
+    // region requested events
+
+    fun getRequestedEventsForPatient(doctorUuid: String): Single<List<MedicalEventModel>> =
+        requestedEventsRestApi.getRequestedEventsForPatient(doctorUuid)
+            .map {
+                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.fromWrapper(wrapper) }
+            }
+
+    fun getRequestedEventsForDoctor(patientUuid: String): Single<MedicalEventsInfo> =
+        requestedEventsRestApi.getRequestedEventsForDoctor(patientUuid)
+            .map {
+                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.fromWrapper(wrapper) }
+            }
+            .map {
+                MedicalEventsInfo(it, ALL_MEDICAL_EVENT_TYPES)
+            }
+
+    fun addMedicalEventForDoctor(event: MedicalEventModel, patientUuid: String): Single<MedicalEventModel> =
+        Single
+            .defer {
+                requestedEventsRestApi.addMedicalEventForDoctor(MedicalEventMapper.toWrapper(event), patientUuid)
+            }
+            .map { MedicalEventMapper.fromWrapper(it) }
+
+    // endregion
 
     // region events
 

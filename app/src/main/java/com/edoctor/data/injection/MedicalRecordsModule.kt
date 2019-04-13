@@ -2,6 +2,7 @@ package com.edoctor.data.injection
 
 import com.edoctor.data.remote.rest.MedicalEventsRestApi
 import com.edoctor.data.remote.rest.ParametersRestApi
+import com.edoctor.data.remote.rest.RequestedEventsRestApi
 import com.edoctor.data.repository.MedicalRecordsRepository
 import dagger.Module
 import dagger.Provides
@@ -24,9 +25,16 @@ class MedicalRecordsModule {
     ): MedicalEventsRestApi = builder.build().create(MedicalEventsRestApi::class.java)
 
     @Provides
+    internal fun provideRequestedEventsRestApi(
+        @Named(NetworkModule.AUTHORIZED_TAG)
+        builder: Retrofit.Builder
+    ): RequestedEventsRestApi = builder.build().create(RequestedEventsRestApi::class.java)
+
+    @Provides
     fun provideMedicalRecordsRepository(
         parametersRestApi: ParametersRestApi,
-        medicalEventsRestApi: MedicalEventsRestApi
-    ) = MedicalRecordsRepository(parametersRestApi, medicalEventsRestApi)
+        medicalEventsRestApi: MedicalEventsRestApi,
+        requestedEventsRestApi: RequestedEventsRestApi
+    ) = MedicalRecordsRepository(parametersRestApi, medicalEventsRestApi, requestedEventsRestApi)
 
 }
