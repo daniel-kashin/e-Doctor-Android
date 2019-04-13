@@ -98,10 +98,14 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
 
     override fun render(viewState: ViewState) {
         adapter.parameters = viewState.parameters
-        adapter.onParameterClickListener = { parameter ->
-            AddOrEditParameterActivity.IntentBuilder(this)
-                .parameter(parameter)
-                .startForResult(REQUEST_ADD_OR_EDIT_PARAMETER)
+        if (presenter.patient == null) {
+            adapter.onParameterClickListener = { parameter ->
+                AddOrEditParameterActivity.IntentBuilder(this)
+                    .parameter(parameter)
+                    .startForResult(REQUEST_ADD_OR_EDIT_PARAMETER)
+            }
+        } else {
+            adapter.onParameterClickListener = null
         }
     }
 
