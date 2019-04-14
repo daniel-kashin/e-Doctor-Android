@@ -74,7 +74,7 @@ class MessageMapper(context: Context) {
                 senderUserUnwrapped,
                 recipientUserUnwrapped,
                 sendingTimestamp,
-                applicationContext.getString(R.string.new_record_request_was_added)
+                applicationContext.getString(R.string.new_record_request_was_added_hyperlink)
             )
         }
 
@@ -91,7 +91,7 @@ class MessageMapper(context: Context) {
                 senderUserUnwrapped,
                 recipientUserUnwrapped,
                 sendingTimestamp,
-                applicationContext.getString(R.string.medcard_access_changed)
+                applicationContext.getString(R.string.medcard_access_changed_hyperlink)
             )
         }
 

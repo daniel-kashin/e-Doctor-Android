@@ -1,5 +1,6 @@
 package com.edoctor.data.entity.presentation
 
+import android.text.Html
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.utils.unixTimeToJavaTime
 import com.stfalcon.chatkit.commons.models.IMessage
@@ -12,10 +13,9 @@ abstract class Message : IMessage {
     abstract val sendingTimestamp: Long
 }
 
-abstract class SystemMessage : Message()
-
-abstract class UserMessage : Message() {
+abstract class UserMessage : Message(), MessageContentType {
     abstract val senderUser: UserModel
+    abstract fun withRemovedHtml(): UserMessage
 
     override fun getId() = uuid
     override fun getCreatedAt() = Date(sendingTimestamp.unixTimeToJavaTime())
@@ -32,7 +32,7 @@ data class CallStatusMessage(
     val callUuid: String,
     val isFromCurrentUser: Boolean,
     private val text: String
-) : UserMessage(), MessageContentType {
+) : UserMessage() {
 
     enum class CallStatus {
         INITIATED,
@@ -41,6 +41,8 @@ data class CallStatusMessage(
     }
 
     override fun getText() = text
+
+    override fun withRemovedHtml() = this
 
 }
 
@@ -54,6 +56,8 @@ data class TextMessage(
 
     override fun getText() = text
 
+    override fun withRemovedHtml() = this
+
 }
 
 data class MedicalAccessesMessage(
@@ -66,6 +70,8 @@ data class MedicalAccessesMessage(
 
     override fun getText() = text
 
+    override fun withRemovedHtml() = this.copy(text = Html.fromHtml(text).toString())
+
 }
 
 data class MedicalRecordRequestMessage(
@@ -77,5 +83,7 @@ data class MedicalRecordRequestMessage(
 ) : UserMessage() {
 
     override fun getText() = text
+
+    override fun withRemovedHtml() = this.copy(text = Html.fromHtml(text).toString())
 
 }

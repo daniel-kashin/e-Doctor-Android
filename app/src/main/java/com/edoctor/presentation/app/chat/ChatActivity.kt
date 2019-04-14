@@ -24,13 +24,11 @@ import com.edoctor.presentation.app.chat.ChatPresenter.ViewState
 import com.edoctor.presentation.app.doctor.DoctorActivity
 import com.edoctor.presentation.app.patient.PatientActivity
 import com.edoctor.presentation.architecture.activity.BaseActivity
-import com.edoctor.presentation.views.CallMessageContentChecker
+import com.edoctor.presentation.views.*
 import com.edoctor.presentation.views.CallMessageContentChecker.Companion.CONTENT_TYPE_CALL
-import com.edoctor.presentation.views.CallingView
 import com.edoctor.presentation.views.CallingView.CallType.INCOMING
 import com.edoctor.presentation.views.CallingView.CallType.OUTCOMING
-import com.edoctor.presentation.views.IncomingCallMessageViewHolder
-import com.edoctor.presentation.views.OutcomingCallMessageViewHolder
+import com.edoctor.presentation.views.HyperlinkTextMessageContentChecker.Companion.CONTENT_TYPE_HYPERLINK_TEXT
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.facebook.react.modules.core.PermissionListener
@@ -127,6 +125,13 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
                 OutcomingCallMessageViewHolder::class.java, R.layout.item_outcoming_call_message,
                 CallMessageContentChecker()
             )
+            .registerContentType(
+                CONTENT_TYPE_HYPERLINK_TEXT,
+                IncomingHyperlinkTextMessageViewHolder::class.java, R.layout.item_incoming_text_message,
+                OutcomingHyperlinkTextMessageViewHolder::class.java, R.layout.item_outcoming_text_message,
+                HyperlinkTextMessageContentChecker()
+            )
+
         messagesAdapter = MessagesAdapter(presenter.currentUser.email, holdersConfig)
         messagesList.setAdapter(messagesAdapter)
 

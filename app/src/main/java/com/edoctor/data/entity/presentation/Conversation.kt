@@ -22,7 +22,7 @@ class Conversation(
 
     override fun getUsers() = mutableListOf(_lastMessage.recipientUser.toPresentation(), _lastMessage.senderUser.toPresentation())
 
-    override fun getLastMessage() = _lastMessage
+    override fun getLastMessage() = _lastMessage.withRemovedHtml()
 
     override fun getDialogName() = when {
         recipientUser.fullName != null -> recipientUser.fullName

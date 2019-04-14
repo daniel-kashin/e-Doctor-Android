@@ -49,7 +49,7 @@ class EventsPresenter @Inject constructor(
                 doctor != null -> {
                     canBeEdited = true
                     addOrEditEventAction = { event ->
-                        medicalRecordsRepository.addOrEditEventForPatient(event.apply { isAddedFromDoctor = true })
+                        medicalRecordsRepository.addOrEditEventForPatient(event.getAddedFromDoctorCopy())
                     }
                     deleteEventAction = { event -> medicalRecordsRepository.deleteEventForPatient(event) }
                     val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList()))

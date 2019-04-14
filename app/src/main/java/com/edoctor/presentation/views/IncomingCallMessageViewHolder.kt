@@ -15,7 +15,6 @@ class IncomingCallMessageViewHolder(
 ) : MessageHolders.IncomingTextMessageViewHolder<CallStatusMessage>(itemView, payload) {
 
     val imageArrow by itemView.lazyFind<ImageView>(R.id.image_arrow)
-    val messageTime by itemView.lazyFind<TextView>(R.id.messageTime)
     val imagePhone by itemView.lazyFind<ImageView>(R.id.image_phone)
 
     override fun onBind(data: CallStatusMessage) {

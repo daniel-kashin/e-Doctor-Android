@@ -2,7 +2,9 @@ package com.edoctor.data.entity.remote.model.record
 
 import java.io.Serializable
 
-sealed class MedicalEventModel : MedicalRecordModel(), DateSpecific, Commentable, Serializable, CreatableByDoctor
+sealed class MedicalEventModel : MedicalRecordModel(), DateSpecific, Commentable, Serializable, CreatableByDoctor {
+    abstract override fun getAddedFromDoctorCopy(): MedicalEventModel
+}
 
 data class Analysis(
     override val uuid: String,
@@ -13,7 +15,11 @@ data class Analysis(
     override val clinic: String?,
     val name: String,
     val result: String?
-) : MedicalEventModel(), ClinicSpecific
+) : MedicalEventModel(), ClinicSpecific {
+
+    override fun getAddedFromDoctorCopy() = copy(isAddedFromDoctor = true)
+
+}
 
 data class Allergy(
     override val uuid: String,
@@ -24,7 +30,12 @@ data class Allergy(
     override val endTimestamp: Long?,
     val allergenName: String,
     val symptoms: String?
-) : MedicalEventModel(), EndDateSpecific
+) : MedicalEventModel(), EndDateSpecific {
+
+    override fun getAddedFromDoctorCopy() = copy(isAddedFromDoctor = true)
+
+}
+
 
 data class Note(
     override val uuid: String,
@@ -32,7 +43,12 @@ data class Note(
     override var isAddedFromDoctor: Boolean = false,
     override val timestamp: Long,
     override val comment: String?
-) : MedicalEventModel()
+) : MedicalEventModel() {
+
+    override fun getAddedFromDoctorCopy() = copy(isAddedFromDoctor = true)
+
+}
+
 
 data class Vaccination(
     override val uuid: String,
@@ -44,7 +60,12 @@ data class Vaccination(
     override val doctorName: String?,
     override val doctorSpecialization: String?,
     val name: String
-) : MedicalEventModel(), ClinicSpecific, DoctorSpecific
+) : MedicalEventModel(), ClinicSpecific, DoctorSpecific {
+
+    override fun getAddedFromDoctorCopy() = copy(isAddedFromDoctor = true)
+
+}
+
 
 data class Procedure(
     override val uuid: String,
@@ -56,7 +77,12 @@ data class Procedure(
     override val doctorName: String?,
     override val doctorSpecialization: String?,
     val name: String
-) : MedicalEventModel(), ClinicSpecific, DoctorSpecific
+) : MedicalEventModel(), ClinicSpecific, DoctorSpecific {
+
+    override fun getAddedFromDoctorCopy() = copy(isAddedFromDoctor = true)
+
+}
+
 
 data class DoctorVisit(
     override val uuid: String,
@@ -70,7 +96,12 @@ data class DoctorVisit(
     val complaints: String,
     val diagnosisAndRecommendations: String,
     val recipe: String?
-) : MedicalEventModel(), ClinicSpecific, DoctorSpecific
+) : MedicalEventModel(), ClinicSpecific, DoctorSpecific {
+
+    override fun getAddedFromDoctorCopy() = copy(isAddedFromDoctor = true)
+
+}
+
 
 data class Sickness(
     override val uuid: String,
@@ -81,4 +112,8 @@ data class Sickness(
     override val endTimestamp: Long?,
     val symptoms: String?,
     val diagnosis: String
-) : MedicalEventModel(), EndDateSpecific
+) : MedicalEventModel(), EndDateSpecific {
+
+    override fun getAddedFromDoctorCopy() = copy(isAddedFromDoctor = true)
+
+}
