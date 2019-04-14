@@ -158,7 +158,7 @@
     <string name="doctor_access">Права врача</string>
     <string name="choose_medical_record_types">Выберите медицинские записи, которые врач сможет читать. Вы можете изменить эти настройки в любое время</string>
     <string name="event">Событие</string>
-    <string name="medcard_access_changed">Настройки доступа к медкарте были изменены</string>
+    <string name="medcard_access_changed">Настройки доступа к медкарте изменены</string>
     <string name="read_access_types_count_param">Чтение %1$d типов записей из %2$d</string>
     <string name="medcard_access_for_doctor_hint">Доступ к медкарте пациента</string>
     <string name="you_have_no_access_to_medcard">У вас нет доступа на чтение к медкарте пациента</string>
@@ -174,6 +174,5 @@
     <string name="record_request_for_doctor_param">Вы отправили пациенту %1$d записей</string>
     <string name="requested_records_for_patient_disclaimer">Вы можете отправить записи пациенту. Пациент сможет удалить их или добавить в свою медкарту</string>
     <string name="added_to_medcard">Добавлено в медкарту</string>
-    <string name="medcard_access_settings_changed">Настройки доступа к медкарте были изменены</string>
     <string name="new_record_request_was_added">Новая запись в медкарту</string>
 </resources>

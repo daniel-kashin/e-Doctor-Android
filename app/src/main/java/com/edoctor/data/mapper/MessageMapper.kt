@@ -91,7 +91,7 @@ class MessageMapper(context: Context) {
                 senderUserUnwrapped,
                 recipientUserUnwrapped,
                 sendingTimestamp,
-                applicationContext.getString(R.string.medcard_access_settings_changed)
+                applicationContext.getString(R.string.medcard_access_changed)
             )
         }
 
