@@ -220,4 +220,6 @@
     <string name="requested_records_for_patient_disclaimer">You can send records to the patient. Patient will be able to delete them or move to the medcard</string>
 
     <string name="added_to_medcard">Added to medcard</string>
+    <string name="medcard_access_settings_changed">Medcard access settings were changed</string>
+    <string name="new_record_request_was_added">New record to medcard</string>
 </resources>

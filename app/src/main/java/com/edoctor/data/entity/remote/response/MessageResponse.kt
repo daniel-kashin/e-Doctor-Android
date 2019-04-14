@@ -8,8 +8,6 @@ sealed class MessageResponse {
     abstract val sendingTimestamp: Long
 }
 
-sealed class SystemMessageResponse : MessageResponse()
-
 sealed class UserMessageResponse : MessageResponse() {
     abstract val senderUser: UserModelWrapper
 }
@@ -38,4 +36,18 @@ data class TextMessageResponse(
     override val recipientUser: UserModelWrapper,
     override val sendingTimestamp: Long,
     val text: String
+) : UserMessageResponse()
+
+data class MedicalAccessesMessageResponse(
+    override val uuid: String,
+    override val senderUser: UserModelWrapper,
+    override val recipientUser: UserModelWrapper,
+    override val sendingTimestamp: Long
+) : UserMessageResponse()
+
+data class MedicalRecordRequestMessageResponse(
+    override val uuid: String,
+    override val senderUser: UserModelWrapper,
+    override val recipientUser: UserModelWrapper,
+    override val sendingTimestamp: Long
 ) : UserMessageResponse()

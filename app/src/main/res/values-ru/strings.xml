@@ -174,5 +174,6 @@
     <string name="record_request_for_doctor_param">Вы отправили пациенту %1$d записей</string>
     <string name="requested_records_for_patient_disclaimer">Вы можете отправить записи пациенту. Пациент сможет удалить их или добавить в свою медкарту</string>
     <string name="added_to_medcard">Добавлено в медкарту</string>
-
+    <string name="medcard_access_settings_changed">Настройки доступа к медкарте были изменены</string>
+    <string name="new_record_request_was_added">Новая запись в медкарту</string>
 </resources>

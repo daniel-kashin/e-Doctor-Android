@@ -12,13 +12,10 @@ import com.edoctor.data.entity.remote.request.CallActionMessageRequest
 import com.edoctor.data.entity.remote.request.CallActionMessageRequest.Companion.CALL_ACTION_ENTER
 import com.edoctor.data.entity.remote.request.CallActionMessageRequest.Companion.CALL_ACTION_INITIATE
 import com.edoctor.data.entity.remote.request.CallActionMessageRequest.Companion.CALL_ACTION_LEAVE
-import com.edoctor.data.entity.remote.response.CallStatusMessageResponse
+import com.edoctor.data.entity.remote.response.*
 import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Companion.CALL_STATUS_CANCELLED
 import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Companion.CALL_STATUS_INITIATED
 import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Companion.CALL_STATUS_STARTED
-import com.edoctor.data.entity.remote.response.MessageResponseWrapper
-import com.edoctor.data.entity.remote.response.MessagesResponse
-import com.edoctor.data.entity.remote.response.TextMessageResponse
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.data.mapper.UserMapper.withAbsoluteUrl
 
@@ -52,6 +49,8 @@ class MessageMapper(context: Context) {
             when {
                 textMessageResponse != null -> toPresentation(textMessageResponse)
                 callStatusMessageResponse != null -> toPresentation(callStatusMessageResponse, currentUser)
+                medicalAccessesMessageResponse != null -> toPresentation(medicalAccessesMessageResponse)
+                medicalRecordRequestResponse != null -> toPresentation(medicalRecordRequestResponse)
                 else -> null
             }
         }
@@ -61,6 +60,40 @@ class MessageMapper(context: Context) {
             getValueFromCallAction(callActionRequest.callAction),
             callActionRequest.callUuid
         )
+
+    private fun toPresentation(
+        medicalRecordRequestMessageResponse: MedicalRecordRequestMessageResponse
+    ): MedicalRecordRequestMessage? =
+        medicalRecordRequestMessageResponse.run {
+            val senderUserUnwrapped =
+                unwrapResponse(withAbsoluteUrl(senderUser) ?: return@run null) ?: return@run null
+            val recipientUserUnwrapped =
+                unwrapResponse(withAbsoluteUrl(recipientUser) ?: return@run null) ?: return@run null
+            MedicalRecordRequestMessage(
+                uuid,
+                senderUserUnwrapped,
+                recipientUserUnwrapped,
+                sendingTimestamp,
+                applicationContext.getString(R.string.new_record_request_was_added)
+            )
+        }
+
+    private fun toPresentation(
+        medicalAccessesMessageResponse: MedicalAccessesMessageResponse
+    ): MedicalAccessesMessage? =
+        medicalAccessesMessageResponse.run {
+            val senderUserUnwrapped =
+                unwrapResponse(withAbsoluteUrl(senderUser) ?: return@run null) ?: return@run null
+            val recipientUserUnwrapped =
+                unwrapResponse(withAbsoluteUrl(recipientUser) ?: return@run null) ?: return@run null
+            MedicalAccessesMessage(
+                uuid,
+                senderUserUnwrapped,
+                recipientUserUnwrapped,
+                sendingTimestamp,
+                applicationContext.getString(R.string.medcard_access_settings_changed)
+            )
+        }
 
     private fun toPresentation(
         textMessageResult: TextMessageResponse

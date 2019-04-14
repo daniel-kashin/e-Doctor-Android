@@ -31,7 +31,7 @@ data class CallStatusMessage(
     val callStatus: CallStatus,
     val callUuid: String,
     val isFromCurrentUser: Boolean,
-    private val _text: String
+    private val text: String
 ) : UserMessage(), MessageContentType {
 
     enum class CallStatus {
@@ -40,11 +40,35 @@ data class CallStatusMessage(
         CANCELLED;
     }
 
-    override fun getText() = _text
+    override fun getText() = text
 
 }
 
 data class TextMessage(
+    override val uuid: String,
+    override val senderUser: UserModel,
+    override val recipientUser: UserModel,
+    override val sendingTimestamp: Long,
+    private val text: String
+) : UserMessage() {
+
+    override fun getText() = text
+
+}
+
+data class MedicalAccessesMessage(
+    override val uuid: String,
+    override val senderUser: UserModel,
+    override val recipientUser: UserModel,
+    override val sendingTimestamp: Long,
+    private val text: String
+) : UserMessage() {
+
+    override fun getText() = text
+
+}
+
+data class MedicalRecordRequestMessage(
     override val uuid: String,
     override val senderUser: UserModel,
     override val recipientUser: UserModel,
