@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.CallStatusMessage
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
+import com.edoctor.data.entity.presentation.MedicalAccessesMessage
+import com.edoctor.data.entity.presentation.MedicalRecordRequestMessage
 import com.edoctor.data.entity.presentation.Message
 import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
@@ -23,6 +25,8 @@ import com.edoctor.presentation.app.chat.ChatPresenter.Event
 import com.edoctor.presentation.app.chat.ChatPresenter.ViewState
 import com.edoctor.presentation.app.doctor.DoctorActivity
 import com.edoctor.presentation.app.patient.PatientActivity
+import com.edoctor.presentation.app.recordsForPatient.RecordsForPatientActivity
+import com.edoctor.presentation.app.recordsFromDoctor.RecordsFromDoctorActivity
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.presentation.views.*
 import com.edoctor.presentation.views.CallMessageContentChecker.Companion.CONTENT_TYPE_CALL
@@ -77,7 +81,9 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
+        val currentUser = presenter.currentUser
         val recipientUser = presenter.recipientUser
+
         toolbarPrimaryText.text = when {
             recipientUser.fullName != null -> recipientUser.fullName
             recipientUser is DoctorModel -> getString(R.string.doctor).capitalize()
@@ -133,6 +139,35 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             )
 
         messagesAdapter = MessagesAdapter(presenter.currentUser.email, holdersConfig)
+        messagesAdapter.setOnMessageClickListener { message ->
+            when (message) {
+                is MedicalAccessesMessage -> {
+                    if (currentUser is PatientModel && recipientUser is DoctorModel) {
+                        DoctorActivity.IntentBuilder(this)
+                            .doctor(recipientUser)
+                            .start()
+                    }
+                    if (currentUser is DoctorModel && recipientUser is PatientModel) {
+                        PatientActivity.IntentBuilder(this)
+                            .patient(recipientUser)
+                            .start()
+                    }
+                }
+                is MedicalRecordRequestMessage -> {
+                    if (currentUser is PatientModel && recipientUser is DoctorModel) {
+                        RecordsFromDoctorActivity.IntentBuilder(this)
+                            .doctor(recipientUser)
+                            .start()
+                    }
+                    if (currentUser is DoctorModel && recipientUser is PatientModel) {
+                        RecordsForPatientActivity.IntentBuilder(this)
+                            .patient(recipientUser)
+                            .start()
+                    }
+                }
+            }
+        }
+
         messagesList.setAdapter(messagesAdapter)
 
         jitsiMeetView = getMeetView()
