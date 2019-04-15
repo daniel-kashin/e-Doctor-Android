@@ -7,16 +7,20 @@ import com.edoctor.data.entity.remote.request.MessageRequestWrapper
 import com.edoctor.data.entity.remote.request.TextMessageRequest
 import com.edoctor.data.entity.remote.response.MessageResponseWrapper
 import com.edoctor.data.mapper.MessageMapper
+import com.edoctor.data.mapper.UserMapper
 import com.edoctor.data.remote.rest.ChatRestApi
 import com.edoctor.data.remote.socket.ChatSocketApi
+import com.edoctor.utils.asImageBodyPart
 import com.edoctor.utils.rx.RxExtensions.justOrEmptyFlowable
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tinder.scarlet.Message.Text
 import com.tinder.scarlet.websocket.ShutdownReason
 import com.tinder.scarlet.websocket.WebSocketEvent
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import java.io.File
 
 class ChatRepository(
     private val currentUser: UserModel,
@@ -47,6 +51,10 @@ class ChatRepository(
                 textMessageRequest = TextMessageRequest(message)
             )
         )
+    }
+
+    fun sendImage(imageFile: File?): Completable {
+        return chatRestApi.sendImage(recipientUser.email, imageFile?.asImageBodyPart("image"))
     }
 
     fun sendCallStatusRequest(callActionRequest: CallActionRequest) {

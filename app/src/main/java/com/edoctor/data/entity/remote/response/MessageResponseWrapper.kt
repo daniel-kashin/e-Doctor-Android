@@ -4,5 +4,6 @@ data class MessageResponseWrapper(
     val textMessageResponse: TextMessageResponse?,
     val callStatusMessageResponse: CallStatusMessageResponse?,
     val medicalAccessesMessageResponse: MedicalAccessesMessageResponse?,
-    val medicalRecordRequestResponse: MedicalRecordRequestMessageResponse?
+    val medicalRecordRequestResponse: MedicalRecordRequestMessageResponse?,
+    val imageMessageResponse: ImageMessageResponse?
 )

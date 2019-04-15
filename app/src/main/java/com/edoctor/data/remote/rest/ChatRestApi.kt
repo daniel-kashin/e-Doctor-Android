@@ -1,9 +1,10 @@
 package com.edoctor.data.remote.rest
 
 import com.edoctor.data.entity.remote.response.MessagesResponse
+import io.reactivex.Completable
 import io.reactivex.Single
-import retrofit2.http.GET
-import retrofit2.http.Query
+import okhttp3.MultipartBody
+import retrofit2.http.*
 
 interface ChatRestApi {
 
@@ -12,5 +13,12 @@ interface ChatRestApi {
         @Query("fromTimestamp") fromTimestamp: Long,
         @Query("recipientEmail") recipientEmail: String
     ): Single<MessagesResponse>
+
+    @Multipart
+    @POST("/images/send")
+    fun sendImage(
+        @Query("recipientEmail") recipientEmail: String,
+        @Part image: MultipartBody.Part?
+    ): Completable
 
 }

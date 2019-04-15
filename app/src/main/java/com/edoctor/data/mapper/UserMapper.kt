@@ -4,7 +4,7 @@ import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.entity.remote.model.user.UserModelWrapper
-import com.edoctor.data.injection.NetworkModule.Companion.EDOCTOR_HTTP_ENDPOINT
+import com.edoctor.data.injection.NetworkModule.Companion.getAbsoluteImageUrl
 
 object UserMapper {
 
@@ -45,7 +45,5 @@ object UserMapper {
             is DoctorModel -> UserModelWrapper(doctorModel = userModel)
             is PatientModel -> UserModelWrapper(patientModel = userModel)
         }
-
-    private fun getAbsoluteImageUrl(relativeImageUrl: String) = EDOCTOR_HTTP_ENDPOINT + relativeImageUrl
 
 }

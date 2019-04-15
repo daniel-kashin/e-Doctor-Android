@@ -223,4 +223,12 @@
     <string name="new_record_request_was_added_hyperlink">&lt;a href=>New record&lt;/a> to medcard</string>
     <string name="medcard_access_changed_hyperlink">Medcard &lt;a href=>access settings&lt;/a> were changed</string>
 
+    <string name="image_upload_start">Image is loading</string>
+    <string name="image_upload_success">Image was successfully loaded</string>
+    <string name="image_upload_exception">Image loading exception</string>
+    <string name="attached_image">Attached image</string>
+
+    <string name="waiting_for_connection">Waiting for connection</string>
+    <string name="updating">Updating</string>
+    <string name="connected">Connected</string>
 </resources>

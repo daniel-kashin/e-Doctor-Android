@@ -16,6 +16,7 @@ import com.edoctor.data.entity.remote.response.*
 import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Companion.CALL_STATUS_CANCELLED
 import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Companion.CALL_STATUS_INITIATED
 import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Companion.CALL_STATUS_STARTED
+import com.edoctor.data.injection.NetworkModule.Companion.getAbsoluteImageUrl
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.data.mapper.UserMapper.withAbsoluteUrl
 
@@ -51,6 +52,7 @@ class MessageMapper(context: Context) {
                 callStatusMessageResponse != null -> toPresentation(callStatusMessageResponse, currentUser)
                 medicalAccessesMessageResponse != null -> toPresentation(medicalAccessesMessageResponse)
                 medicalRecordRequestResponse != null -> toPresentation(medicalRecordRequestResponse)
+                imageMessageResponse != null -> toPresentation(imageMessageResponse)
                 else -> null
             }
         }
@@ -60,6 +62,24 @@ class MessageMapper(context: Context) {
             getValueFromCallAction(callActionRequest.callAction),
             callActionRequest.callUuid
         )
+
+    private fun toPresentation(
+        imageMessageResponse: ImageMessageResponse
+    ): ImageMessage? =
+        imageMessageResponse.run {
+            val senderUserUnwrapped =
+                unwrapResponse(withAbsoluteUrl(senderUser) ?: return@run null) ?: return@run null
+            val recipientUserUnwrapped =
+                unwrapResponse(withAbsoluteUrl(recipientUser) ?: return@run null) ?: return@run null
+            ImageMessage(
+                uuid,
+                senderUserUnwrapped,
+                recipientUserUnwrapped,
+                sendingTimestamp,
+                getAbsoluteImageUrl(relativeImageUrl),
+                applicationContext.getString(R.string.attached_image)
+            )
+        }
 
     private fun toPresentation(
         medicalRecordRequestMessageResponse: MedicalRecordRequestMessageResponse

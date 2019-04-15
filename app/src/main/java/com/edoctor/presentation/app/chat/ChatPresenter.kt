@@ -1,5 +1,6 @@
 package com.edoctor.presentation.app.chat
 
+import android.graphics.Bitmap
 import com.edoctor.data.entity.presentation.CallActionRequest
 import com.edoctor.data.entity.presentation.CallActionRequest.CallAction.*
 import com.edoctor.data.entity.presentation.CallStatusMessage
@@ -7,12 +8,17 @@ import com.edoctor.data.entity.presentation.Message
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.ChatRepository
+import com.edoctor.presentation.app.account.AccountPresenter
 import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.isSessionException
 import com.edoctor.utils.rx.toV2
 import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import java.io.File
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -23,6 +29,10 @@ class ChatPresenter @Inject constructor(
     @Named(ApplicationModule.IO_THREAD_SCHEDULER)
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ChatPresenter.ViewState, ChatPresenter.Event>() {
+
+    companion object {
+        private fun randomTempFileName() = "${UUID.randomUUID()}.tmp"
+    }
 
     lateinit var currentUser: UserModel
     lateinit var recipientUser: UserModel
@@ -38,6 +48,25 @@ class ChatPresenter @Inject constructor(
         this.recipientUser = recipientUser
 
         setViewState(ViewState())
+    }
+
+    fun onImageSelected(bitmap: Bitmap, cacheDirectory: File) {
+        if (viewStateSnapshot().messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION) {
+            disposables += Single
+                .fromCallable {
+                    bitmap.writeToFile(File(cacheDirectory, randomTempFileName()))
+                }
+                .subscribeOn(Schedulers.io())
+                .doOnSuccess { sendEvent(Event.ShowImageUploadStart) }
+                .flatMapCompletable { chatRepository.sendImage(it) }
+                .observeOn(observeScheduler)
+                .subscribe(
+                    { sendEvent(Event.ShowImageUploadSuccess) },
+                    { sendEvent(Event.ShowImageUploadException) }
+                )
+        } else {
+            sendEvent(Event.ShowNetworkException)
+        }
     }
 
     fun openConnection() {
@@ -95,8 +124,6 @@ class ChatPresenter @Inject constructor(
     fun leaveCall(): Unit = viewStateSnapshot().run {
         if (messagesStatus != MessagesStatus.WAITING_FOR_CONNECTION && callStatusMessage != null) {
             chatRepository.sendCallStatusRequest(CallActionRequest(LEAVE, callStatusMessage.callUuid))
-        } else {
-            sendEvent(Event.ShowNetworkException)
         }
     }
 
@@ -187,6 +214,9 @@ class ChatPresenter @Inject constructor(
         class ShowException(val throwable: Throwable) : Event()
         object ShowNetworkException : Event()
         object ShowSessionException : Event()
+        object ShowImageUploadException : Event()
+        object ShowImageUploadSuccess : Event()
+        object ShowImageUploadStart : Event()
     }
 
 }

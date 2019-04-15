@@ -59,8 +59,6 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
                             .centerCrop()
                             .placeholder(R.color.lightLightGrey)
                             .dontAnimate()
-                            .skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
                     )
                     .into(imageView)
             }

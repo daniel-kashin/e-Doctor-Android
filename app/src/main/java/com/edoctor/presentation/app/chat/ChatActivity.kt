@@ -1,14 +1,21 @@
 package com.edoctor.presentation.app.chat
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.CallStatusMessage
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
@@ -20,6 +27,7 @@ import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ChatModule
+import com.edoctor.presentation.app.account.AccountFragment
 import com.edoctor.presentation.app.chat.ChatPresenter.Event
 import com.edoctor.presentation.app.chat.ChatPresenter.ViewState
 import com.edoctor.presentation.app.doctor.DoctorActivity
@@ -35,9 +43,11 @@ import com.edoctor.presentation.views.CallingView.CallType.OUTCOMING
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.facebook.react.modules.core.PermissionListener
+import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
+import com.tbruyelle.rxpermissions.RxPermissions
 import org.jitsi.meet.sdk.*
 import java.net.URL
 import javax.inject.Inject
@@ -48,6 +58,9 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
     companion object {
         private const val EXTRA_CURRENT_USER = "SENDER_USER"
         private const val EXTRA_RECIPIENT_USER = "RECIPIENT_USER"
+
+        private const val REQUEST_CAMERA = 10135
+        private const val REQUEST_GALLERY = 10136
     }
 
     @Inject
@@ -90,7 +103,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             else -> null
         }
         toolbarPrimaryText.setOnClickListener {
-            when(recipientUser) {
+            when (recipientUser) {
                 is DoctorModel -> {
                     DoctorActivity.IntentBuilder(this)
                         .doctor(recipientUser)
@@ -121,7 +134,13 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             presenter.sendMessage(input.toString())
         }
 
+        messageInput.setAttachmentsListener {
+            showImagePickerOptions()
+        }
+
         val holdersConfig = MessageHolders()
+            .setIncomingImageLayout(R.layout.item_incoming_image_message)
+            .setOutcomingImageLayout(R.layout.item_outcoming_image_message)
             .setIncomingTextLayout(R.layout.item_incoming_text_message)
             .setOutcomingTextLayout(R.layout.item_outcoming_text_message)
             .registerContentType(
@@ -137,7 +156,21 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
                 MessageContentChecker()
             )
 
-        messagesAdapter = MessagesAdapter(presenter.currentUser.email, holdersConfig)
+        messagesAdapter = MessagesAdapter(
+            presenter.currentUser.email,
+            holdersConfig,
+            ImageLoader { imageView, url, _ ->
+                Glide.with(imageView.context)
+                    .load(url)
+                    .apply(
+                        RequestOptions()
+                            .centerCrop()
+                            .placeholder(R.color.lightLightGrey)
+                            .dontAnimate()
+                    )
+                    .into(imageView)
+            }
+        )
         messagesAdapter.setOnMessageClickListener { message ->
             when (message) {
                 is MedicalAccessesMessage -> {
@@ -170,16 +203,8 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         messagesList.setAdapter(messagesAdapter)
 
         jitsiMeetView = getMeetView()
-    }
 
-    override fun onStart() {
-        super.onStart()
         presenter.openConnection()
-    }
-
-    override fun onStop() {
-        presenter.closeConnection()
-        super.onStop()
     }
 
     private fun getMeetView() = JitsiMeetView(this).apply {
@@ -189,6 +214,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             override fun onConferenceTerminated(p0: MutableMap<String, Any>?) {
                 presenter.leaveCall()
             }
+
             override fun onConferenceJoined(p0: MutableMap<String, Any>?) {}
             override fun onConferenceWillJoin(p0: MutableMap<String, Any>?) {}
         }
@@ -208,6 +234,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
     override fun onDestroy() {
         super.onDestroy()
+        presenter.closeConnection()
         jitsiMeetView.dispose()
         JitsiMeetActivityDelegate.onHostDestroy(this)
     }
@@ -244,9 +271,9 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         }
 
         toolbarSecondaryText.text = when (viewState.messagesStatus) {
-            ChatPresenter.MessagesStatus.WAITING_FOR_CONNECTION -> "Ожидание подключения..."
-            ChatPresenter.MessagesStatus.UPDATING -> "Обновление..."
-            ChatPresenter.MessagesStatus.UP_TO_DATE -> "Подключено"
+            ChatPresenter.MessagesStatus.WAITING_FOR_CONNECTION -> "${getString(R.string.waiting_for_connection)}..."
+            ChatPresenter.MessagesStatus.UPDATING -> "${getString(R.string.updating)}..."
+            ChatPresenter.MessagesStatus.UP_TO_DATE -> "${getString(R.string.connected)}..."
         }
 
         messagesAdapter.setMessages(viewState.messages) {
@@ -285,6 +312,60 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             is Event.ShowException -> toast(event.throwable.toString())
             is Event.ShowNetworkException -> toast(getString(R.string.network_error_message))
             is Event.ShowSessionException -> onSessionException()
+            is Event.ShowImageUploadStart -> toast(getString(R.string.image_upload_start))
+            is Event.ShowImageUploadSuccess -> toast(getString(R.string.image_upload_success))
+            is Event.ShowImageUploadException -> toast(getString(R.string.image_upload_exception))
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CAMERA -> {
+                    (data?.extras?.get("data") as? Bitmap)?.let {
+                        presenter.onImageSelected(it, cacheDir)
+                    }
+                }
+                REQUEST_GALLERY -> {
+                    MediaStore.Images.Media.getBitmap(contentResolver, data?.data)?.let {
+                        presenter.onImageSelected(it, cacheDir)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showImagePickerOptions() {
+        PopupMenu(messageInput.context, messageInput).apply {
+            menuInflater.inflate(R.menu.image_picker, menu)
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.gallery -> {
+                        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
+                        galleryIntent.type = Constants.PICK_IMAGE_INTENT_TYPE
+                        startActivityForResult(
+                            Intent.createChooser(galleryIntent, null),
+                            REQUEST_GALLERY
+                        )
+                    }
+                    R.id.camera -> {
+                        RxPermissions.getInstance(this@ChatActivity)
+                            .request(Manifest.permission.CAMERA)
+                            .onErrorReturn { false }
+                            .subscribe { granted ->
+                                if (granted) {
+                                    val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                                    if (cameraIntent.resolveActivity(packageManager) != null) {
+                                        startActivityForResult(cameraIntent, REQUEST_CAMERA)
+                                    }
+                                }
+                            }
+                    }
+                }
+                true
+            }
+            show()
         }
     }
 

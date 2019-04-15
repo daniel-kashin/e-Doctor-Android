@@ -42,6 +42,8 @@ class NetworkModule(
         private const val CONNECT_TIMEOUT_SEC = 30L
         private const val READ_TIMEOUT_SEC = 30L
 
+        fun getAbsoluteImageUrl(relativeImageUrl: String) = EDOCTOR_HTTP_ENDPOINT + relativeImageUrl
+
         fun createConnectivityInterceptor(connectivityManager: ConnectivityManager) = Interceptor {
             if (connectivityManager.isNetworkAvailable()) {
                 it.proceed(it.request())

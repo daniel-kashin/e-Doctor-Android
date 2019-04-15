@@ -87,3 +87,20 @@ data class MedicalRecordRequestMessage(
     override fun withRemovedHtml() = this.copy(text = Html.fromHtml(text).toString())
 
 }
+
+data class ImageMessage(
+    override val uuid: String,
+    override val senderUser: UserModel,
+    override val recipientUser: UserModel,
+    override val sendingTimestamp: Long,
+    private val absoluteImageUrl: String,
+    private val text: String
+) : UserMessage(), MessageContentType.Image {
+
+    override fun getText() = text
+
+    override fun getImageUrl() = absoluteImageUrl
+
+    override fun withRemovedHtml() = this
+
+}
