@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
+import android.util.Log
 import androidx.multidex.MultiDexApplication
 import com.cantrowitz.rxbroadcast.RxBroadcast
 import com.edoctor.data.Preferences
@@ -38,6 +39,11 @@ open class EDoctor : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         AppProperties.init(this)
+
+        Thread.setDefaultUncaughtExceptionHandler { paramThread, paramThrowable ->
+            Log.e("UncaughtException", paramThrowable.message.orEmpty(), paramThrowable)
+            System.exit(2)
+        }
 
         initAnrWatchDog()
         initPreferences()
