@@ -9,7 +9,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.CallStatusMessage
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
@@ -29,10 +28,10 @@ import com.edoctor.presentation.app.recordsForPatient.RecordsForPatientActivity
 import com.edoctor.presentation.app.recordsFromDoctor.RecordsFromDoctorActivity
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.presentation.views.*
-import com.edoctor.presentation.views.CallMessageContentChecker.Companion.CONTENT_TYPE_CALL
+import com.edoctor.presentation.views.MessageContentChecker.Companion.CONTENT_TYPE_CALL
+import com.edoctor.presentation.views.MessageContentChecker.Companion.CONTENT_TYPE_HYPERLINK_TEXT
 import com.edoctor.presentation.views.CallingView.CallType.INCOMING
 import com.edoctor.presentation.views.CallingView.CallType.OUTCOMING
-import com.edoctor.presentation.views.HyperlinkTextMessageContentChecker.Companion.CONTENT_TYPE_HYPERLINK_TEXT
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.facebook.react.modules.core.PermissionListener
@@ -129,13 +128,13 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
                 CONTENT_TYPE_CALL,
                 IncomingCallMessageViewHolder::class.java, R.layout.item_incoming_call_message,
                 OutcomingCallMessageViewHolder::class.java, R.layout.item_outcoming_call_message,
-                CallMessageContentChecker()
+                MessageContentChecker()
             )
             .registerContentType(
                 CONTENT_TYPE_HYPERLINK_TEXT,
                 IncomingHyperlinkTextMessageViewHolder::class.java, R.layout.item_incoming_text_message,
                 OutcomingHyperlinkTextMessageViewHolder::class.java, R.layout.item_outcoming_text_message,
-                HyperlinkTextMessageContentChecker()
+                MessageContentChecker()
             )
 
         messagesAdapter = MessagesAdapter(presenter.currentUser.email, holdersConfig)
