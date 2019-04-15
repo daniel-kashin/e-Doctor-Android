@@ -184,5 +184,7 @@
 
     <string name="waiting_for_connection">Ожидание подключения</string>
     <string name="updating">Обновление</string>
-    <string name="connected">Соединение</string>
+    <string name="connected">Подключено</string>
+
+    <string name="image">Изображение</string>
 </resources>

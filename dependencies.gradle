@@ -96,7 +96,7 @@ ext {
             filedownloader            : "com.liulishuo.filedownloader:library:1.6.8",
             blurry                    : "jp.wasabeef:blurry:2.1.1",
             lottie                    : "com.airbnb.android:lottie:2.2.5",
-            gestureImageView          : 'com.alexvasilkov:gesture-views:2.5.2',
+            gestureImageView          : "com.github.chrisbanes:PhotoView:2.3.0",
             uil                       : 'com.nostra13.universalimageloader:universal-image-loader:1.9.5',
             zendesk                   : 'com.zendesk:support-providers:2.0.0',
             circlePagerIndicator      : 'me.relex:circleindicator:1.2.2@aar',

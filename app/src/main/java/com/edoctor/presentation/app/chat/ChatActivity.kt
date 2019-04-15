@@ -17,20 +17,17 @@ import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
-import com.edoctor.data.entity.presentation.CallStatusMessage
+import com.edoctor.data.entity.presentation.*
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
-import com.edoctor.data.entity.presentation.MedicalAccessesMessage
-import com.edoctor.data.entity.presentation.MedicalRecordRequestMessage
-import com.edoctor.data.entity.presentation.Message
 import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ChatModule
-import com.edoctor.presentation.app.account.AccountFragment
 import com.edoctor.presentation.app.chat.ChatPresenter.Event
 import com.edoctor.presentation.app.chat.ChatPresenter.ViewState
 import com.edoctor.presentation.app.doctor.DoctorActivity
+import com.edoctor.presentation.app.imageViewerActivity.ImageViewerActivity
 import com.edoctor.presentation.app.patient.PatientActivity
 import com.edoctor.presentation.app.recordsForPatient.RecordsForPatientActivity
 import com.edoctor.presentation.app.recordsFromDoctor.RecordsFromDoctorActivity
@@ -197,6 +194,9 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
                             .start()
                     }
                 }
+                is ImageMessage -> {
+                    ImageViewerActivity.show(this, message.imageUrl)
+                }
             }
         }
 
@@ -273,7 +273,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
         toolbarSecondaryText.text = when (viewState.messagesStatus) {
             ChatPresenter.MessagesStatus.WAITING_FOR_CONNECTION -> "${getString(R.string.waiting_for_connection)}..."
             ChatPresenter.MessagesStatus.UPDATING -> "${getString(R.string.updating)}..."
-            ChatPresenter.MessagesStatus.UP_TO_DATE -> "${getString(R.string.connected)}..."
+            ChatPresenter.MessagesStatus.UP_TO_DATE -> getString(R.string.connected)
         }
 
         messagesAdapter.setMessages(viewState.messages) {

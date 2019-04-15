@@ -231,4 +231,6 @@
     <string name="waiting_for_connection">Waiting for connection</string>
     <string name="updating">Updating</string>
     <string name="connected">Connected</string>
+
+    <string name="image">Image</string>
 </resources>
