@@ -178,7 +178,7 @@
     <string name="medcard_access_changed_hyperlink">&lt;a href=>Настройки доступа&lt;/a> к медкарте изменены</string>
 
     <string name="image_upload_start">Изображение загружается</string>
-    <string name="image_upload_success">Изображение загружено успешно</string>
+    <string name="image_upload_success">Изображение загружено</string>
     <string name="image_upload_exception">Ошибка загрузки изображения</string>
     <string name="attached_image">Прикрепленное изображение</string>
 

@@ -61,7 +61,7 @@ class ChatPresenter @Inject constructor(
                 .flatMapCompletable { chatRepository.sendImage(it) }
                 .observeOn(observeScheduler)
                 .subscribe(
-                    { sendEvent(Event.ShowImageUploadSuccess) },
+                    { nothing() },
                     { sendEvent(Event.ShowImageUploadException) }
                 )
         } else {

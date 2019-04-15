@@ -224,7 +224,7 @@
     <string name="medcard_access_changed_hyperlink">Medcard &lt;a href=>access settings&lt;/a> were changed</string>
 
     <string name="image_upload_start">Image is loading</string>
-    <string name="image_upload_success">Image was successfully loaded</string>
+    <string name="image_upload_success">Image was loaded</string>
     <string name="image_upload_exception">Image loading exception</string>
     <string name="attached_image">Attached image</string>
 
