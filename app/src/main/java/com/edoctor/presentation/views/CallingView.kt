@@ -10,7 +10,7 @@ import com.edoctor.utils.changesObservableDelegate
 import com.edoctor.utils.lazyFind
 import com.edoctor.utils.show
 
-class CallingView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
+class CallingView(val _context: Context, attrs: AttributeSet) : FrameLayout(_context, attrs) {
 
     private val nameTextView by lazyFind<TextView>(R.id.name_text_view)
     private val statusTextView by lazyFind<TextView>(R.id.status_text_view)
@@ -48,7 +48,7 @@ class CallingView(context: Context, attrs: AttributeSet) : FrameLayout(context, 
     var onCallDeclinedListener: (() -> Unit)? = null
 
     init {
-        View.inflate(context, R.layout.view_calling, this)
+        View.inflate(_context, R.layout.view_calling, this)
         isAudioEnabled = true
         isVideoEnabled = false
         acceptCallImageView.run {
@@ -73,8 +73,8 @@ class CallingView(context: Context, attrs: AttributeSet) : FrameLayout(context, 
 
         nameTextView.text = name
         statusTextView.text = when (callingType) {
-            CallType.INCOMING -> "ВХОДЯЩИЙ ВЫЗОВ..." // TODO
-            CallType.OUTCOMING -> "ОЖИДАНИЕ..." // TODO
+            CallType.INCOMING -> "${_context.getString(R.string.incoming_call).toUpperCase()}..."
+            CallType.OUTCOMING -> "${_context.getString(R.string.outcoming_call).toUpperCase()}..."
         }
         acceptCallImageView.show(callingType == CallType.INCOMING)
     }
