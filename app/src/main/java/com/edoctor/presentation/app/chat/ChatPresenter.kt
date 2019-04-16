@@ -74,8 +74,8 @@ class ChatPresenter @Inject constructor(
 
         connectivityDisposable = ConnectivityNotifier.asObservable.toV2()
             .subscribe { isConnected ->
-                currentMessagesDisposable = if (isConnected) {
-                    chatRepository
+                if (isConnected) {
+                    currentMessagesDisposable = chatRepository
                         .observeEvents()
                         .subscribeOn(subscribeScheduler)
                         .observeOn(observeScheduler)
@@ -84,7 +84,11 @@ class ChatPresenter @Inject constructor(
                         .doOnError { setWaitingForConnectionState() }
                         .subscribe(this::onEventReceived, this::handleException)
                 } else {
-                    null
+                    currentMessagesDisposable = null
+
+                    if (viewStateSnapshot().messages.isEmpty()) {
+                        updateMessages(false)
+                    }
                 }
             }
     }
@@ -127,24 +131,29 @@ class ChatPresenter @Inject constructor(
         }
     }
 
-    private fun updateMessages() {
+    private fun updateMessages(isConnected: Boolean) {
         val startMessageUpdateTimestamp = currentUnixTime()
 
-        getMessagesDisposable = chatRepository.getMessages(lastMessageUpdateTimestamp)
+        getMessagesDisposable = chatRepository.getMessages(lastMessageUpdateTimestamp, !isConnected)
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
-            .doOnSubscribe { setViewState { copy(messagesStatus = MessagesStatus.UPDATING) } }
-            .subscribe({ newMessages ->
-                lastMessageUpdateTimestamp = startMessageUpdateTimestamp
-                setViewState {
-                    copy(
-                        messages = messages.addWithSorting(newMessages.first),
-                        messagesStatus = MessagesStatus.UP_TO_DATE
-                    )
+            .doOnSubscribe {
+                if (isConnected) {
+                    setViewState { copy(messagesStatus = MessagesStatus.UPDATING) }
                 }
-            }, {
-                handleException(it)
-            })
+            }
+            .subscribe(
+                { (newMessages, fromRemote) ->
+                    lastMessageUpdateTimestamp = startMessageUpdateTimestamp
+                    setViewState {
+                        copy(
+                            messages = messages.addWithSorting(newMessages),
+                            messagesStatus = if (fromRemote) MessagesStatus.UP_TO_DATE else MessagesStatus.WAITING_FOR_CONNECTION
+                        )
+                    }
+                },
+                { handleException(it) }
+            )
     }
 
     private fun setWaitingForConnectionState() {
@@ -163,7 +172,7 @@ class ChatPresenter @Inject constructor(
     private fun onEventReceived(event: ChatRepository.ChatEvent) {
         when (event) {
             is ChatRepository.ChatEvent.OnConnectionOpened -> {
-                updateMessages()
+                updateMessages(true)
             }
             is ChatRepository.ChatEvent.OnConnectionClosing -> {
                 setWaitingForConnectionState()

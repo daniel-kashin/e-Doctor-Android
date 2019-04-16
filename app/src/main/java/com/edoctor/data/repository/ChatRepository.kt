@@ -38,13 +38,50 @@ class ChatRepository(
         return chatSocketApi.observeEvents()
             .doOnSubscribe { onStartConnectionListener?.invoke() }
             .doOnCancel { onCloseConnectionListener?.invoke() }
-            .flatMap { justOrEmptyFlowable(it.toChatEvent()) }
+            .flatMap { event ->
+                val chatEvent = event.toChatEvent()
+                (chatEvent as? ChatEvent.OnMessageReceived)
+                    ?.let { messageMapper.toLocalFromPresentation(it.message) }
+                    ?.let { messagesLocalStore.saveBlocking(it) }
+                justOrEmptyFlowable(chatEvent)
+            }
     }
 
-    fun getMessages(fromTimestamp: Long): Single<Pair<List<Message>, Boolean>> {
-        return chatRestApi.getMessages(fromTimestamp, recipientUser.uuid)
-            .map { messageMapper.toPresentationFromNetwork(it, currentUser) }
-            .map { it to true }
+    fun getMessages(
+        fromTimestamp: Long,
+        onlyFromLocal: Boolean
+    ): Single<Pair<List<Message>, Boolean>> {
+        return messagesLocalStore.getMessages(fromTimestamp)
+            .map { localMessages ->
+                localMessages
+                    .asSequence()
+                    .mapNotNull { messageMapper.toPresentationFromLocal(it, currentUser) }
+                    .sortedBy { it.sendingTimestamp }
+                    .toList()
+            }
+            .flatMap { presentationLocalMessages ->
+                if (onlyFromLocal) {
+                    Single.just(presentationLocalMessages to false)
+                } else {
+                    chatRestApi
+                        .getMessages(
+                            presentationLocalMessages.lastOrNull()?.sendingTimestamp ?: fromTimestamp,
+                            recipientUser.uuid
+                        )
+                        .flatMap { remoteMessages ->
+                            val presentationRemoteMessages = messageMapper
+                                .toPresentationFromNetwork(remoteMessages, currentUser)
+                                .sortedBy { it.sendingTimestamp }
+
+                            val remoteMessagesToSave = presentationRemoteMessages.mapNotNull {
+                                messageMapper.toLocalFromPresentation(it)
+                            }
+
+                            messagesLocalStore.save(remoteMessagesToSave)
+                                .map { (presentationLocalMessages + presentationRemoteMessages) to true }
+                        }
+                }
+            }
     }
 
     fun sendMessage(message: String) {
