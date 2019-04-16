@@ -42,7 +42,7 @@ class ParameterPresenter @Inject constructor(
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
-                setViewState { copy(parameters = it) }
+                setViewState { copy(parameters = it.sortedBy { it.timestamp }) }
             }, { throwable ->
                 nothing()
             })

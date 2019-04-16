@@ -157,6 +157,7 @@ dependencies {
     implementation 'com.daimajia.swipelayout:library:1.2.0@aar'
     implementation 'me.relex:circleindicator:1.2.2@aar'
     implementation androidDependencies.gestureImageView
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     testImplementation testJavaDependencies.junit
     testImplementation testJavaDependencies.mockitoKotlin
