@@ -2,6 +2,7 @@ package com.edoctor.data.injection
 
 import android.content.Context
 import com.edoctor.data.entity.remote.model.user.UserModel
+import com.edoctor.data.local.message.MessagesLocalStore
 import com.edoctor.data.mapper.MessageMapper
 import com.edoctor.data.remote.rest.ConversationsRestApi
 import com.edoctor.data.repository.ConversationsRepository
@@ -22,7 +23,8 @@ class ConversationsModule(private val currentUser: UserModel) {
     @Provides
     internal fun provideConversationsRepository(
         api: ConversationsRestApi,
+        messagesLocalStore: MessagesLocalStore,
         context: Context
-    ): ConversationsRepository = ConversationsRepository(currentUser, api, MessageMapper(context))
+    ): ConversationsRepository = ConversationsRepository(currentUser, api, MessageMapper(context), messagesLocalStore)
 
 }

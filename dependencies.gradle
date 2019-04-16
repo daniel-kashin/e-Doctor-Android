@@ -10,7 +10,7 @@ ext {
     daggerVersion = '2.14.1'
     retrofitVersion = '2.3.0'
     okHttpVersion = '3.8.1'
-    storioVersion = '1.13.0'
+    storioVersion = '3.0.0'
     awsVersion = '2.6.30'
     leakCanaryVersion = '1.5.1'
     blockCanaryVersion = '1.5.0'
@@ -79,9 +79,9 @@ ext {
             rxBinding3                : "com.jakewharton.rxbinding3:rxbinding:3.0.0-alpha2",
 
             // Database
-            storio                    : "com.pushtorefresh.storio:sqlite:$storioVersion",
-            storioAnnotations         : "com.pushtorefresh.storio:sqlite-annotations:$storioVersion",
-            storioAnnotationsProcessor: "com.pushtorefresh.storio:sqlite-annotations-processor:$storioVersion",
+            storio                    : "com.pushtorefresh.storio3:sqlite:$storioVersion",
+            storioAnnotations         : "com.pushtorefresh.storio3:sqlite-annotations:$storioVersion",
+            storioAnnotationsProcessor: "com.pushtorefresh.storio3:sqlite-annotations-processor:$storioVersion",
 
             // Profiling
             leakCanary                : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion",

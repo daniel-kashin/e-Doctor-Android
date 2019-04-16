@@ -6,8 +6,8 @@ import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.entity.remote.request.MessageRequestWrapper
 import com.edoctor.data.entity.remote.request.TextMessageRequest
 import com.edoctor.data.entity.remote.response.MessageResponseWrapper
+import com.edoctor.data.local.message.MessagesLocalStore
 import com.edoctor.data.mapper.MessageMapper
-import com.edoctor.data.mapper.UserMapper
 import com.edoctor.data.remote.rest.ChatRestApi
 import com.edoctor.data.remote.socket.ChatSocketApi
 import com.edoctor.utils.asImageBodyPart
@@ -27,6 +27,7 @@ class ChatRepository(
     private val recipientUser: UserModel,
     private val chatRestApi: ChatRestApi,
     private val chatSocketApi: ChatSocketApi,
+    private val messagesLocalStore: MessagesLocalStore,
     private val messageMapper: MessageMapper
 ) {
 
@@ -40,9 +41,10 @@ class ChatRepository(
             .flatMap { justOrEmptyFlowable(it.toChatEvent()) }
     }
 
-    fun getMessages(fromTimestamp: Long): Single<List<Message>> {
+    fun getMessages(fromTimestamp: Long): Single<Pair<List<Message>, Boolean>> {
         return chatRestApi.getMessages(fromTimestamp, recipientUser.uuid)
-            .map { messageMapper.toPresentation(it, currentUser) }
+            .map { messageMapper.toPresentationFromNetwork(it, currentUser) }
+            .map { it to true }
     }
 
     fun sendMessage(message: String) {
@@ -60,7 +62,7 @@ class ChatRepository(
     fun sendCallStatusRequest(callActionRequest: CallActionRequest) {
         chatSocketApi.sendMessage(
             MessageRequestWrapper(
-                callActionMessageRequest = messageMapper.toNetwork(callActionRequest)
+                callActionMessageRequest = messageMapper.toNetworkFromPresentation(callActionRequest)
             )
         )
     }
@@ -70,7 +72,7 @@ class ChatRepository(
             is WebSocketEvent.OnMessageReceived -> {
                 val messageString = (this.message as? Text)?.value ?: return null
                 val textMessage = fromJsonSafely(messageString, MessageResponseWrapper::class.java)
-                    ?.let { messageMapper.toPresentation(it, currentUser) }
+                    ?.let { messageMapper.toPresentationFromNetwork(it, currentUser) }
                     ?: return null
 
                 ChatEvent.OnMessageReceived(textMessage)

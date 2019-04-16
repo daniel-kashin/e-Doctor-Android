@@ -138,7 +138,7 @@ class ChatPresenter @Inject constructor(
                 lastMessageUpdateTimestamp = startMessageUpdateTimestamp
                 setViewState {
                     copy(
-                        messages = messages.addWithSorting(newMessages),
+                        messages = messages.addWithSorting(newMessages.first),
                         messagesStatus = MessagesStatus.UP_TO_DATE
                     )
                 }

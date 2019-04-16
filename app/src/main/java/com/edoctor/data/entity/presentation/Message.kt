@@ -13,13 +13,13 @@ abstract class Message : IMessage {
     abstract val sendingTimestamp: Long
 }
 
-abstract class UserMessage : Message(), MessageContentType {
+sealed class UserMessage : Message(), MessageContentType {
     abstract val senderUser: UserModel
     abstract fun withRemovedHtml(): UserMessage
 
     override fun getId() = uuid
     override fun getCreatedAt() = Date(sendingTimestamp.unixTimeToJavaTime())
-    override fun getUser() = senderUser.toPresentation()
+    override fun getUser() = senderUser.toPresentationFromNetwork()
 }
 
 
@@ -30,7 +30,6 @@ data class CallStatusMessage(
     override val sendingTimestamp: Long,
     val callStatus: CallStatus,
     val callUuid: String,
-    val isFromCurrentUser: Boolean,
     private val text: String
 ) : UserMessage() {
 

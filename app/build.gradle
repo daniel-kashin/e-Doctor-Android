@@ -36,6 +36,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        debug {
+            debuggable true
+            minifyEnabled false
+        }
     }
 
     packagingOptions {
@@ -126,7 +131,7 @@ dependencies {
     implementation 'com.twitter.sdk.android:twitter-core:3.0.0'
     implementation 'com.twitter.sdk.android:tweet-composer:3.0.0'
     implementation 'com.facebook.android:facebook-android-sdk:4.23.0'
-    implementation ('org.jitsi.react:jitsi-meet-sdk:+') { transitive = true }
+    implementation('org.jitsi.react:jitsi-meet-sdk:+') { transitive = true }
 
     // Google play services
     def gcmVersion = '16.0.0'
@@ -136,6 +141,11 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:$gcmVersion"
     implementation "com.google.firebase:firebase-messaging:17.3.4"
     implementation "com.google.firebase:firebase-core:$firebaseVersion"
+
+    // Database
+    api androidDependencies.storio
+    api androidDependencies.storioAnnotations
+//    kapt androidDependencies.storioAnnotationsProcessor
 
     // Other
     implementation androidDependencies.uil

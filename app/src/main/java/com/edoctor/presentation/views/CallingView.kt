@@ -67,7 +67,7 @@ class CallingView(val _context: Context, attrs: AttributeSet) : FrameLayout(_con
         }
     }
 
-    fun bind(name: String, callingType: CallType) {
+    fun bind(name: String?, callingType: CallType) {
         isAudioEnabled = true
         isVideoEnabled = false
 

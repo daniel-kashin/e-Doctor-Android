@@ -18,7 +18,8 @@ import javax.inject.Singleton
         AuthModule::class,
         NetworkModule::class,
         SessionModule::class,
-        MedicalRecordsModule::class
+        MedicalRecordsModule::class,
+        DatabaseModule::class
     ]
 )
 interface ApplicationComponent {

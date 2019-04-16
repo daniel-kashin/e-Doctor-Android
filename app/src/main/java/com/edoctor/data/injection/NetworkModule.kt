@@ -44,6 +44,8 @@ class NetworkModule(
 
         fun getAbsoluteImageUrl(relativeImageUrl: String) = EDOCTOR_HTTP_ENDPOINT + relativeImageUrl
 
+        fun getRelativeImageUrl(absoluteImageUrl: String) = absoluteImageUrl.removePrefix(EDOCTOR_HTTP_ENDPOINT)
+
         fun createConnectivityInterceptor(connectivityManager: ConnectivityManager) = Interceptor {
             if (connectivityManager.isNetworkAvailable()) {
                 it.proceed(it.request())

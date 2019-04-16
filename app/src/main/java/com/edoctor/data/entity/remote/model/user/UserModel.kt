@@ -4,7 +4,6 @@ import java.io.Serializable
 
 sealed class UserModel : Serializable {
     abstract val uuid: String
-    abstract val email: String
     abstract val fullName: String?
     abstract val city: String?
     abstract val dateOfBirthTimestamp: Long?
@@ -14,28 +13,26 @@ sealed class UserModel : Serializable {
 
 data class DoctorModel(
     override val uuid: String,
-    override val email: String,
-    override val fullName: String?,
-    override val city: String?,
-    override val dateOfBirthTimestamp: Long?,
-    override val isMale: Boolean?,
-    override val relativeImageUrl: String?,
-    val yearsOfExperience: Int?,
-    val category: Int?,
-    val specialization: String?,
-    val clinicalInterests: String?,
-    val education: String?,
-    val workExperience: String?,
-    val trainings: String?
+    override val fullName: String? = null,
+    override val city: String? = null,
+    override val dateOfBirthTimestamp: Long? = null,
+    override val isMale: Boolean? = null,
+    override val relativeImageUrl: String? = null,
+    val yearsOfExperience: Int? = null,
+    val category: Int? = null,
+    val specialization: String? = null,
+    val clinicalInterests: String? = null,
+    val education: String? = null,
+    val workExperience: String? = null,
+    val trainings: String? = null
 ) : UserModel()
 
 data class PatientModel(
     override val uuid: String,
-    override val email: String,
-    override val fullName: String?,
-    override val city: String?,
-    override val dateOfBirthTimestamp: Long?,
-    override val isMale: Boolean?,
-    override val relativeImageUrl: String?,
-    val bloodGroup: Int?
+    override val fullName: String? = null,
+    override val city: String? = null,
+    override val dateOfBirthTimestamp: Long? = null,
+    override val isMale: Boolean? = null,
+    override val relativeImageUrl: String? = null,
+    val bloodGroup: Int? = null
 ): UserModel()

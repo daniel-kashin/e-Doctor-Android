@@ -4,6 +4,7 @@ import android.content.Context
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.injection.NetworkModule.Companion.AUTHORIZED_TAG
 import com.edoctor.data.injection.NetworkModule.Companion.EDOCTOR_WS_ENDPOINT
+import com.edoctor.data.local.message.MessagesLocalStore
 import com.edoctor.data.mapper.MessageMapper
 import com.edoctor.data.remote.rest.ChatRestApi
 import com.edoctor.data.remote.socket.ChatSocketApi
@@ -66,10 +67,12 @@ class ChatModule(
     fun provideChatRepository(
         chatSocketApi: ChatSocketApi,
         chatRestApi: ChatRestApi,
+        messagesLocalStore: MessagesLocalStore,
         context: Context
     ): ChatRepository = ChatRepository(
         currentUser, recipientUser,
         chatRestApi, chatSocketApi,
+        messagesLocalStore,
         MessageMapper(context)
     ).apply {
         onStartConnectionListener = { lifecycle.start() }

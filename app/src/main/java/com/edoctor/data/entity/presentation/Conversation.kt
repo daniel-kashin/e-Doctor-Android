@@ -18,9 +18,9 @@ class Conversation(
 
     override fun getUnreadCount() = 0
 
-    override fun getId() = _lastMessage.senderUser.email + _lastMessage.recipientUser.email
+    override fun getId() = _lastMessage.senderUser.uuid + _lastMessage.recipientUser.uuid
 
-    override fun getUsers() = mutableListOf(_lastMessage.recipientUser.toPresentation(), _lastMessage.senderUser.toPresentation())
+    override fun getUsers() = mutableListOf(_lastMessage.recipientUser.toPresentationFromNetwork(), _lastMessage.senderUser.toPresentationFromNetwork())
 
     override fun getLastMessage() = _lastMessage.withRemovedHtml()
 

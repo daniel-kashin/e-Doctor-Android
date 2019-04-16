@@ -2,11 +2,14 @@ package com.edoctor.data.mapper
 
 import android.content.Context
 import com.edoctor.R
+import com.edoctor.data.entity.local.MessageEntity
 import com.edoctor.data.entity.presentation.*
 import com.edoctor.data.entity.presentation.CallActionRequest.CallAction
 import com.edoctor.data.entity.presentation.CallActionRequest.CallAction.*
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus
 import com.edoctor.data.entity.presentation.CallStatusMessage.CallStatus.*
+import com.edoctor.data.entity.remote.model.user.DoctorModel
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.entity.remote.request.CallActionMessageRequest
 import com.edoctor.data.entity.remote.request.CallActionMessageRequest.Companion.CALL_ACTION_ENTER
@@ -17,53 +20,169 @@ import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Compani
 import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Companion.CALL_STATUS_INITIATED
 import com.edoctor.data.entity.remote.response.CallStatusMessageResponse.Companion.CALL_STATUS_STARTED
 import com.edoctor.data.injection.NetworkModule.Companion.getAbsoluteImageUrl
+import com.edoctor.data.injection.NetworkModule.Companion.getRelativeImageUrl
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.data.mapper.UserMapper.withAbsoluteUrl
+import org.eclipse.paho.client.mqttv3.internal.NetworkModule
 
 class MessageMapper(context: Context) {
 
+    companion object {
+        private const val MESSAGE_TYPE_MEDICAL_ACCESSES = 0
+        private const val MESSAGE_TYPE_MEDICAL_RECORD_REQUEST = 1
+        private const val MESSAGE_TYPE_TEXT = 2
+        private const val MESSAGE_TYPE_CALL_STATUS = 3
+        private const val MESSAGE_TYPE_IMAGE = 4
+    }
+
     private val applicationContext: Context = context.applicationContext
+
+    fun toLocalFromPresentation(message: Message): MessageEntity? = message.run {
+        if (this !is UserMessage) return@run null
+
+        when (this) {
+            is TextMessage -> MessageEntity(
+                uuid = uuid,
+                timestamp = sendingTimestamp,
+                senderUuid = senderUser.uuid,
+                recipientUuid = recipientUser.uuid,
+                type = MESSAGE_TYPE_TEXT,
+                text = getText()
+            )
+            is CallStatusMessage -> MessageEntity(
+                uuid = uuid,
+                timestamp = sendingTimestamp,
+                senderUuid = senderUser.uuid,
+                recipientUuid = recipientUser.uuid,
+                type = MESSAGE_TYPE_CALL_STATUS,
+                callStatus = toValueFromPresentation(callStatus),
+                callUuid = callUuid
+            )
+            is MedicalRecordRequestMessage -> MessageEntity(
+                uuid = uuid,
+                timestamp = sendingTimestamp,
+                senderUuid = senderUser.uuid,
+                recipientUuid = recipientUser.uuid,
+                type = MESSAGE_TYPE_MEDICAL_RECORD_REQUEST
+            )
+            is MedicalAccessesMessage -> MessageEntity(
+                uuid = uuid,
+                timestamp = sendingTimestamp,
+                senderUuid = senderUser.uuid,
+                recipientUuid = recipientUser.uuid,
+                type = MESSAGE_TYPE_MEDICAL_ACCESSES
+            )
+            is ImageMessage -> MessageEntity(
+                uuid = uuid,
+                timestamp = sendingTimestamp,
+                senderUuid = senderUser.uuid,
+                recipientUuid = recipientUser.uuid,
+                type = MESSAGE_TYPE_IMAGE,
+                imageRelativeUrl = getRelativeImageUrl(getImageUrl())
+            )
+        }
+    }
+
+    fun toPresentationFromLocal(
+        messageEntity: MessageEntity,
+        currentUser: UserModel
+    ): Message? = messageEntity.run {
+        val isFromCurrentUser = currentUser.uuid == senderUuid
+        val currentUserIsDoctor = currentUser is DoctorModel
+        val senderIsDoctor = if (isFromCurrentUser) currentUserIsDoctor else !currentUserIsDoctor
+
+        val sender = if (senderIsDoctor) DoctorModel(senderUuid) else PatientModel(senderUuid)
+        val recipient = if (senderIsDoctor) PatientModel(recipientUuid) else DoctorModel(recipientUuid)
+
+        return when {
+            type == MESSAGE_TYPE_TEXT && text != null -> {
+                TextMessage(uuid, sender, recipient, timestamp, text)
+            }
+            type == MESSAGE_TYPE_CALL_STATUS && callStatus != null && callUuid != null -> {
+                toPresentationFromValue(callStatus)?.let { callStatus ->
+                    CallStatusMessage(
+                        uuid,
+                        sender,
+                        recipient,
+                        timestamp,
+                        callStatus,
+                        callUuid,
+                        callStatus.toText(isFromCurrentUser)
+                    )
+                }
+            }
+            type == MESSAGE_TYPE_MEDICAL_RECORD_REQUEST -> {
+                MedicalRecordRequestMessage(
+                    uuid,
+                    sender,
+                    recipient,
+                    timestamp,
+                    applicationContext.getString(R.string.new_record_request_was_added_hyperlink)
+                )
+            }
+            type == MESSAGE_TYPE_MEDICAL_ACCESSES -> {
+                MedicalAccessesMessage(
+                    uuid,
+                    sender,
+                    recipient,
+                    timestamp,
+                    applicationContext.getString(R.string.medcard_access_changed_hyperlink)
+                )
+            }
+            type == MESSAGE_TYPE_IMAGE && imageRelativeUrl != null -> {
+                ImageMessage(
+                    uuid,
+                    sender,
+                    recipient,
+                    timestamp,
+                    getAbsoluteImageUrl(imageRelativeUrl),
+                    applicationContext.getString(R.string.attached_image)
+                )
+            }
+            else -> null
+        }
+    }
 
     fun toConversation(
         messageWrapperResponse: MessageResponseWrapper,
         currentUser: UserModel
     ): Conversation? {
-        return toPresentation(messageWrapperResponse, currentUser)?.let {
+        return toPresentationFromNetwork(messageWrapperResponse, currentUser)?.let {
             val doctorString = applicationContext.getString(R.string.doctor).capitalize()
             val patientString = applicationContext.getString(R.string.patient).capitalize()
             Conversation(currentUser, doctorString, patientString, it)
         }
     }
 
-    fun toPresentation(
+    fun toPresentationFromNetwork(
         messagesResponse: MessagesResponse,
         currentUser: UserModel
     ): List<Message> = messagesResponse.run {
-        messages.mapNotNull { toPresentation(it, currentUser) }
+        messages.mapNotNull { toPresentationFromNetwork(it, currentUser) }
     }
 
-    fun toPresentation(
+    fun toPresentationFromNetwork(
         messageWrapperResponse: MessageResponseWrapper,
         currentUser: UserModel
     ): UserMessage? =
         messageWrapperResponse.run {
             when {
-                textMessageResponse != null -> toPresentation(textMessageResponse)
-                callStatusMessageResponse != null -> toPresentation(callStatusMessageResponse, currentUser)
-                medicalAccessesMessageResponse != null -> toPresentation(medicalAccessesMessageResponse)
-                medicalRecordRequestResponse != null -> toPresentation(medicalRecordRequestResponse)
-                imageMessageResponse != null -> toPresentation(imageMessageResponse)
+                textMessageResponse != null -> toPresentationFromNetwork(textMessageResponse)
+                callStatusMessageResponse != null -> toPresentationFromNetwork(callStatusMessageResponse, currentUser)
+                medicalAccessesMessageResponse != null -> toPresentationFromNetwork(medicalAccessesMessageResponse)
+                medicalRecordRequestResponse != null -> toPresentationFromNetwork(medicalRecordRequestResponse)
+                imageMessageResponse != null -> toPresentationFromNetwork(imageMessageResponse)
                 else -> null
             }
         }
 
-    fun toNetwork(callActionRequest: CallActionRequest) =
+    fun toNetworkFromPresentation(callActionRequest: CallActionRequest) =
         CallActionMessageRequest(
-            getValueFromCallAction(callActionRequest.callAction),
+            toValueFromPresentation(callActionRequest.callAction),
             callActionRequest.callUuid
         )
 
-    private fun toPresentation(
+    private fun toPresentationFromNetwork(
         imageMessageResponse: ImageMessageResponse
     ): ImageMessage? =
         imageMessageResponse.run {
@@ -81,7 +200,7 @@ class MessageMapper(context: Context) {
             )
         }
 
-    private fun toPresentation(
+    private fun toPresentationFromNetwork(
         medicalRecordRequestMessageResponse: MedicalRecordRequestMessageResponse
     ): MedicalRecordRequestMessage? =
         medicalRecordRequestMessageResponse.run {
@@ -98,7 +217,7 @@ class MessageMapper(context: Context) {
             )
         }
 
-    private fun toPresentation(
+    private fun toPresentationFromNetwork(
         medicalAccessesMessageResponse: MedicalAccessesMessageResponse
     ): MedicalAccessesMessage? =
         medicalAccessesMessageResponse.run {
@@ -115,7 +234,7 @@ class MessageMapper(context: Context) {
             )
         }
 
-    private fun toPresentation(
+    private fun toPresentationFromNetwork(
         textMessageResult: TextMessageResponse
     ): TextMessage? =
         textMessageResult.run {
@@ -132,29 +251,27 @@ class MessageMapper(context: Context) {
             )
         }
 
-    private fun toPresentation(
+    private fun toPresentationFromNetwork(
         callStatusMessage: CallStatusMessageResponse,
         currentUser: UserModel
     ): CallStatusMessage? =
         callStatusMessage.run {
-            val callStatus = getCallStatusFromValue(callStatus) ?: return@run null
+            val callStatus = toPresentationFromValue(callStatus) ?: return@run null
             val senderUserUnwrapped =
                 unwrapResponse(withAbsoluteUrl(senderUser) ?: return@run null) ?: return@run null
             val recipientUserUnwrapped =
                 unwrapResponse(withAbsoluteUrl(recipientUser) ?: return@run null) ?: return@run null
-            val isFromCurrentUser = currentUser.email == senderUserUnwrapped.email
-            val text = callStatus.toText(isFromCurrentUser)
+            val isFromCurrentUser = currentUser.uuid == senderUserUnwrapped.uuid
             CallStatusMessage(
                 uuid,
                 senderUserUnwrapped, recipientUserUnwrapped,
                 sendingTimestamp,
                 callStatus, callUuid,
-                isFromCurrentUser,
-                text
+                callStatus.toText(isFromCurrentUser)
             )
         }
 
-    private fun getValueFromCallAction(callAction: CallAction): Int {
+    private fun toValueFromPresentation(callAction: CallAction): Int {
         return when (callAction) {
             INITIATE -> CALL_ACTION_INITIATE
             ENTER -> CALL_ACTION_ENTER
@@ -162,7 +279,15 @@ class MessageMapper(context: Context) {
         }
     }
 
-    private fun getCallStatusFromValue(value: Int): CallStatusMessage.CallStatus? {
+    private fun toValueFromPresentation(callStatus: CallStatusMessage.CallStatus): Int {
+        return when (callStatus) {
+            INITIATED -> CALL_STATUS_INITIATED
+            CANCELLED -> CALL_STATUS_CANCELLED
+            STARTED -> CALL_STATUS_STARTED
+        }
+    }
+
+    private fun toPresentationFromValue(value: Int): CallStatusMessage.CallStatus? {
         return when (value) {
             CALL_STATUS_INITIATED -> INITIATED
             CALL_STATUS_CANCELLED -> CANCELLED

@@ -154,7 +154,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             )
 
         messagesAdapter = MessagesAdapter(
-            presenter.currentUser.email,
+            presenter.currentUser.uuid,
             holdersConfig,
             ImageLoader { imageView, url, _ ->
                 Glide.with(imageView.context)
@@ -258,8 +258,15 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
                 INITIATED -> {
                     hideJitsiMeetView()
                     callingView.bind(
-                        presenter.recipientUser.email,
-                        if (callStatusMessage.isFromCurrentUser) OUTCOMING else INCOMING
+                        presenter.recipientUser.let { recipientUser ->
+                            when {
+                                recipientUser.fullName != null -> recipientUser.fullName
+                                recipientUser is DoctorModel -> getString(R.string.doctor).capitalize()
+                                recipientUser is PatientModel -> getString(R.string.patient).capitalize()
+                                else -> null
+                            }
+                        },
+                        if (callStatusMessage.senderUser.uuid == presenter.currentUser.uuid) OUTCOMING else INCOMING
                     )
                     callingView.show()
                 }

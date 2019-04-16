@@ -16,6 +16,7 @@ import com.edoctor.data.injection.NetworkModule
 import com.edoctor.data.properties.AppProperties
 import com.edoctor.data.session.SessionPreferences
 import com.edoctor.utils.*
+import com.facebook.stetho.Stetho
 import com.github.anrwatchdog.ANRWatchDog
 
 open class EDoctor : MultiDexApplication() {
@@ -44,6 +45,8 @@ open class EDoctor : MultiDexApplication() {
             Log.e("UncaughtException", paramThrowable.message.orEmpty(), paramThrowable)
             System.exit(2)
         }
+
+        Stetho.initializeWithDefaults(this)
 
         initAnrWatchDog()
         initPreferences()
