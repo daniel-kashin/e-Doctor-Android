@@ -46,7 +46,6 @@ class ParametersPresenter @Inject constructor(
             .subscribe({
                 setViewState { copy(latestBodyParametersInfo = it) }
             }, { throwable ->
-                // TODO
                 nothing()
             })
     }
@@ -57,10 +56,8 @@ class ParametersPresenter @Inject constructor(
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
-                    // TODO
                     nothing()
                 }, {
-                    // TODO
                     nothing()
                 })
         }
@@ -72,10 +69,8 @@ class ParametersPresenter @Inject constructor(
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
-                    // TODO
                     nothing()
                 }, {
-                    // TODO
                     nothing()
                 })
         }

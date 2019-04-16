@@ -44,7 +44,6 @@ class ParameterPresenter @Inject constructor(
             .subscribe({
                 setViewState { copy(parameters = it) }
             }, { throwable ->
-                // TODO
                 nothing()
             })
     }
@@ -55,10 +54,8 @@ class ParameterPresenter @Inject constructor(
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
-                    // TODO
                     nothing()
                 }, {
-                    // TODO
                     nothing()
                 })
         }
@@ -70,10 +67,8 @@ class ParameterPresenter @Inject constructor(
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
-                    // TODO
                     nothing()
                 }, {
-                    // TODO
                     nothing()
                 })
         }

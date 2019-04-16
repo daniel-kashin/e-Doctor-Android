@@ -92,7 +92,6 @@ class EventsPresenter @Inject constructor(
             .subscribe({
                 setViewState { copy(medicalEventsInfo = it) }
             }, {
-                // TODO
                 nothing()
             })
     }
@@ -103,10 +102,8 @@ class EventsPresenter @Inject constructor(
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
-                    // TODO
                     nothing()
                 }, {
-                    // TODO
                     nothing()
                 })
         }
@@ -118,10 +115,8 @@ class EventsPresenter @Inject constructor(
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
-                    // TODO
                     nothing()
                 }, {
-                    // TODO
                     nothing()
                 })
         }
