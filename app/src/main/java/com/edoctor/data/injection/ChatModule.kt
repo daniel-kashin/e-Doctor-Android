@@ -8,7 +8,7 @@ import com.edoctor.data.mapper.MessageMapper
 import com.edoctor.data.remote.rest.ChatRestApi
 import com.edoctor.data.remote.socket.ChatSocketApi
 import com.edoctor.data.repository.ChatRepository
-import com.edoctor.utils.RecipientEmailInterceptor
+import com.edoctor.utils.RecipientUuidInterceptor
 import com.edoctor.utils.StoppableLifecycle
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.Scarlet
@@ -39,7 +39,7 @@ class ChatModule(
     ): ChatSocketApi {
         val protocol = OkHttpWebSocket(
             okHttpClient = okHttpClientBuilder
-                .addInterceptor(RecipientEmailInterceptor(recipientUser.email))
+                .addInterceptor(RecipientUuidInterceptor(recipientUser.uuid))
                 .build(),
             requestFactory = OkHttpWebSocket.SimpleRequestFactory(
                 { Request.Builder().url("$EDOCTOR_WS_ENDPOINT/chat").build() },

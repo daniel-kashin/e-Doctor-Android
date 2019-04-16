@@ -11,13 +11,13 @@ interface ChatRestApi {
     @GET("/messages")
     fun getMessages(
         @Query("fromTimestamp") fromTimestamp: Long,
-        @Query("recipientEmail") recipientEmail: String
+        @Query("recipientUuid") recipientUuid: String
     ): Single<MessagesResponse>
 
     @Multipart
     @POST("/images/send")
     fun sendImage(
-        @Query("recipientEmail") recipientEmail: String,
+        @Query("recipientUuid") recipientUuid: String,
         @Part image: MultipartBody.Part?
     ): Completable
 

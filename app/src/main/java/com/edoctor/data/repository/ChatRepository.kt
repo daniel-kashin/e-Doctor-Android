@@ -41,7 +41,7 @@ class ChatRepository(
     }
 
     fun getMessages(fromTimestamp: Long): Single<List<Message>> {
-        return chatRestApi.getMessages(fromTimestamp, recipientUser.email)
+        return chatRestApi.getMessages(fromTimestamp, recipientUser.uuid)
             .map { messageMapper.toPresentation(it, currentUser) }
     }
 
@@ -54,7 +54,7 @@ class ChatRepository(
     }
 
     fun sendImage(imageFile: File?): Completable {
-        return chatRestApi.sendImage(recipientUser.email, imageFile?.asImageBodyPart("image"))
+        return chatRestApi.sendImage(recipientUser.uuid, imageFile?.asImageBodyPart("image"))
     }
 
     fun sendCallStatusRequest(callActionRequest: CallActionRequest) {
