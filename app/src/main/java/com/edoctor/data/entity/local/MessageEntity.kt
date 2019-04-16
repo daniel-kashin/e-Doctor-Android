@@ -33,6 +33,12 @@ data class MessageEntity @StorIOSQLiteCreator constructor(
     val senderUuid: String,
 
     @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_RECIPIENT_UUID)
-    val recipientUuid: String
+    val recipientUuid: String,
+
+    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_SENDER_FULL_NAME)
+    val senderFullName: String?,
+
+    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_RECIPIENT_FULL_NAME)
+    val recipientFullName: String?
 
 )

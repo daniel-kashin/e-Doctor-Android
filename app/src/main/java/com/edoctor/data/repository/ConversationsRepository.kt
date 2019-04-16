@@ -14,11 +14,22 @@ class ConversationsRepository(
     private val messagesLocalStore: MessagesLocalStore
 ) {
 
-    fun getConversations(): Single<List<Conversation>> {
-        return api.getConversations().map { result ->
-            result.lastMessages
-                .mapNotNull { messageMapper.toConversation(it, currentUser) }
-        }
+    fun getConversations(): Single<Pair<List<Conversation>, Throwable?>> {
+        return api.getConversations()
+            .map<Pair<List<Conversation>, Throwable?>> { conversationsResult ->
+                val conversations = conversationsResult.lastMessages.mapNotNull {
+                    messageMapper.toConversationFromNetwork(it, currentUser)
+                }
+                conversations to null
+            }
+            .onErrorResumeNext { throwable ->
+                messagesLocalStore.getConversations(currentUser.uuid).map {
+                    val conversations = it.mapNotNull {
+                        messageMapper.toConversationFromLocal(it, currentUser)
+                    }
+                    conversations to throwable
+                }
+            }
     }
 
 }

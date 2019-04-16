@@ -51,7 +51,7 @@ class ChatRepository(
         fromTimestamp: Long,
         onlyFromLocal: Boolean
     ): Single<Pair<List<Message>, Boolean>> {
-        return messagesLocalStore.getMessages(fromTimestamp)
+        return messagesLocalStore.getConversationMessages(fromTimestamp, currentUser.uuid, recipientUser.uuid)
             .map { localMessages ->
                 localMessages
                     .asSequence()
@@ -80,6 +80,7 @@ class ChatRepository(
                             messagesLocalStore.save(remoteMessagesToSave)
                                 .map { (presentationLocalMessages + presentationRemoteMessages) to true }
                         }
+                        .onErrorReturnItem(presentationLocalMessages to false)
                 }
             }
     }

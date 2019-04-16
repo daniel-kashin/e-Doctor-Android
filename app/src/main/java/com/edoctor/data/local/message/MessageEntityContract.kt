@@ -12,6 +12,8 @@ object MessageEntityContract {
     const val COLUMN_CALL_UUID = "call_uuid"
     const val COLUMN_SENDER_UUID = "sender_uuid"
     const val COLUMN_RECIPIENT_UUID = "recipient_uuid"
+    const val COLUMN_SENDER_FULL_NAME = "sender_full_name"
+    const val COLUMN_RECIPIENT_FULL_NAME = "recipient_full_name"
 
     const val CREATE_TABLE_QUERY = """
         CREATE TABLE $TABLE_NAME(
@@ -23,7 +25,9 @@ object MessageEntityContract {
             $COLUMN_TYPE INTEGER,
             $COLUMN_IMAGE_RELATIVE_URL TEXT,
             $COLUMN_CALL_STATUS INTEGER,
-            $COLUMN_CALL_UUID TEXT
+            $COLUMN_CALL_UUID TEXT,
+            $COLUMN_SENDER_FULL_NAME TEXT,
+            $COLUMN_RECIPIENT_FULL_NAME TEXT
     );"""
 
     internal val DELETE_TABLE_QUERY = "DROP TABLE IF EXISTS $TABLE_NAME"

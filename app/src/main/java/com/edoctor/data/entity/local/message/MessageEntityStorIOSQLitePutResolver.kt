@@ -34,7 +34,7 @@ class MessageEntityStorIOSQLitePutResolver : DefaultPutResolver<MessageEntity>()
      * {@inheritDoc}
      */
     public override fun mapToContentValues(`object`: MessageEntity): ContentValues {
-        val contentValues = ContentValues(9)
+        val contentValues = ContentValues(11)
 
         contentValues.put("uuid", `object`.uuid)
         contentValues.put("timestamp", `object`.timestamp)
@@ -45,6 +45,8 @@ class MessageEntityStorIOSQLitePutResolver : DefaultPutResolver<MessageEntity>()
         contentValues.put("call_uuid", `object`.callUuid)
         contentValues.put("sender_uuid", `object`.senderUuid)
         contentValues.put("recipient_uuid", `object`.recipientUuid)
+        contentValues.put("sender_full_name", `object`.senderFullName)
+        contentValues.put("recipient_full_name", `object`.recipientFullName)
 
         return contentValues
     }

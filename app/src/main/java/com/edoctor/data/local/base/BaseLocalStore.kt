@@ -137,6 +137,15 @@ abstract class BaseLocalStore<T>(protected val storIOSQLite: StorIOSQLite) {
             .asRxSingle()
     }
 
+    fun getAllByQueryBlocking(query: Query): List<T> {
+        return storIOSQLite.get()
+            .listOfObjects(objectClass)
+            .withQuery(query)
+            .prepare()
+            .executeAsBlocking()
+            .orEmpty()
+    }
+
     protected fun observeForQuery(query: Query): Flowable<List<T>> {
         return storIOSQLite.get()
             .listOfObjects(objectClass)

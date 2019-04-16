@@ -23,7 +23,6 @@ import com.edoctor.data.injection.NetworkModule.Companion.getAbsoluteImageUrl
 import com.edoctor.data.injection.NetworkModule.Companion.getRelativeImageUrl
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.data.mapper.UserMapper.withAbsoluteUrl
-import org.eclipse.paho.client.mqttv3.internal.NetworkModule
 
 class MessageMapper(context: Context) {
 
@@ -47,7 +46,9 @@ class MessageMapper(context: Context) {
                 senderUuid = senderUser.uuid,
                 recipientUuid = recipientUser.uuid,
                 type = MESSAGE_TYPE_TEXT,
-                text = getText()
+                text = text,
+                senderFullName = senderUser.fullName,
+                recipientFullName = recipientUser.fullName
             )
             is CallStatusMessage -> MessageEntity(
                 uuid = uuid,
@@ -56,21 +57,27 @@ class MessageMapper(context: Context) {
                 recipientUuid = recipientUser.uuid,
                 type = MESSAGE_TYPE_CALL_STATUS,
                 callStatus = toValueFromPresentation(callStatus),
-                callUuid = callUuid
+                callUuid = callUuid,
+                senderFullName = senderUser.fullName,
+                recipientFullName = recipientUser.fullName
             )
             is MedicalRecordRequestMessage -> MessageEntity(
                 uuid = uuid,
                 timestamp = sendingTimestamp,
                 senderUuid = senderUser.uuid,
                 recipientUuid = recipientUser.uuid,
-                type = MESSAGE_TYPE_MEDICAL_RECORD_REQUEST
+                type = MESSAGE_TYPE_MEDICAL_RECORD_REQUEST,
+                senderFullName = senderUser.fullName,
+                recipientFullName = recipientUser.fullName
             )
             is MedicalAccessesMessage -> MessageEntity(
                 uuid = uuid,
                 timestamp = sendingTimestamp,
                 senderUuid = senderUser.uuid,
                 recipientUuid = recipientUser.uuid,
-                type = MESSAGE_TYPE_MEDICAL_ACCESSES
+                type = MESSAGE_TYPE_MEDICAL_ACCESSES,
+                senderFullName = senderUser.fullName,
+                recipientFullName = recipientUser.fullName
             )
             is ImageMessage -> MessageEntity(
                 uuid = uuid,
@@ -78,7 +85,9 @@ class MessageMapper(context: Context) {
                 senderUuid = senderUser.uuid,
                 recipientUuid = recipientUser.uuid,
                 type = MESSAGE_TYPE_IMAGE,
-                imageRelativeUrl = getRelativeImageUrl(getImageUrl())
+                imageRelativeUrl = getRelativeImageUrl(imageUrl),
+                senderFullName = senderUser.fullName,
+                recipientFullName = recipientUser.fullName
             )
         }
     }
@@ -86,13 +95,21 @@ class MessageMapper(context: Context) {
     fun toPresentationFromLocal(
         messageEntity: MessageEntity,
         currentUser: UserModel
-    ): Message? = messageEntity.run {
+    ): UserMessage? = messageEntity.run {
         val isFromCurrentUser = currentUser.uuid == senderUuid
         val currentUserIsDoctor = currentUser is DoctorModel
         val senderIsDoctor = if (isFromCurrentUser) currentUserIsDoctor else !currentUserIsDoctor
 
-        val sender = if (senderIsDoctor) DoctorModel(senderUuid) else PatientModel(senderUuid)
-        val recipient = if (senderIsDoctor) PatientModel(recipientUuid) else DoctorModel(recipientUuid)
+        val sender = if (senderIsDoctor) {
+            DoctorModel(uuid = senderUuid, fullName = senderFullName)
+        } else {
+            PatientModel(uuid = senderUuid, fullName = senderFullName)
+        }
+        val recipient = if (senderIsDoctor) {
+            PatientModel(uuid = recipientUuid, fullName = recipientFullName)
+        } else {
+            DoctorModel(uuid = recipientUuid, fullName = recipientFullName)
+        }
 
         return when {
             type == MESSAGE_TYPE_TEXT && text != null -> {
@@ -143,11 +160,22 @@ class MessageMapper(context: Context) {
         }
     }
 
-    fun toConversation(
+    fun toConversationFromNetwork(
         messageWrapperResponse: MessageResponseWrapper,
         currentUser: UserModel
     ): Conversation? {
         return toPresentationFromNetwork(messageWrapperResponse, currentUser)?.let {
+            val doctorString = applicationContext.getString(R.string.doctor).capitalize()
+            val patientString = applicationContext.getString(R.string.patient).capitalize()
+            Conversation(currentUser, doctorString, patientString, it)
+        }
+    }
+
+    fun toConversationFromLocal(
+        messageEntity: MessageEntity,
+        currentUser: UserModel
+    ): Conversation? {
+        return toPresentationFromLocal(messageEntity, currentUser)?.let {
             val doctorString = applicationContext.getString(R.string.doctor).capitalize()
             val patientString = applicationContext.getString(R.string.patient).capitalize()
             Conversation(currentUser, doctorString, patientString, it)

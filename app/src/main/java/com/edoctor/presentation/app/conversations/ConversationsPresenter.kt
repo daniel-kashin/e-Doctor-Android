@@ -9,6 +9,7 @@ import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.SessionExceptionHelper.isSessionException
 import com.edoctor.utils.isNoNetworkError
+import com.edoctor.utils.nothing
 import com.edoctor.utils.plusAssign
 import io.reactivex.Scheduler
 import javax.inject.Inject
@@ -33,16 +34,25 @@ class ConversationsPresenter @Inject constructor(
             .doOnSubscribe { setViewState { copy(isLoading = true) } }
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
-            .subscribe({
-                setViewState { copy(conversations = it, isLoading = false) }
-            }, {
-                setViewState { copy(isLoading = false) }
-                when {
-                    it.isSessionException() -> sendEvent(Event.ShowSessionException)
-                    it.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
-                    else -> sendEvent(Event.ShowUnknownException(it))
+            .subscribe(
+                { (conversations, throwable) ->
+                    when {
+                        throwable == null -> nothing()
+                        throwable.isSessionException() -> sendEvent(Event.ShowSessionException)
+                        throwable.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
+                        else -> sendEvent(Event.ShowUnknownException(throwable))
+                    }
+                    setViewState { copy(conversations = conversations, isLoading = false) }
+                },
+                {
+                    setViewState { copy(isLoading = false) }
+                    when {
+                        it.isSessionException() -> sendEvent(Event.ShowSessionException)
+                        it.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
+                        else -> sendEvent(Event.ShowUnknownException(it))
+                    }
                 }
-            })
+            )
     }
 
     data class ViewState(val conversations: List<Conversation>, val isLoading: Boolean) : Presenter.ViewState {

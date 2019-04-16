@@ -29,6 +29,8 @@ class MessageEntityStorIOSQLiteGetResolver : DefaultGetResolver<MessageEntity>()
         val callUuid = cursor.getString(cursor.getColumnIndex("call_uuid"))
         val senderUuid = cursor.getString(cursor.getColumnIndex("sender_uuid"))
         val recipientUuid = cursor.getString(cursor.getColumnIndex("recipient_uuid"))
+        val senderFullName = cursor.getString(cursor.getColumnIndex("sender_full_name"))
+        val recipientFullName = cursor.getString(cursor.getColumnIndex("recipient_full_name"))
 
         return MessageEntity(
             uuid,
@@ -39,7 +41,9 @@ class MessageEntityStorIOSQLiteGetResolver : DefaultGetResolver<MessageEntity>()
             callStatus,
             callUuid,
             senderUuid,
-            recipientUuid
+            recipientUuid,
+            senderFullName,
+            recipientFullName
         )
     }
 }
