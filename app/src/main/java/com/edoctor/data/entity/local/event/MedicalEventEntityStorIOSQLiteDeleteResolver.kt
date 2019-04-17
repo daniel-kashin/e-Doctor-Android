@@ -1,4 +1,4 @@
-package com.edoctor.data.entity.local.message
+package com.edoctor.data.entity.local.event
 
 import com.pushtorefresh.storio3.sqlite.operations.delete.DefaultDeleteResolver
 import com.pushtorefresh.storio3.sqlite.queries.DeleteQuery
@@ -6,13 +6,13 @@ import com.pushtorefresh.storio3.sqlite.queries.DeleteQuery
 /**
  * Generated resolver for Delete Operation.
  */
-class MessageEntityStorIOSQLiteDeleteResolver : DefaultDeleteResolver<MessageEntity>() {
+class MedicalEventEntityStorIOSQLiteDeleteResolver : DefaultDeleteResolver<MedicalEventEntity>() {
     /**
      * {@inheritDoc}
      */
-    public override fun mapToDeleteQuery(`object`: MessageEntity): DeleteQuery {
+    public override fun mapToDeleteQuery(`object`: MedicalEventEntity): DeleteQuery {
         return DeleteQuery.builder()
-            .table("messages")
+            .table("medical_events")
             .where("uuid = ?")
             .whereArgs(`object`.uuid)
             .build()

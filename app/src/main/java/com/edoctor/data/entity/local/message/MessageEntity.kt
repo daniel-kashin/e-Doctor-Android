@@ -10,23 +10,11 @@ data class MessageEntity @StorIOSQLiteCreator constructor(
     @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_UUID, key = true)
     val uuid: String,
 
+    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_TYPE)
+    val type: Int,
+
     @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_TIMESTAMP)
     val timestamp: Long,
-
-    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_TEXT)
-    val text: String? = null,
-
-    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_TYPE)
-    val type: Int? = null,
-
-    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_IMAGE_RELATIVE_URL)
-    val imageRelativeUrl: String? = null,
-
-    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_CALL_STATUS)
-    val callStatus: Int? = null,
-
-    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_CALL_UUID)
-    val callUuid: String? = null,
 
     @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_SENDER_UUID)
     val senderUuid: String,
@@ -38,6 +26,18 @@ data class MessageEntity @StorIOSQLiteCreator constructor(
     val senderFullName: String?,
 
     @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_RECIPIENT_FULL_NAME)
-    val recipientFullName: String?
+    val recipientFullName: String?,
+
+    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_TEXT)
+    val text: String? = null,
+
+    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_IMAGE_RELATIVE_URL)
+    val imageRelativeUrl: String? = null,
+
+    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_CALL_STATUS)
+    val callStatus: Int? = null,
+
+    @StorIOSQLiteColumn(name = MessageEntityContract.COLUMN_CALL_UUID)
+    val callUuid: String? = null
 
 )

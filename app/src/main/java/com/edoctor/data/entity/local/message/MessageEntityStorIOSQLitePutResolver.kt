@@ -36,16 +36,16 @@ class MessageEntityStorIOSQLitePutResolver : DefaultPutResolver<MessageEntity>()
         val contentValues = ContentValues(11)
 
         contentValues.put("uuid", `object`.uuid)
-        contentValues.put("timestamp", `object`.timestamp)
-        contentValues.put("text", `object`.text)
         contentValues.put("type", `object`.type)
-        contentValues.put("image_relative_url", `object`.imageRelativeUrl)
-        contentValues.put("call_status", `object`.callStatus)
-        contentValues.put("call_uuid", `object`.callUuid)
+        contentValues.put("timestamp", `object`.timestamp)
         contentValues.put("sender_uuid", `object`.senderUuid)
         contentValues.put("recipient_uuid", `object`.recipientUuid)
         contentValues.put("sender_full_name", `object`.senderFullName)
         contentValues.put("recipient_full_name", `object`.recipientFullName)
+        contentValues.put("text", `object`.text)
+        contentValues.put("image_relative_url", `object`.imageRelativeUrl)
+        contentValues.put("call_status", `object`.callStatus)
+        contentValues.put("call_uuid", `object`.callUuid)
 
         return contentValues
     }

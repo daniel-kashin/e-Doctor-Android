@@ -14,35 +14,32 @@ class MessageEntityStorIOSQLiteGetResolver : DefaultGetResolver<MessageEntity>()
     override fun mapFromCursor(storIOSQLite: StorIOSQLite, cursor: Cursor): MessageEntity {
 
         val uuid = cursor.getString(cursor.getColumnIndex("uuid"))
+        val type = cursor.getInt(cursor.getColumnIndex("type"))
         val timestamp = cursor.getLong(cursor.getColumnIndex("timestamp"))
+        val senderUuid = cursor.getString(cursor.getColumnIndex("sender_uuid"))
+        val recipientUuid = cursor.getString(cursor.getColumnIndex("recipient_uuid"))
+        val senderFullName = cursor.getString(cursor.getColumnIndex("sender_full_name"))
+        val recipientFullName = cursor.getString(cursor.getColumnIndex("recipient_full_name"))
         val text = cursor.getString(cursor.getColumnIndex("text"))
-        var type: Int? = null
-        if (!cursor.isNull(cursor.getColumnIndex("type"))) {
-            type = cursor.getInt(cursor.getColumnIndex("type"))
-        }
         val imageRelativeUrl = cursor.getString(cursor.getColumnIndex("image_relative_url"))
         var callStatus: Int? = null
         if (!cursor.isNull(cursor.getColumnIndex("call_status"))) {
             callStatus = cursor.getInt(cursor.getColumnIndex("call_status"))
         }
         val callUuid = cursor.getString(cursor.getColumnIndex("call_uuid"))
-        val senderUuid = cursor.getString(cursor.getColumnIndex("sender_uuid"))
-        val recipientUuid = cursor.getString(cursor.getColumnIndex("recipient_uuid"))
-        val senderFullName = cursor.getString(cursor.getColumnIndex("sender_full_name"))
-        val recipientFullName = cursor.getString(cursor.getColumnIndex("recipient_full_name"))
 
         return MessageEntity(
             uuid,
-            timestamp,
-            text,
             type,
-            imageRelativeUrl,
-            callStatus,
-            callUuid,
+            timestamp,
             senderUuid,
             recipientUuid,
             senderFullName,
-            recipientFullName
+            recipientFullName,
+            text,
+            imageRelativeUrl,
+            callStatus,
+            callUuid
         )
     }
 }
