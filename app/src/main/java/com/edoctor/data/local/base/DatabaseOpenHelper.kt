@@ -20,15 +20,21 @@ class DatabaseOpenHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         db.execSQL(BodyParameterEntityContract.CREATE_TABLE_QUERY)
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        onDelete(db)
-        onCreate(db)
-    }
-
     private fun onDelete(db: SQLiteDatabase) {
         db.execSQL(MessageEntityContract.DELETE_TABLE_QUERY)
         db.execSQL(MedicalEventEntityContract.DELETE_TABLE_QUERY)
         db.execSQL(BodyParameterEntityContract.DELETE_TABLE_QUERY)
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+       recreateTables(db)
+    }
+
+    fun recreateTables() = recreateTables(writableDatabase)
+
+    private fun recreateTables(db: SQLiteDatabase) {
+        onDelete(db)
+        onCreate(db)
     }
 
 }

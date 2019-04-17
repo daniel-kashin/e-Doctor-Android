@@ -53,7 +53,7 @@ class ParametersPresenter @Inject constructor(
     }
 
     fun addOrEditParameter(parameter: BodyParameterModel) {
-        if (patient == null) {
+        if (currentUserIsPatient) {
             disposables += medicalRecordsRepository.addOrEditParameterPatient(parameter)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
@@ -66,7 +66,7 @@ class ParametersPresenter @Inject constructor(
     }
 
     fun removeParameter(parameter: BodyParameterModel) {
-        if (patient == null) {
+        if (currentUserIsPatient) {
             disposables += medicalRecordsRepository.removeParameterForPatient(parameter)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)

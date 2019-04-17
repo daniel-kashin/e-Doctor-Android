@@ -22,10 +22,14 @@ class DatabaseModule {
 
     @Provides
     @Singleton
+    internal fun provideDatabaseOpenHelper(context: Context): DatabaseOpenHelper = DatabaseOpenHelper(context)
+
+    @Provides
+    @Singleton
     internal fun provideStorIOSQLite(
-        context: Context
+        databaseOpenHelper: DatabaseOpenHelper
     ): StorIOSQLite = DefaultStorIOSQLite.builder()
-        .sqliteOpenHelper(DatabaseOpenHelper(context))
+        .sqliteOpenHelper(databaseOpenHelper)
         .addTypeMapping(MessageEntity::class.java, MessageEntitySQLiteTypeMapping())
         .addTypeMapping(MedicalEventEntity::class.java, MedicalEventEntitySQLiteTypeMapping())
         .addTypeMapping(BodyParameterEntity::class.java, BodyParameterEntitySQLiteTypeMapping())

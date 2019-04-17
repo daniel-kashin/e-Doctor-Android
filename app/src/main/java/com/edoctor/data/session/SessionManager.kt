@@ -1,6 +1,7 @@
 package com.edoctor.data.session
 
 import com.edoctor.data.entity.remote.model.user.UserModel
+import com.edoctor.data.local.base.DatabaseOpenHelper
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
 import com.edoctor.utils.SynchronizedDelegate
 import io.reactivex.Completable
@@ -11,7 +12,8 @@ import javax.inject.Singleton
 
 @Singleton
 class SessionManager @Inject constructor(
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val databaseOpenHelper: DatabaseOpenHelper
 ) {
 
     private var sessionInfo by SynchronizedDelegate<SessionInfo?>(null)
@@ -73,6 +75,7 @@ class SessionManager @Inject constructor(
         } else {
             Completable.fromAction { isSessionClosingInProgress.set(true) }
                 .andThen(sessionStorage.remove())
+                .doOnComplete { databaseOpenHelper.recreateTables() }
                 .onErrorComplete()
                 .doOnComplete {
                     if (sessionInfo != null) {
