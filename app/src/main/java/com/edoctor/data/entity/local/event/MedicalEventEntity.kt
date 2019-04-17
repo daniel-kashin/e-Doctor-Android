@@ -53,3 +53,7 @@ class MedicalEventEntity @StorIOSQLiteCreator constructor(
     var comment: String? = null
 
 )
+
+class MedicalEventEntityType(
+    val type: Int
+)

@@ -32,3 +32,9 @@ class BodyParameterEntity @StorIOSQLiteCreator constructor(
     val customModelUnit: String? = null
 
 )
+
+class BodyParameterEntityType(
+    val type: Int,
+    val customModelName: String?,
+    val customModelUnit: String?
+)
