@@ -14,9 +14,15 @@ import com.edoctor.utils.lazyFind
 import com.edoctor.utils.toast
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 class WelcomeActivity : BaseActivity<WelcomePresenter, ViewState, Event>("WelcomeActivity", true) {
+
+    companion object {
+        const val EMAIL_REGEX = "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$"
+        val EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX)
+    }
 
     @Inject
     override lateinit var presenter: WelcomePresenter
@@ -45,15 +51,28 @@ class WelcomeActivity : BaseActivity<WelcomePresenter, ViewState, Event>("Welcom
             var success = true
 
             val email = email.text.toString()
-            if (email.isEmpty()) {
+            if (email.length < 5) {
                 success = false
-                emailLayout.error = getString(R.string.username_error)
+                emailLayout.error = getString(R.string.email_too_short)
+            } else if (email.length > 64) {
+                success = false
+                emailLayout.error = getString(R.string.email_too_long)
+            } else if (!EMAIL_PATTERN.matcher(email).matches()) {
+                success = false
+                emailLayout.error = getString(R.string.email_not_valid)
+            } else {
+                emailLayout.error = null
             }
 
             val passwordText = password.text.toString()
-            if (passwordText.isEmpty()) {
+            if (passwordText.length < 5) {
                 success = false
-                passwordLayout.error = getString(R.string.password_error)
+                passwordLayout.error = getString(R.string.password_too_short)
+            } else if (passwordText.length > 64) {
+                success = false
+                passwordLayout.error = getString(R.string.password_too_long)
+            } else {
+                passwordLayout.error = null
             }
 
             if (success) {

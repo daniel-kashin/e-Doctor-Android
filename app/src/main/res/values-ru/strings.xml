@@ -30,9 +30,12 @@
     <string name="search_excursions">Имя или специализация</string>
     <string name="type_search_excursions">Найдите врача по имени или специализации</string>
     <string name="nothing_was_found">Ничего не найдено. Попробуйте изменить поисковый запрос</string>
-    <string name="username_error">Как минимум 1 символ</string>
+    <string name="email_not_valid">Неверный формат</string>
+    <string name="email_too_short">Как минимум 5 символов</string>
+    <string name="email_too_long">Максимум 64 символа</string>
     <string name="password_hint">Пароль</string>
-    <string name="password_error">Как минимум 1 символ</string>
+    <string name="password_too_short">Как минимум 5 символов</string>
+    <string name="password_too_long">Максимум 64 символа</string>
     <string name="email_hint">Email</string>
     <string name="email_error">Как минимум 5 символов</string>
     <string name="full_name_hint">Имя и фамилия</string>

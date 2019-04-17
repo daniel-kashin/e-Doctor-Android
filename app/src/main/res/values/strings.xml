@@ -40,9 +40,12 @@
     <string name="empty_medical_accesses_for_patient">Open doctor\'s profile and give access to your medcard to at least one doctor</string>
     <string name="empty_medical_accesses_for_doctor">Neither of patients gave you access to his medcard yet</string>
 
-    <string name="username_error">At least 1 character</string>
+    <string name="email_too_short">At least 5 characters</string>
+    <string name="email_too_long">At most 64 characters</string>
+    <string name="email_not_valid">Not a valid email</string>
     <string name="password_hint">Password</string>
-    <string name="password_error">At least 1 character</string>
+    <string name="password_too_short">At least 5 characters</string>
+    <string name="password_too_long">At most 64 characters</string>
     <string name="email_hint">Email</string>
     <string name="email_error">At least 5 characters</string>
     <string name="full_name_hint">Full name</string>
