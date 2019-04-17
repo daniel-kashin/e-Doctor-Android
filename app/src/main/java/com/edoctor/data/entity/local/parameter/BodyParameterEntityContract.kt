@@ -15,7 +15,7 @@ object BodyParameterEntityContract {
     const val COLUMN_CUSTOM_MODEL_UNIT = "custom_model_unit"
 
     const val CREATE_TABLE_QUERY = """
-        CREATE TABLE ${MessageEntityContract.TABLE_NAME}(
+        CREATE TABLE $TABLE_NAME(
             $COLUMN_UUID TEXT NOT NULL PRIMARY KEY,
             $COLUMN_TYPE INTEGER NOT NULL,
             $COLUMN_MEASUREMENT_TIMESTAMP INTEGER NOT NULL,

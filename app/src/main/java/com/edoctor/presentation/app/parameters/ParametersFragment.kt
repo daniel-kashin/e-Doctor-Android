@@ -29,15 +29,18 @@ import javax.inject.Inject
 class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("ParametersFragment") {
 
     companion object {
+        const val PATIENT_PARAM = "patient"
+        const val CURRENT_USER_IS_PATIENT = "current_user_is_patient"
+
         const val PARAMETER_PARAM = "parameter"
         const val IS_REMOVED_PARAM = "is_removed"
         const val REQUEST_ADD_OR_EDIT_PARAMETER = 12300
 
-        private const val PATIENT_PARAM = "patient"
 
-        fun newInstance(patient: PatientModel?) = ParametersFragment().apply {
+        fun newInstance(patient: PatientModel, currentUserIsPatient: Boolean) = ParametersFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(PATIENT_PARAM, patient)
+                putBoolean(CURRENT_USER_IS_PATIENT, currentUserIsPatient)
             }
         }
     }
@@ -54,8 +57,9 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
 
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.medicalRecordsComponent.inject(this)
-        val patient = arguments?.getSerializable(PATIENT_PARAM) as? PatientModel
-        presenter.init(patient)
+        val patient = arguments!!.getSerializable(PATIENT_PARAM) as PatientModel
+        val currentUserIsPatient = arguments!!.getBoolean(CURRENT_USER_IS_PATIENT)
+        presenter.init(patient, currentUserIsPatient)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,6 +85,7 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
             ParameterActivity.IntentBuilder(this)
                 .parameterType(toType(parameter))
                 .patient(presenter.patient)
+                .currentUserIsPatient(presenter.currentUserIsPatient)
                 .start()
         }
 
@@ -112,7 +117,7 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
                             startActivityForResult(
                                 AddOrEditParameterActivity.IntentBuilder(it)
                                     .parameterType(type)
-                                    .readOnly(presenter.patient != null)
+                                    .readOnly(!presenter.currentUserIsPatient)
                                     .get(),
                                 REQUEST_ADD_OR_EDIT_PARAMETER
                             )

@@ -23,18 +23,20 @@ class ParametersPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : Presenter<ViewState, Event>() {
 
-    var patient: PatientModel? = null
+    var currentUserIsPatient: Boolean = false
+    lateinit var patient: PatientModel
 
-    fun init(patient: PatientModel?) {
+    fun init(patient: PatientModel, currentUserIsPatient: Boolean) {
         this.patient = patient
+        this.currentUserIsPatient = currentUserIsPatient
 
-        if (patient == null) {
+        if (currentUserIsPatient) {
             setViewState(ViewState(LatestBodyParametersInfo(emptyList(), BodyParameterType.NON_CUSTOM_BODY_PARAMETER_TYPES)))
         } else {
             setViewState(ViewState(LatestBodyParametersInfo(emptyList(), emptyList())))
         }
 
-        val getParametersSingle = if (patient == null) {
+        val getParametersSingle = if (currentUserIsPatient) {
             medicalRecordsRepository.getLatestBodyParametersInfoForPatient()
         } else {
             medicalRecordsRepository.getLatestBodyParametersInfoForDoctor(patient.uuid)

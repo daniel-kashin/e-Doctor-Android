@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.MedicalAccessesForPatient
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.doctor.DoctorActivity
 import com.edoctor.presentation.app.medicalAccessesForPatient.MedicalAccessesForPatientPresenter.Event
@@ -17,6 +18,7 @@ import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.SimpleDividerItemDecoration
 import com.edoctor.utils.invisible
+import com.edoctor.utils.session
 import com.edoctor.utils.toast
 import javax.inject.Inject
 
@@ -61,10 +63,13 @@ class MedicalAccessesForPatientFragment :
             onDeletePatientMedicalAccessClickListener = {
                 presenter.deleteMedicalAccessForDoctor(it.doctor)
             }
-            onPatientMedicalAccessClickListener = {
-                DoctorActivity.IntentBuilder(context)
-                    .doctor(it.doctor)
-                    .start()
+            onPatientMedicalAccessClickListener = { medicalAccess ->
+                context.session.runIfOpened { userModel ->
+                    DoctorActivity.IntentBuilder(context)
+                        .doctor(medicalAccess.doctor)
+                        .patient(userModel as? PatientModel)
+                        .start()
+                }
             }
         }
         recyclerView.adapter = adapter

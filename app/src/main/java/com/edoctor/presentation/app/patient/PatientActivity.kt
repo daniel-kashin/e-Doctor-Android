@@ -18,13 +18,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
+import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.presentation.app.medcardForDoctor.MedcardForDoctorActivity
 import com.edoctor.presentation.app.patient.PatientPresenter.Event
 import com.edoctor.presentation.app.patient.PatientPresenter.ViewState
-import com.edoctor.presentation.app.recordsForPatient.RecordsForPatientActivity
+import com.edoctor.presentation.app.recordsForDoctor.RecordsForDoctorActivity
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
@@ -107,9 +108,14 @@ class PatientActivity : BaseActivity<PatientPresenter, ViewState, Event>("Patien
             )
 
             medicalAccess.setOnClickListener {
-                MedcardForDoctorActivity.IntentBuilder(this)
-                    .patient(presenter.patient)
-                    .start()
+                session.runIfOpened { userInfo ->
+                    if (userInfo is DoctorModel) {
+                        MedcardForDoctorActivity.IntentBuilder(this)
+                            .patient(presenter.patient)
+                            .doctor(userInfo)
+                            .start()
+                    }
+                }
             }
 
             recordRequest.setText(
@@ -121,9 +127,14 @@ class PatientActivity : BaseActivity<PatientPresenter, ViewState, Event>("Patien
             )
 
             recordRequest.setOnClickListener {
-                RecordsForPatientActivity.IntentBuilder(this)
-                    .patient(presenter.patient)
-                    .start()
+                session.runIfOpened { userModel ->
+                    if (userModel is DoctorModel) {
+                        RecordsForDoctorActivity.IntentBuilder(this)
+                            .patient(presenter.patient)
+                            .doctor(userModel)
+                            .start()
+                    }
+                }
             }
 
             labelMedcard.show()

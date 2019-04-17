@@ -3,6 +3,7 @@ package com.edoctor.presentation.app.medcard
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.presentation.app.events.EventsFragment
 import com.edoctor.presentation.app.parameters.ParametersFragment
@@ -10,7 +11,9 @@ import com.edoctor.presentation.app.parameters.ParametersFragment
 class MedcardPagerAdapter(
     fragmentManager: FragmentManager,
     private val pageTitles: List<String>,
-    private val patient: PatientModel?
+    private val patient: PatientModel,
+    private val doctor: DoctorModel?,
+    private val currentUserIsPatient: Boolean
 ) : FragmentPagerAdapter(fragmentManager) {
 
     companion object {
@@ -23,8 +26,8 @@ class MedcardPagerAdapter(
 
     override fun getItem(position: Int): Fragment? =
         when (position) {
-            0 -> EventsFragment.newInstance(patient, null, false)
-            1 -> ParametersFragment.newInstance(patient)
+            0 -> EventsFragment.newInstance(patient, doctor, currentUserIsPatient, false)
+            1 -> ParametersFragment.newInstance(patient, currentUserIsPatient)
             else -> null
         }
 

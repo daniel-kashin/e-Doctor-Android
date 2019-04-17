@@ -29,8 +29,8 @@ import com.edoctor.presentation.app.chat.ChatPresenter.ViewState
 import com.edoctor.presentation.app.doctor.DoctorActivity
 import com.edoctor.presentation.app.imageViewerActivity.ImageViewerActivity
 import com.edoctor.presentation.app.patient.PatientActivity
-import com.edoctor.presentation.app.recordsForPatient.RecordsForPatientActivity
-import com.edoctor.presentation.app.recordsFromDoctor.RecordsFromDoctorActivity
+import com.edoctor.presentation.app.recordsForDoctor.RecordsForDoctorActivity
+import com.edoctor.presentation.app.requestedRecordsForPatient.RequestedRecordsForPatientActivity
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.presentation.views.*
 import com.edoctor.presentation.views.MessageContentChecker.Companion.CONTENT_TYPE_CALL
@@ -104,6 +104,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
                 is DoctorModel -> {
                     DoctorActivity.IntentBuilder(this)
                         .doctor(recipientUser)
+                        .patient(currentUser as? PatientModel)
                         .start()
                 }
                 is PatientModel -> {
@@ -174,6 +175,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
                     if (currentUser is PatientModel && recipientUser is DoctorModel) {
                         DoctorActivity.IntentBuilder(this)
                             .doctor(recipientUser)
+                            .patient(currentUser)
                             .start()
                     }
                     if (currentUser is DoctorModel && recipientUser is PatientModel) {
@@ -184,13 +186,15 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
                 }
                 is MedicalRecordRequestMessage -> {
                     if (currentUser is PatientModel && recipientUser is DoctorModel) {
-                        RecordsFromDoctorActivity.IntentBuilder(this)
+                        RequestedRecordsForPatientActivity.IntentBuilder(this)
                             .doctor(recipientUser)
+                            .patient(currentUser)
                             .start()
                     }
                     if (currentUser is DoctorModel && recipientUser is PatientModel) {
-                        RecordsForPatientActivity.IntentBuilder(this)
+                        RecordsForDoctorActivity.IntentBuilder(this)
                             .patient(recipientUser)
+                            .doctor(currentUser)
                             .start()
                     }
                 }

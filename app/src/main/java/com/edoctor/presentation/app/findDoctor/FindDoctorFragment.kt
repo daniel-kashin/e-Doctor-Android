@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.user.DoctorModel
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.FindDoctorModule
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
@@ -93,9 +94,12 @@ class FindDoctorFragment : BaseFragment<FindDoctorPresenter, ViewState, Event>("
     private fun initializeRecyclerView(context: Context) {
         doctorsAdapter = FindDoctorAdapter().apply {
             onDoctorClickListener = { doctor ->
-                DoctorActivity.IntentBuilder(context)
-                    .doctor(doctor)
-                    .start()
+                context.session.runIfOpened { userInfo ->
+                    DoctorActivity.IntentBuilder(context)
+                        .doctor(doctor)
+                        .patient(userInfo as? PatientModel)
+                        .start()
+                }
             }
         }
         recyclerView.adapter = doctorsAdapter

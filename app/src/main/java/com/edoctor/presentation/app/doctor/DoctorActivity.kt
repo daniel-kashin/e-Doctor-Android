@@ -19,12 +19,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.user.DoctorModel
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.presentation.app.doctor.DoctorPresenter.Event
 import com.edoctor.presentation.app.doctor.DoctorPresenter.ViewState
 import com.edoctor.presentation.app.editMedicalAccess.EditMedicalAccessActivity
-import com.edoctor.presentation.app.recordsFromDoctor.RecordsFromDoctorActivity
+import com.edoctor.presentation.app.requestedRecordsForPatient.RequestedRecordsForPatientActivity
 import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
@@ -35,6 +36,7 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
 
     companion object {
         const val DOCTOR_PARAM = "doctor"
+        const val PATIENT_PARAM = "patient"
     }
 
     private val toolbar by lazyFind<Toolbar>(R.id.toolbar)
@@ -64,7 +66,8 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.medicalAccessComponent.inject(this)
         val doctor = intent?.getSerializableExtra(DOCTOR_PARAM) as DoctorModel
-        presenter.init(doctor)
+        val patient = intent?.getSerializableExtra(PATIENT_PARAM) as PatientModel
+        presenter.init(doctor, patient)
     }
 
     override fun createScreenConfig(): ScreenConfig {
@@ -136,9 +139,14 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
             )
 
             recordRequest.setOnClickListener {
-                RecordsFromDoctorActivity.IntentBuilder(this)
-                    .doctor(presenter.doctor)
-                    .start()
+                session.runIfOpened { userModel ->
+                    if (userModel is PatientModel) {
+                        RequestedRecordsForPatientActivity.IntentBuilder(this)
+                            .doctor(presenter.doctor)
+                            .patient(userModel)
+                            .start()
+                    }
+                }
             }
 
             labelMedcard.show()
@@ -245,14 +253,17 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
     class IntentBuilder(context: Context) : CheckedIntentBuilder(context) {
 
         private var doctor: DoctorModel? = null
+        private var patient: PatientModel? = null
 
         fun doctor(doctor: DoctorModel) = apply { this.doctor = doctor }
+        fun patient(patient: PatientModel?) = apply { this.patient = patient }
 
-        override fun areParamsValid() = doctor != null
+        override fun areParamsValid() = doctor != null && patient != null
 
         override fun get(): Intent =
             Intent(context, DoctorActivity::class.java)
                 .putExtra(DoctorActivity.DOCTOR_PARAM, doctor)
+                .putExtra(DoctorActivity.PATIENT_PARAM, patient)
 
     }
 

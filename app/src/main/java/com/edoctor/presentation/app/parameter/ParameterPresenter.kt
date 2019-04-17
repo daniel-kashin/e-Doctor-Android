@@ -24,15 +24,17 @@ class ParameterPresenter @Inject constructor(
 ) : BasePresenter<ViewState, Event>() {
 
     lateinit var parameterType: BodyParameterType
-    var patient: PatientModel? = null
+    lateinit var patient: PatientModel
+    var currentUserIsPatient: Boolean = false
 
-    fun init(bodyParameterType: BodyParameterType, patient: PatientModel?) {
+    fun init(bodyParameterType: BodyParameterType, patient: PatientModel, currentUserIsPatient: Boolean) {
         this.parameterType = bodyParameterType
         this.patient = patient
+        this.currentUserIsPatient = currentUserIsPatient
 
         setViewState(ViewState(emptyList()))
 
-        val getAllParametersSingle = if (patient == null) {
+        val getAllParametersSingle = if (currentUserIsPatient) {
             medicalRecordsRepository.getAllParametersOfTypeForPatient(bodyParameterType)
         } else {
             medicalRecordsRepository.getAllParametersOfTypeForDoctor(bodyParameterType, patient.uuid)
@@ -49,7 +51,7 @@ class ParameterPresenter @Inject constructor(
     }
 
     fun addOrEditParameter(parameter: BodyParameterModel) {
-        if (patient == null) {
+        if (currentUserIsPatient) {
             disposables += medicalRecordsRepository.addOrEditParameterPatient(parameter)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
@@ -62,7 +64,7 @@ class ParameterPresenter @Inject constructor(
     }
 
     fun removeParameter(parameter: BodyParameterModel) {
-        if (patient == null) {
+        if (currentUserIsPatient) {
             disposables += medicalRecordsRepository.removeParameterForPatient(parameter)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)

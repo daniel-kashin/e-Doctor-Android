@@ -40,6 +40,7 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
     companion object {
         const val PARAMETER_TYPE_PARAM = "parameter_type"
         const val PATIENT_PARAM = "patient"
+        const val CURRENT_USER_IS_PATIENT_PARAM = "current_user_is_patient"
 
         const val PARAMETER_PARAM = "parameter"
         const val IS_REMOVED_PARAM = "is_removed"
@@ -65,8 +66,9 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.medicalRecordsComponent.inject(this)
         val parameterType = intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as BodyParameterType
-        val patient = intent.getSerializableExtra(PATIENT_PARAM) as? PatientModel
-        presenter.init(parameterType, patient)
+        val patient = intent.getSerializableExtra(PATIENT_PARAM) as PatientModel
+        val currentUserIsPatient = intent.getBooleanExtra(CURRENT_USER_IS_PATIENT_PARAM, false)
+        presenter.init(parameterType, patient, currentUserIsPatient)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,7 +105,7 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
             }
         }
 
-        if (presenter.patient == null) {
+        if (presenter.currentUserIsPatient) {
             fab.setOnClickListener {
                 AddOrEditParameterActivity.IntentBuilder(this)
                     .parameterType(presenter.parameterType)
@@ -139,7 +141,7 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
         adapter.onParameterClickListener = { parameter ->
             AddOrEditParameterActivity.IntentBuilder(this)
                 .parameter(parameter)
-                .readOnly(presenter.patient != null)
+                .readOnly(!presenter.currentUserIsPatient)
                 .startForResult(REQUEST_ADD_OR_EDIT_PARAMETER)
         }
 
@@ -188,7 +190,7 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
                         ?.let {
                             AddOrEditParameterActivity.IntentBuilder(this@ParameterActivity)
                                 .parameter(it)
-                                .readOnly(presenter.patient != null)
+                                .readOnly(!presenter.currentUserIsPatient)
                                 .startForResult(REQUEST_ADD_OR_EDIT_PARAMETER)
                         }
                 }
@@ -262,15 +264,18 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
 
         private var parameterType: BodyParameterType? = null
         private var patient: PatientModel? = null
+        private var currentUserIsPatient: Boolean? = null
 
         fun parameterType(parameterType: BodyParameterType) = apply { this.parameterType = parameterType }
-        fun patient(patient: PatientModel?) = apply { this.patient = patient }
+        fun patient(patient: PatientModel) = apply { this.patient = patient }
+        fun currentUserIsPatient(currentUserIsPatient: Boolean) = apply { this.currentUserIsPatient = currentUserIsPatient }
 
-        override fun areParamsValid() = parameterType != null
+        override fun areParamsValid() = parameterType != null && patient != null && currentUserIsPatient != null
 
         override fun get(): Intent = Intent(context, ParameterActivity::class.java)
             .putExtra(PARAMETER_TYPE_PARAM, parameterType)
             .putExtra(PATIENT_PARAM, patient)
+            .putExtra(CURRENT_USER_IS_PATIENT_PARAM, currentUserIsPatient)
 
     }
 

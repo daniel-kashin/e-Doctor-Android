@@ -11,7 +11,7 @@ class DatabaseOpenHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
 
     companion object {
         private val DATABASE_NAME = "EDOCTOR_DATABASE"
-        private val DATABASE_VERSION = 5
+        private val DATABASE_VERSION = 6
     }
 
     override fun onCreate(db: SQLiteDatabase) {

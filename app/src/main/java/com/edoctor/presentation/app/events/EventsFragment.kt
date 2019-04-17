@@ -32,16 +32,19 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
 
         private const val PATIENT_PARAM = "patient"
         private const val DOCTOR_PARAM = "doctor"
+        private const val CURRENT_USER_IS_PATIENT = "current_user_is_patient"
         private const val IS_REQUESTED_RECORDS = "is_requested_records"
 
         fun newInstance(
-            patient: PatientModel?,
+            patient: PatientModel,
             doctor: DoctorModel?,
+            currentUserIsPatient: Boolean,
             isRequestedRecords: Boolean
         ) = EventsFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(PATIENT_PARAM, patient)
                 putSerializable(DOCTOR_PARAM, doctor)
+                putBoolean(CURRENT_USER_IS_PATIENT, currentUserIsPatient)
                 putBoolean(IS_REQUESTED_RECORDS, isRequestedRecords)
             }
         }
@@ -59,10 +62,11 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
 
     override fun init(applicationComponent: ApplicationComponent) {
         applicationComponent.medicalRecordsComponent.inject(this)
-        val patient = arguments!!.getSerializable(PATIENT_PARAM) as? PatientModel
+        val patient = arguments!!.getSerializable(PATIENT_PARAM) as PatientModel
         val doctor = arguments!!.getSerializable(DOCTOR_PARAM) as? DoctorModel
+        val currentUserIsPatient = arguments!!.getBoolean(CURRENT_USER_IS_PATIENT)
         val isRequestedParams = arguments!!.getBoolean(IS_REQUESTED_RECORDS)
-        presenter.init(patient, doctor, isRequestedParams)
+        presenter.init(patient, doctor, currentUserIsPatient, isRequestedParams)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

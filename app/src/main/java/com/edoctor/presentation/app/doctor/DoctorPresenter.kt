@@ -3,6 +3,7 @@ package com.edoctor.presentation.app.doctor
 import com.edoctor.data.entity.presentation.MedicalAccessInfo
 import com.edoctor.data.entity.remote.model.record.MedicalEventModel
 import com.edoctor.data.entity.remote.model.user.DoctorModel
+import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalAccessesRepository
 import com.edoctor.data.repository.MedicalRecordsRepository
@@ -27,16 +28,17 @@ class DoctorPresenter @Inject constructor(
 ) : BasePresenter<ViewState, Event>("DoctorPresenter") {
 
     lateinit var doctor: DoctorModel
+    lateinit var patient: PatientModel
 
     init {
         setViewState(ViewState(null))
     }
 
-    fun init(doctor: DoctorModel) {
+    fun init(doctor: DoctorModel, patient: PatientModel) {
         this.doctor = doctor
 
         disposables += medicalAccessesRepository.getMedicalAccessForPatient(doctor.uuid)
-            .zipWith(medicalRecordsRepository.getRequestedMedicalEventsForPatient(doctor.uuid))
+            .zipWith(medicalRecordsRepository.getRequestedMedicalEventsForPatient(doctor.uuid, patient.uuid))
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({

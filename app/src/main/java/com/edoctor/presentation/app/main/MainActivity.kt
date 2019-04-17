@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         is PatientModel -> {
                             if (topFragment is MedcardFragment) return
-                            MedcardFragment.newInstance(null)
+                            MedcardFragment.newInstance(userInfo, null, true)
                         }
                     }
                 } ?: run {

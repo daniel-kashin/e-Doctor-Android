@@ -1,4 +1,4 @@
-package com.edoctor.presentation.app.recordsForPatient
+package com.edoctor.presentation.app.recordsForDoctor
 
 import android.content.Context
 import android.content.Intent
@@ -8,15 +8,17 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.edoctor.R
+import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.presentation.app.events.EventsFragment
 import com.edoctor.utils.CheckedIntentBuilder
 import com.edoctor.utils.lazyFind
 
-class RecordsForPatientActivity : AppCompatActivity() {
+class RecordsForDoctorActivity : AppCompatActivity() {
 
     companion object {
         const val PATIENT_PARAM = "patient"
+        const val DOCTOR_PARAM = "doctor"
     }
 
     private val toolbar by lazyFind<Toolbar>(R.id.toolbar)
@@ -26,6 +28,7 @@ class RecordsForPatientActivity : AppCompatActivity() {
         setContentView(R.layout.activity_records_for_patient)
 
         val patient = intent?.getSerializableExtra(PATIENT_PARAM) as PatientModel
+        val doctor = intent?.getSerializableExtra(DOCTOR_PARAM) as DoctorModel
 
         setSupportActionBar(toolbar)
         supportActionBar?.run {
@@ -38,7 +41,7 @@ class RecordsForPatientActivity : AppCompatActivity() {
         if (supportFragmentManager.findFragmentById(R.id.fragment_container) == null) {
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.fragment_container, EventsFragment.newInstance(patient, null, true))
+                .replace(R.id.fragment_container, EventsFragment.newInstance(patient, doctor, false, true))
                 .commit()
         }
     }
@@ -51,14 +54,17 @@ class RecordsForPatientActivity : AppCompatActivity() {
     class IntentBuilder(context: Context) : CheckedIntentBuilder(context) {
 
         private var patient: PatientModel? = null
+        private var doctor: DoctorModel? = null
 
         fun patient(patient: PatientModel) = apply { this.patient = patient }
+        fun doctor(doctor: DoctorModel) = apply { this.doctor = doctor }
 
-        override fun areParamsValid() = patient != null
+        override fun areParamsValid() = patient != null && doctor != null
 
         override fun get(): Intent =
-            Intent(context, RecordsForPatientActivity::class.java)
+            Intent(context, RecordsForDoctorActivity::class.java)
                 .putExtra(PATIENT_PARAM, patient)
+                .putExtra(DOCTOR_PARAM, doctor)
 
     }
 
