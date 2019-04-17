@@ -1,6 +1,7 @@
 package com.edoctor.data.mapper
 
 import com.edoctor.data.entity.local.parameter.BodyParameterEntity
+import com.edoctor.data.entity.local.parameter.BodyParameterEntityType
 import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.entity.remote.model.record.*
 import com.edoctor.data.entity.presentation.BodyParameterType.*
@@ -148,6 +149,22 @@ object BodyParameterMapper {
             is BodyParameterType.Height -> BodyParameterTypeWrapper(BODY_PARAMETER_TYPE_HEIGHT)
             is BodyParameterType.Temperature -> BodyParameterTypeWrapper(BODY_PARAMETER_TYPE_TEMPERATURE)
             is BodyParameterType.Weight -> BodyParameterTypeWrapper(BODY_PARAMETER_TYPE_WEIGHT)
+        }
+    }
+
+    fun toEntityType(bodyParameterType: BodyParameterType): BodyParameterEntityType {
+        return when (bodyParameterType) {
+            is BodyParameterType.BloodOxygen -> BodyParameterEntityType(BODY_PARAMETER_TYPE_BLOOD_OXYGEN)
+            is BodyParameterType.BloodPressure -> BodyParameterEntityType(BODY_PARAMETER_TYPE_BLOOD_PRESSURE)
+            is BodyParameterType.BloodSugar -> BodyParameterEntityType(BODY_PARAMETER_TYPE_BLOOD_SUGAR)
+            is BodyParameterType.Custom -> BodyParameterEntityType(
+                BODY_PARAMETER_TYPE_CUSTOM,
+                bodyParameterType.name,
+                bodyParameterType.unit
+            )
+            is BodyParameterType.Height -> BodyParameterEntityType(BODY_PARAMETER_TYPE_HEIGHT)
+            is BodyParameterType.Temperature -> BodyParameterEntityType(BODY_PARAMETER_TYPE_TEMPERATURE)
+            is BodyParameterType.Weight -> BodyParameterEntityType(BODY_PARAMETER_TYPE_WEIGHT)
         }
     }
 

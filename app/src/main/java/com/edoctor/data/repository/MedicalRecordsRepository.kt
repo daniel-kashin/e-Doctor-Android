@@ -117,8 +117,10 @@ class MedicalRecordsRepository(
             .defer {
                 medicalEventsApi.addOrEditMedicalEventForPatient(MedicalEventMapper.toWrapperFromModel(event))
             }
-            .map { wrapper ->
+            .doOnSuccess { wrapper ->
                 medicalEventLocalStore.saveBlocking(MedicalEventMapper.toLocalFromWrapper(wrapper, patientUuid))
+            }
+            .map { wrapper ->
                 MedicalEventMapper.toModelFromWrapper(wrapper)
             }
 
@@ -135,11 +137,26 @@ class MedicalRecordsRepository(
 
     // region body parameters
 
-    fun getLatestBodyParametersInfoForPatient(): Single<LatestBodyParametersInfo> =
+    fun getLatestBodyParametersInfoForPatient(patientUuid: String): Single<LatestBodyParametersInfo> =
         parametersApi
             .getLatestParametersOfEachTypeForPatient()
-            .map {
-                it.bodyParameters.mapNotNull { wrapper -> toModelFromWrapper(wrapper) }
+            .doOnSuccess { result ->
+                bodyParameterLocalStore.saveBlocking(
+                    result.bodyParameters.map {
+                        BodyParameterMapper.toLocalFromWrapper(it, patientUuid)
+                    }
+                )
+            }
+            .map { result ->
+                result.bodyParameters.mapNotNull { toModelFromWrapper(it) }
+            }
+            .onErrorResumeNext {
+                bodyParameterLocalStore.getLatestParametersOfEachTypeForPatient(patientUuid)
+                    .map { latestParameters ->
+                        latestParameters.mapNotNull {
+                            BodyParameterMapper.toModelFromWrapper(BodyParameterMapper.toWrapperFromLocal(it))
+                        }
+                    }
             }
             .map {
                 val customTypes = it
@@ -164,14 +181,30 @@ class MedicalRecordsRepository(
             }
 
     fun getAllParametersOfTypeForPatient(
-        bodyParameterType: BodyParameterType
+        bodyParameterType: BodyParameterType,
+        patientUuid: String
     ): Single<List<BodyParameterModel>> =
         Single
             .defer {
                 parametersApi.getParametersForPatient(BodyParameterMapper.toWrapperType(bodyParameterType))
             }
+            .doOnSuccess { result ->
+                bodyParameterLocalStore.saveBlocking(
+                    result.bodyParameters.map {
+                        BodyParameterMapper.toLocalFromWrapper(it, patientUuid)
+                    }
+                )
+            }
             .map {
                 it.bodyParameters.mapNotNull { wrapper -> BodyParameterMapper.toModelFromWrapper(wrapper) }
+            }
+            .onErrorResumeNext {
+                bodyParameterLocalStore.getParametersForPatient(patientUuid, BodyParameterMapper.toEntityType(bodyParameterType))
+                    .map { parameters ->
+                        parameters.mapNotNull {
+                            BodyParameterMapper.toModelFromWrapper(BodyParameterMapper.toWrapperFromLocal(it))
+                        }
+                    }
             }
 
     fun getAllParametersOfTypeForDoctor(
@@ -186,10 +219,13 @@ class MedicalRecordsRepository(
                 it.bodyParameters.mapNotNull { wrapper -> BodyParameterMapper.toModelFromWrapper(wrapper) }
             }
 
-    fun addOrEditParameterPatient(parameter: BodyParameterModel): Single<BodyParameterModel> =
+    fun addOrEditParameterPatient(parameter: BodyParameterModel, patientUuid: String): Single<BodyParameterModel> =
         Single
             .defer {
                 parametersApi.addOrEditParameterForPatient(BodyParameterMapper.toWrapperFromModel(parameter))
+            }
+            .doOnSuccess {
+                bodyParameterLocalStore.saveBlocking(BodyParameterMapper.toLocalFromWrapper(it, patientUuid))
             }
             .map { BodyParameterMapper.toModelFromWrapper(it) }
 
@@ -197,6 +233,9 @@ class MedicalRecordsRepository(
         Completable
             .defer {
                 parametersApi.deleteParameterForPatient(BodyParameterMapper.toWrapperFromModel(parameter))
+            }
+            .doOnComplete {
+                bodyParameterLocalStore.deleteById(parameter.uuid)
             }
 
     // endregion

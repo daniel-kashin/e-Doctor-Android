@@ -52,9 +52,7 @@ class MessagesLocalStore(storIOSQLite: StorIOSQLite) : BaseLocalStore<MessageEnt
                 .distinctBy { it.senderUuid.takeIf { it != userUuid } ?: it.recipientUuid }
                 .mapNotNull { conversation ->
                     val recipientUuid = conversation.senderUuid.takeIf { it != userUuid } ?: conversation.recipientUuid
-                    val messagesInConversation = getConversationMessagesBlocking(-1, userUuid, recipientUuid)
-                    val latestMessage = messagesInConversation.maxBy { it.timestamp }
-                    latestMessage
+                    getConversationMessagesBlocking(-1, userUuid, recipientUuid).maxBy { it.timestamp }
                 }
         }
 

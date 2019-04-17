@@ -37,7 +37,7 @@ class ParametersPresenter @Inject constructor(
         }
 
         val getParametersSingle = if (currentUserIsPatient) {
-            medicalRecordsRepository.getLatestBodyParametersInfoForPatient()
+            medicalRecordsRepository.getLatestBodyParametersInfoForPatient(patient.uuid)
         } else {
             medicalRecordsRepository.getLatestBodyParametersInfoForDoctor(patient.uuid)
         }
@@ -54,7 +54,7 @@ class ParametersPresenter @Inject constructor(
 
     fun addOrEditParameter(parameter: BodyParameterModel) {
         if (currentUserIsPatient) {
-            disposables += medicalRecordsRepository.addOrEditParameterPatient(parameter)
+            disposables += medicalRecordsRepository.addOrEditParameterPatient(parameter, patient.uuid)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
