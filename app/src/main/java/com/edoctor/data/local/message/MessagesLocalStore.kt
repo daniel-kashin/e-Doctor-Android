@@ -1,10 +1,11 @@
 package com.edoctor.data.local.message
 
 import com.edoctor.data.entity.local.message.MessageEntity
+import com.edoctor.data.entity.local.message.MessageEntityContract
 import com.edoctor.data.local.base.BaseLocalStore
-import com.edoctor.data.local.message.MessageEntityContract.COLUMN_RECIPIENT_UUID
-import com.edoctor.data.local.message.MessageEntityContract.COLUMN_SENDER_UUID
-import com.edoctor.data.local.message.MessageEntityContract.COLUMN_TIMESTAMP
+import com.edoctor.data.entity.local.message.MessageEntityContract.COLUMN_RECIPIENT_UUID
+import com.edoctor.data.entity.local.message.MessageEntityContract.COLUMN_SENDER_UUID
+import com.edoctor.data.entity.local.message.MessageEntityContract.COLUMN_TIMESTAMP
 import com.pushtorefresh.storio3.sqlite.StorIOSQLite
 import com.pushtorefresh.storio3.sqlite.queries.Query
 import io.reactivex.Single

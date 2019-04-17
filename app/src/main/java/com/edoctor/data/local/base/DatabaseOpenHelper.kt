@@ -3,7 +3,7 @@ package com.edoctor.data.local.base
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.edoctor.data.local.message.MessageEntityContract
+import com.edoctor.data.entity.local.message.MessageEntityContract
 
 class DatabaseOpenHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 

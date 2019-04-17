@@ -1,4 +1,4 @@
-package com.edoctor.data.local.message
+package com.edoctor.data.entity.local.message
 
 object MessageEntityContract {
     const val TABLE_NAME = "messages"

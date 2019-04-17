@@ -1,6 +1,5 @@
 package com.edoctor.data.entity.local.message
 
-import com.edoctor.data.local.message.MessageEntityContract
 import com.pushtorefresh.storio3.sqlite.annotations.StorIOSQLiteColumn
 import com.pushtorefresh.storio3.sqlite.annotations.StorIOSQLiteCreator
 import com.pushtorefresh.storio3.sqlite.annotations.StorIOSQLiteType
