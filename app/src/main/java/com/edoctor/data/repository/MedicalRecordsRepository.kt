@@ -29,13 +29,29 @@ class MedicalRecordsRepository(
 
     // region requested events
 
-    fun getRequestedMedicalEventsForPatient(doctorUuid: String): Single<MedicalEventsInfo> =
+    fun getRequestedMedicalEventsForPatient(doctorUuid: String, patientUuid: String): Single<MedicalEventsInfo> =
         requestedEventsRestApi.getRequestedEventsForPatient(doctorUuid)
-            .map {
-                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.toModelFromWrapper(wrapper) }
+            .doOnSuccess { result ->
+                medicalEventLocalStore.saveBlocking(
+                    result.medicalEvents.map { MedicalEventMapper.toLocalFromWrapper(it, patientUuid) }
+                )
             }
-            .map {
-                MedicalEventsInfo(it, emptyList())
+            .map { result ->
+                MedicalEventsInfo(
+                    result.medicalEvents.mapNotNull { MedicalEventMapper.toModelFromWrapper(it) },
+                    emptyList()
+                )
+            }
+            .onErrorResumeNext {
+                medicalEventLocalStore.getRequestedEventsForPatient(doctorUuid, patientUuid)
+                    .map { localEvents ->
+                        MedicalEventsInfo(
+                            localEvents.mapNotNull {
+                                MedicalEventMapper.toModelFromWrapper(MedicalEventMapper.toWrapperFromLocal(it))
+                            },
+                            emptyList()
+                        )
+                    }
             }
 
     fun getRequestedMedicalEventsForDoctor(patientUuid: String): Single<MedicalEventsInfo> =
@@ -50,7 +66,10 @@ class MedicalRecordsRepository(
     fun addMedicalEventForDoctor(event: MedicalEventModel, patientUuid: String): Single<MedicalEventModel> =
         Single
             .defer {
-                requestedEventsRestApi.addMedicalEventForDoctor(MedicalEventMapper.toWrapperFromModel(event), patientUuid)
+                requestedEventsRestApi.addMedicalEventForDoctor(
+                    MedicalEventMapper.toWrapperFromModel(event),
+                    patientUuid
+                )
             }
             .map { MedicalEventMapper.toModelFromWrapper(it) }
 
@@ -58,14 +77,29 @@ class MedicalRecordsRepository(
 
     // region events
 
-    fun getMedicalEventsForPatient(): Single<MedicalEventsInfo> =
-        medicalEventsApi
-            .getEventsForPatient()
-            .map {
-                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.toModelFromWrapper(wrapper) }
+    fun getMedicalEventsForPatient(patientUuid: String): Single<MedicalEventsInfo> =
+        medicalEventsApi.getEventsForPatient()
+            .doOnSuccess { result ->
+                medicalEventLocalStore.saveBlocking(
+                    result.medicalEvents.map { MedicalEventMapper.toLocalFromWrapper(it, patientUuid) }
+                )
             }
-            .map {
-                MedicalEventsInfo(it, ALL_MEDICAL_EVENT_TYPES)
+            .map { result ->
+                MedicalEventsInfo(
+                    result.medicalEvents.mapNotNull { MedicalEventMapper.toModelFromWrapper(it) },
+                    ALL_MEDICAL_EVENT_TYPES
+                )
+            }
+            .onErrorResumeNext {
+                medicalEventLocalStore.getEventsForPatient(patientUuid)
+                    .map { localEvents ->
+                        MedicalEventsInfo(
+                            localEvents.mapNotNull {
+                                MedicalEventMapper.toModelFromWrapper(MedicalEventMapper.toWrapperFromLocal(it))
+                            },
+                            emptyList()
+                        )
+                    }
             }
 
     fun getMedicalEventsForDoctor(patientUuid: String): Single<MedicalEventsInfo> =
@@ -78,17 +112,23 @@ class MedicalRecordsRepository(
                 MedicalEventsInfo(it, emptyList())
             }
 
-    fun addOrEditEventForPatient(event: MedicalEventModel): Single<MedicalEventModel> =
+    fun addOrEditEventForPatient(event: MedicalEventModel, patientUuid: String): Single<MedicalEventModel> =
         Single
             .defer {
                 medicalEventsApi.addOrEditMedicalEventForPatient(MedicalEventMapper.toWrapperFromModel(event))
             }
-            .map { MedicalEventMapper.toModelFromWrapper(it) }
+            .map { wrapper ->
+                medicalEventLocalStore.saveBlocking(MedicalEventMapper.toLocalFromWrapper(wrapper, patientUuid))
+                MedicalEventMapper.toModelFromWrapper(wrapper)
+            }
 
     fun deleteEventForPatient(event: MedicalEventModel): Completable =
         Completable
             .defer {
                 medicalEventsApi.deleteMedicalEventForPatient(MedicalEventMapper.toWrapperFromModel(event))
+            }
+            .doOnComplete {
+                medicalEventLocalStore.deleteById(event.uuid)
             }
 
     // endregion
