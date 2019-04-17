@@ -1,4 +1,4 @@
-package com.edoctor.data.entity.local
+package com.edoctor.data.entity.local.message
 
 import com.edoctor.data.local.message.MessageEntityContract
 import com.pushtorefresh.storio3.sqlite.annotations.StorIOSQLiteColumn

@@ -1,6 +1,6 @@
 package com.edoctor.data.local.message
 
-import com.edoctor.data.entity.local.MessageEntity
+import com.edoctor.data.entity.local.message.MessageEntity
 import com.edoctor.data.local.base.BaseLocalStore
 import com.edoctor.data.local.message.MessageEntityContract.COLUMN_RECIPIENT_UUID
 import com.edoctor.data.local.message.MessageEntityContract.COLUMN_SENDER_UUID

@@ -1,7 +1,6 @@
 package com.edoctor.data.entity.local.message
 
 import android.content.ContentValues
-import com.edoctor.data.entity.local.MessageEntity
 import com.pushtorefresh.storio3.sqlite.operations.put.DefaultPutResolver
 import com.pushtorefresh.storio3.sqlite.queries.InsertQuery
 import com.pushtorefresh.storio3.sqlite.queries.UpdateQuery

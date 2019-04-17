@@ -1,7 +1,6 @@
 package com.edoctor.data.entity.local.message
 
 import android.database.Cursor
-import com.edoctor.data.entity.local.MessageEntity
 import com.pushtorefresh.storio3.sqlite.StorIOSQLite
 import com.pushtorefresh.storio3.sqlite.operations.get.DefaultGetResolver
 

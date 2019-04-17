@@ -1,7 +1,7 @@
 package com.edoctor.data.injection
 
 import android.content.Context
-import com.edoctor.data.entity.local.MessageEntity
+import com.edoctor.data.entity.local.message.MessageEntity
 import com.edoctor.data.entity.local.message.MessageEntitySQLiteTypeMapping
 import com.edoctor.data.local.base.DatabaseOpenHelper
 import com.edoctor.data.local.message.MessagesLocalStore

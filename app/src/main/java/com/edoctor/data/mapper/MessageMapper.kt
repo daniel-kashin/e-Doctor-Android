@@ -2,7 +2,7 @@ package com.edoctor.data.mapper
 
 import android.content.Context
 import com.edoctor.R
-import com.edoctor.data.entity.local.MessageEntity
+import com.edoctor.data.entity.local.message.MessageEntity
 import com.edoctor.data.entity.presentation.*
 import com.edoctor.data.entity.presentation.CallActionRequest.CallAction
 import com.edoctor.data.entity.presentation.CallActionRequest.CallAction.*
