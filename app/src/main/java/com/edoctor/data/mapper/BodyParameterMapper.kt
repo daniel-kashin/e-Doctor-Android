@@ -1,8 +1,10 @@
 package com.edoctor.data.mapper
 
+import com.edoctor.data.entity.local.parameter.BodyParameterEntity
 import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.entity.remote.model.record.*
 import com.edoctor.data.entity.presentation.BodyParameterType.*
+import com.edoctor.data.entity.remote.model.user.PatientModel
 
 import com.edoctor.data.entity.remote.request.BodyParameterTypeWrapper
 import com.edoctor.data.mapper.MedicalRecordTypeMapper.BODY_PARAMETER_TYPE_BLOOD_OXYGEN
@@ -15,7 +17,33 @@ import com.edoctor.data.mapper.MedicalRecordTypeMapper.BODY_PARAMETER_TYPE_WEIGH
 
 object BodyParameterMapper {
 
-    fun toWrapperModel(bodyParameterModel: BodyParameterModel): BodyParameterWrapper = bodyParameterModel.let {
+    fun toWrapperFromLocal(bodyParameterEntity: BodyParameterEntity): BodyParameterWrapper = bodyParameterEntity.run {
+        BodyParameterWrapper(
+            uuid = uuid,
+            measurementTimestamp = measurementTimestamp,
+            type = type,
+            firstValue = firstValue,
+            secondValue = secondValue,
+            customModelName = customModelName,
+            customModelUnit = customModelUnit
+        )
+    }
+
+    fun toLocalFromWrapper(bodyParameterWrapper: BodyParameterWrapper, patientUuid: String): BodyParameterEntity =
+        bodyParameterWrapper.run {
+            BodyParameterEntity(
+                uuid = uuid,
+                measurementTimestamp = measurementTimestamp,
+                type = type,
+                patientUuid = patientUuid,
+                firstValue = firstValue,
+                secondValue = secondValue,
+                customModelName = customModelName,
+                customModelUnit = customModelUnit
+            )
+        }
+
+    fun toWrapperFromModel(bodyParameterModel: BodyParameterModel): BodyParameterWrapper = bodyParameterModel.let {
         when (it) {
             is HeightModel -> {
                 BodyParameterWrapper(it.uuid, it.timestamp, BODY_PARAMETER_TYPE_HEIGHT, it.centimeters)
@@ -54,7 +82,7 @@ object BodyParameterMapper {
         }
     }
 
-    fun fromWrapperModel(bodyParameterWrapper: BodyParameterWrapper): BodyParameterModel? = bodyParameterWrapper.let {
+    fun toModelFromWrapper(bodyParameterWrapper: BodyParameterWrapper): BodyParameterModel? = bodyParameterWrapper.let {
         when (it.type) {
             BODY_PARAMETER_TYPE_HEIGHT -> {
                 HeightModel(it.uuid, it.measurementTimestamp, it.firstValue)
@@ -112,7 +140,11 @@ object BodyParameterMapper {
             is BodyParameterType.BloodOxygen -> BodyParameterTypeWrapper(BODY_PARAMETER_TYPE_BLOOD_OXYGEN)
             is BodyParameterType.BloodPressure -> BodyParameterTypeWrapper(BODY_PARAMETER_TYPE_BLOOD_PRESSURE)
             is BodyParameterType.BloodSugar -> BodyParameterTypeWrapper(BODY_PARAMETER_TYPE_BLOOD_SUGAR)
-            is BodyParameterType.Custom -> BodyParameterTypeWrapper(BODY_PARAMETER_TYPE_CUSTOM, bodyParameterType.name, bodyParameterType.unit)
+            is BodyParameterType.Custom -> BodyParameterTypeWrapper(
+                BODY_PARAMETER_TYPE_CUSTOM,
+                bodyParameterType.name,
+                bodyParameterType.unit
+            )
             is BodyParameterType.Height -> BodyParameterTypeWrapper(BODY_PARAMETER_TYPE_HEIGHT)
             is BodyParameterType.Temperature -> BodyParameterTypeWrapper(BODY_PARAMETER_TYPE_TEMPERATURE)
             is BodyParameterType.Weight -> BodyParameterTypeWrapper(BODY_PARAMETER_TYPE_WEIGHT)

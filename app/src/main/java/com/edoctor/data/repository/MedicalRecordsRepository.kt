@@ -8,9 +8,8 @@ import com.edoctor.data.entity.presentation.BodyParameterType.Companion.NON_CUST
 import com.edoctor.data.entity.presentation.BodyParameterType.Custom.Companion.NEW
 import com.edoctor.data.entity.presentation.MedicalEventType.Companion.ALL_MEDICAL_EVENT_TYPES
 import com.edoctor.data.entity.presentation.MedicalEventsInfo
-import com.edoctor.data.entity.remote.response.MedicalEventsResponse
 import com.edoctor.data.mapper.BodyParameterMapper
-import com.edoctor.data.mapper.BodyParameterMapper.fromWrapperModel
+import com.edoctor.data.mapper.BodyParameterMapper.toModelFromWrapper
 import com.edoctor.data.mapper.MedicalEventMapper
 import com.edoctor.data.remote.rest.MedicalEventsRestApi
 import com.edoctor.data.remote.rest.ParametersRestApi
@@ -29,7 +28,7 @@ class MedicalRecordsRepository(
     fun getRequestedMedicalEventsForPatient(doctorUuid: String): Single<MedicalEventsInfo> =
         requestedEventsRestApi.getRequestedEventsForPatient(doctorUuid)
             .map {
-                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.fromWrapper(wrapper) }
+                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.toModelFromWrapper(wrapper) }
             }
             .map {
                 MedicalEventsInfo(it, emptyList())
@@ -38,7 +37,7 @@ class MedicalRecordsRepository(
     fun getRequestedMedicalEventsForDoctor(patientUuid: String): Single<MedicalEventsInfo> =
         requestedEventsRestApi.getRequestedEventsForDoctor(patientUuid)
             .map {
-                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.fromWrapper(wrapper) }
+                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.toModelFromWrapper(wrapper) }
             }
             .map {
                 MedicalEventsInfo(it, ALL_MEDICAL_EVENT_TYPES)
@@ -47,9 +46,9 @@ class MedicalRecordsRepository(
     fun addMedicalEventForDoctor(event: MedicalEventModel, patientUuid: String): Single<MedicalEventModel> =
         Single
             .defer {
-                requestedEventsRestApi.addMedicalEventForDoctor(MedicalEventMapper.toWrapper(event), patientUuid)
+                requestedEventsRestApi.addMedicalEventForDoctor(MedicalEventMapper.toWrapperFromModel(event), patientUuid)
             }
-            .map { MedicalEventMapper.fromWrapper(it) }
+            .map { MedicalEventMapper.toModelFromWrapper(it) }
 
     // endregion
 
@@ -59,7 +58,7 @@ class MedicalRecordsRepository(
         medicalEventsApi
             .getEventsForPatient()
             .map {
-                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.fromWrapper(wrapper) }
+                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.toModelFromWrapper(wrapper) }
             }
             .map {
                 MedicalEventsInfo(it, ALL_MEDICAL_EVENT_TYPES)
@@ -69,7 +68,7 @@ class MedicalRecordsRepository(
         medicalEventsApi
             .getEventsForDoctor(patientUuid)
             .map {
-                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.fromWrapper(wrapper) }
+                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.toModelFromWrapper(wrapper) }
             }
             .map {
                 MedicalEventsInfo(it, emptyList())
@@ -78,14 +77,14 @@ class MedicalRecordsRepository(
     fun addOrEditEventForPatient(event: MedicalEventModel): Single<MedicalEventModel> =
         Single
             .defer {
-                medicalEventsApi.addOrEditMedicalEventForPatient(MedicalEventMapper.toWrapper(event))
+                medicalEventsApi.addOrEditMedicalEventForPatient(MedicalEventMapper.toWrapperFromModel(event))
             }
-            .map { MedicalEventMapper.fromWrapper(it) }
+            .map { MedicalEventMapper.toModelFromWrapper(it) }
 
     fun deleteEventForPatient(event: MedicalEventModel): Completable =
         Completable
             .defer {
-                medicalEventsApi.deleteMedicalEventForPatient(MedicalEventMapper.toWrapper(event))
+                medicalEventsApi.deleteMedicalEventForPatient(MedicalEventMapper.toWrapperFromModel(event))
             }
 
     // endregion
@@ -96,7 +95,7 @@ class MedicalRecordsRepository(
         parametersApi
             .getLatestParametersOfEachTypeForPatient()
             .map {
-                it.bodyParameters.mapNotNull { wrapper -> fromWrapperModel(wrapper) }
+                it.bodyParameters.mapNotNull { wrapper -> toModelFromWrapper(wrapper) }
             }
             .map {
                 val customTypes = it
@@ -114,7 +113,7 @@ class MedicalRecordsRepository(
         parametersApi
             .getLatestParametersOfEachTypeForDoctor(patientUuid)
             .map {
-                it.bodyParameters.mapNotNull { wrapper -> fromWrapperModel(wrapper) }
+                it.bodyParameters.mapNotNull { wrapper -> toModelFromWrapper(wrapper) }
             }
             .map {
                 LatestBodyParametersInfo(it, emptyList())
@@ -128,7 +127,7 @@ class MedicalRecordsRepository(
                 parametersApi.getParametersForPatient(BodyParameterMapper.toWrapperType(bodyParameterType))
             }
             .map {
-                it.bodyParameters.mapNotNull { wrapper -> BodyParameterMapper.fromWrapperModel(wrapper) }
+                it.bodyParameters.mapNotNull { wrapper -> BodyParameterMapper.toModelFromWrapper(wrapper) }
             }
 
     fun getAllParametersOfTypeForDoctor(
@@ -140,20 +139,20 @@ class MedicalRecordsRepository(
                 parametersApi.getParametersForDoctor(BodyParameterMapper.toWrapperType(bodyParameterType), patientUuid)
             }
             .map {
-                it.bodyParameters.mapNotNull { wrapper -> BodyParameterMapper.fromWrapperModel(wrapper) }
+                it.bodyParameters.mapNotNull { wrapper -> BodyParameterMapper.toModelFromWrapper(wrapper) }
             }
 
     fun addOrEditParameterPatient(parameter: BodyParameterModel): Single<BodyParameterModel> =
         Single
             .defer {
-                parametersApi.addOrEditParameterForPatient(BodyParameterMapper.toWrapperModel(parameter))
+                parametersApi.addOrEditParameterForPatient(BodyParameterMapper.toWrapperFromModel(parameter))
             }
-            .map { BodyParameterMapper.fromWrapperModel(it) }
+            .map { BodyParameterMapper.toModelFromWrapper(it) }
 
     fun removeParameterForPatient(parameter: BodyParameterModel): Completable =
         Completable
             .defer {
-                parametersApi.deleteParameterForPatient(BodyParameterMapper.toWrapperModel(parameter))
+                parametersApi.deleteParameterForPatient(BodyParameterMapper.toWrapperFromModel(parameter))
             }
 
     // endregion
