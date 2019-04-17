@@ -8,6 +8,8 @@ import com.edoctor.data.entity.presentation.BodyParameterType.Companion.NON_CUST
 import com.edoctor.data.entity.presentation.BodyParameterType.Custom.Companion.NEW
 import com.edoctor.data.entity.presentation.MedicalEventType.Companion.ALL_MEDICAL_EVENT_TYPES
 import com.edoctor.data.entity.presentation.MedicalEventsInfo
+import com.edoctor.data.local.event.MedicalEventLocalStore
+import com.edoctor.data.local.parameter.BodyParameterLocalStore
 import com.edoctor.data.mapper.BodyParameterMapper
 import com.edoctor.data.mapper.BodyParameterMapper.toModelFromWrapper
 import com.edoctor.data.mapper.MedicalEventMapper
@@ -20,7 +22,9 @@ import io.reactivex.Single
 class MedicalRecordsRepository(
     private val parametersApi: ParametersRestApi,
     private val medicalEventsApi: MedicalEventsRestApi,
-    private val requestedEventsRestApi: RequestedEventsRestApi
+    private val requestedEventsRestApi: RequestedEventsRestApi,
+    private val bodyParameterLocalStore: BodyParameterLocalStore,
+    private val medicalEventLocalStore: MedicalEventLocalStore
 ) {
 
     // region requested events

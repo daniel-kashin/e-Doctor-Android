@@ -1,5 +1,7 @@
 package com.edoctor.data.injection
 
+import com.edoctor.data.local.event.MedicalEventLocalStore
+import com.edoctor.data.local.parameter.BodyParameterLocalStore
 import com.edoctor.data.remote.rest.MedicalEventsRestApi
 import com.edoctor.data.remote.rest.ParametersRestApi
 import com.edoctor.data.remote.rest.RequestedEventsRestApi
@@ -34,7 +36,15 @@ class MedicalRecordsModule {
     fun provideMedicalRecordsRepository(
         parametersRestApi: ParametersRestApi,
         medicalEventsRestApi: MedicalEventsRestApi,
-        requestedEventsRestApi: RequestedEventsRestApi
-    ) = MedicalRecordsRepository(parametersRestApi, medicalEventsRestApi, requestedEventsRestApi)
+        requestedEventsRestApi: RequestedEventsRestApi,
+        bodyParameterLocalStore: BodyParameterLocalStore,
+        medicalEventLocalStore: MedicalEventLocalStore
+    ) = MedicalRecordsRepository(
+        parametersRestApi,
+        medicalEventsRestApi,
+        requestedEventsRestApi,
+        bodyParameterLocalStore,
+        medicalEventLocalStore
+    )
 
 }

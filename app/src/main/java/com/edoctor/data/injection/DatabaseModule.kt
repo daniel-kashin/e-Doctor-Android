@@ -8,7 +8,9 @@ import com.edoctor.data.entity.local.message.MessageEntitySQLiteTypeMapping
 import com.edoctor.data.entity.local.parameter.BodyParameterEntity
 import com.edoctor.data.entity.local.parameter.BodyParameterEntitySQLiteTypeMapping
 import com.edoctor.data.local.base.DatabaseOpenHelper
+import com.edoctor.data.local.event.MedicalEventLocalStore
 import com.edoctor.data.local.message.MessagesLocalStore
+import com.edoctor.data.local.parameter.BodyParameterLocalStore
 import com.pushtorefresh.storio3.sqlite.StorIOSQLite
 import com.pushtorefresh.storio3.sqlite.impl.DefaultStorIOSQLite
 import dagger.Module
@@ -34,5 +36,17 @@ class DatabaseModule {
     internal fun provideMessageLocalStore(
         storIOSQLite: StorIOSQLite
     ): MessagesLocalStore = MessagesLocalStore(storIOSQLite)
+
+    @Provides
+    @Singleton
+    internal fun provideMedicalEventLocalStore(
+        storIOSQLite: StorIOSQLite
+    ): MedicalEventLocalStore = MedicalEventLocalStore(storIOSQLite)
+
+    @Provides
+    @Singleton
+    internal fun provideBodyParameterLocalStore(
+        storIOSQLite: StorIOSQLite
+    ): BodyParameterLocalStore = BodyParameterLocalStore(storIOSQLite)
 
 }
