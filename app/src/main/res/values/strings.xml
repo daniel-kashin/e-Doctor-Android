@@ -236,4 +236,6 @@
     <string name="connected">Connected</string>
 
     <string name="image">Image</string>
+
+    <string name="records_synchronization_error">Error while synchronizing records</string>
 </resources>

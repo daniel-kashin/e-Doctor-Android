@@ -1,5 +1,6 @@
 package com.edoctor.data.repository
 
+import com.edoctor.data.Preferences
 import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.entity.presentation.LatestBodyParametersInfo
 import com.edoctor.data.entity.remote.model.record.*
@@ -11,7 +12,9 @@ import com.edoctor.data.entity.presentation.MedicalEventsInfo
 import com.edoctor.data.local.event.MedicalEventLocalStore
 import com.edoctor.data.local.parameter.BodyParameterLocalStore
 import com.edoctor.data.mapper.BodyParameterMapper
+import com.edoctor.data.mapper.BodyParameterMapper.toLocalFromWrapper
 import com.edoctor.data.mapper.BodyParameterMapper.toModelFromWrapper
+import com.edoctor.data.mapper.BodyParameterMapper.toWrapperFromLocal
 import com.edoctor.data.mapper.MedicalEventMapper
 import com.edoctor.data.remote.rest.MedicalEventsRestApi
 import com.edoctor.data.remote.rest.ParametersRestApi
@@ -26,6 +29,8 @@ class MedicalRecordsRepository(
     private val bodyParameterLocalStore: BodyParameterLocalStore,
     private val medicalEventLocalStore: MedicalEventLocalStore
 ) {
+
+    private val synchronizeLock = Any()
 
     // region doctor
 
@@ -63,7 +68,7 @@ class MedicalRecordsRepository(
                 it.bodyParameters.mapNotNull { wrapper -> toModelFromWrapper(wrapper) }
             }
             .map {
-                LatestBodyParametersInfo(it, emptyList())
+                LatestBodyParametersInfo(it, emptyList(), false)
             }
 
     fun getAllParametersOfTypeForDoctor(
@@ -154,14 +159,17 @@ class MedicalRecordsRepository(
             }
 
     fun getLatestBodyParametersInfoForPatient(patientUuid: String): Single<LatestBodyParametersInfo> =
-        bodyParameterLocalStore
-            .getLatestParametersOfEachTypeForPatient(patientUuid)
-            .map { latestParameters ->
-                latestParameters.mapNotNull {
-                    BodyParameterMapper.toModelFromWrapper(BodyParameterMapper.toWrapperFromLocal(it))
-                }
+        synchronizeBodyParameters(patientUuid)
+            .flatMap { isSynchronized ->
+                bodyParameterLocalStore.getLatestParametersOfEachTypeForPatient(patientUuid)
+                    .map {
+                        it.mapNotNull {
+                            BodyParameterMapper.toModelFromWrapper(BodyParameterMapper.toWrapperFromLocal(it))
+                        }
+                    }
+                    .map { it to isSynchronized }
             }
-            .map { latestParameters ->
+            .map { (latestParameters, isSynchronized) ->
                 val customTypes = latestParameters
                     .filterIsInstance<CustomBodyParameterModel>()
                     .map { Custom(it.name, it.unit) }
@@ -170,7 +178,7 @@ class MedicalRecordsRepository(
 
                 val availableTypes = customTypes + NON_CUSTOM_BODY_PARAMETER_TYPES + NEW
 
-                LatestBodyParametersInfo(latestParameters, availableTypes)
+                LatestBodyParametersInfo(latestParameters, availableTypes, isSynchronized)
             }
 
     fun getAllParametersOfTypeForPatient(
@@ -199,5 +207,33 @@ class MedicalRecordsRepository(
         bodyParameterLocalStore.markAsDeleted(parameter.uuid)
 
 // endregion
+
+    private fun synchronizeBodyParameters(patientUuid: String): Single<Boolean> = synchronized(synchronizeLock) {
+        Single
+            .defer {
+                val lastSynchronizeTimestamp = Preferences.lastSynchronizeTimestamp ?: -1
+
+                bodyParameterLocalStore
+                    .getParametersToSynchronize(lastSynchronizeTimestamp, patientUuid)
+                    .map { it to lastSynchronizeTimestamp }
+            }
+            .flatMap { (parametersToSynchronize, lastSynchronizeTimestamp) ->
+                parametersApi.synchronizeParametersForPatient(
+                    SynchronizeBodyParametersModel(
+                        parametersToSynchronize.map { toWrapperFromLocal(it) },
+                        lastSynchronizeTimestamp
+                    )
+                )
+            }
+            .doOnSuccess { synchronizeBodyParametersModel ->
+                bodyParameterLocalStore
+                    .saveBlocking(
+                        synchronizeBodyParametersModel.bodyParameters.map { toLocalFromWrapper(it, patientUuid) }
+                    )
+                Preferences.lastSynchronizeTimestamp = synchronizeBodyParametersModel.synchronizeTimestamp
+            }
+            .map { true }
+            .onErrorReturnItem(false)
+    }
 
 }

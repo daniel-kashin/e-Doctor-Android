@@ -8,6 +8,7 @@ import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUM
 import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUMN_CUSTOM_MODEL_NAME
 import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUMN_IS_DELETED
 import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUMN_PATIENT_UUID
+import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUMN_UPDATE_TIMESTAMP
 import com.edoctor.data.entity.local.parameter.BodyParameterEntityType
 import com.edoctor.data.local.base.BaseLocalStore
 import com.edoctor.utils.currentUnixTime
@@ -36,7 +37,7 @@ class BodyParameterLocalStore(storIOSQLite: StorIOSQLite) : BaseLocalStore<BodyP
         } else {
             Query.builder()
                 .table(tableName)
-                .where("$COLUMN_PATIENT_UUID = ? AND $COLUMN_TYPE = ?")
+                .where("$COLUMN_PATIENT_UUID = ? AND $COLUMN_TYPE = ? AND $COLUMN_IS_DELETED = 0")
                 .whereArgs(patientUuid, type.type)
                 .build()
         }
@@ -77,5 +78,16 @@ class BodyParameterLocalStore(storIOSQLite: StorIOSQLite) : BaseLocalStore<BodyP
             }
         }
 
+    fun getParametersToSynchronize(
+        lastSynchronizeTimestamp: Long,
+        patientUuid: String
+    ): Single<List<BodyParameterEntity>> =
+        getAllByQuery(
+            Query.builder()
+                .table(tableName)
+                .where("$COLUMN_PATIENT_UUID = ? AND $COLUMN_UPDATE_TIMESTAMP > ?")
+                .whereArgs(patientUuid, lastSynchronizeTimestamp)
+                .build()
+        )
 
 }
