@@ -13,8 +13,8 @@ data class BodyParameterEntity @StorIOSQLiteCreator constructor(
     @StorIOSQLiteColumn(name = BodyParameterEntityContract.COLUMN_TYPE)
     val type: Int,
 
-    @StorIOSQLiteColumn(name = BodyParameterEntityContract.COLUMN_UPDATE_TIMESTAMP)
-    var updateTimestamp: Long,
+    @StorIOSQLiteColumn(name = BodyParameterEntityContract.COLUMN_IS_CHANGED_LOCALLY)
+    val isChangedLocally: Int,
 
     @StorIOSQLiteColumn(name = BodyParameterEntityContract.COLUMN_IS_DELETED)
     var isDeleted: Int,

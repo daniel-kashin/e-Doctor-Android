@@ -3,7 +3,6 @@ package com.edoctor.data.entity.remote.model.record
 data class BodyParameterWrapper(
     val uuid: String,
     val measurementTimestamp: Long,
-    val updateTimestamp: Long,
     val isDeleted: Boolean,
     val type: Int,
     val firstValue: Double,

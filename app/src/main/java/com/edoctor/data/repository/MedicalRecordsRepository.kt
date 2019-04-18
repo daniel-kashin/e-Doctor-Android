@@ -199,7 +199,7 @@ class MedicalRecordsRepository(
     fun addOrEditParameterForPatient(parameter: BodyParameterModel, patientUuid: String): Single<BodyParameterModel> =
         bodyParameterLocalStore
             .save(
-                BodyParameterMapper.toLocalFromWrapper(BodyParameterMapper.toWrapperFromModel(parameter), patientUuid)
+                BodyParameterMapper.toLocalFromWrapper(BodyParameterMapper.toWrapperFromModel(parameter), patientUuid, true)
             )
             .map { BodyParameterMapper.toModelFromWrapper(BodyParameterMapper.toWrapperFromLocal(it)) }
 
@@ -214,7 +214,7 @@ class MedicalRecordsRepository(
                 val lastSynchronizeTimestamp = Preferences.lastSynchronizeTimestamp ?: -1
 
                 bodyParameterLocalStore
-                    .getParametersToSynchronize(lastSynchronizeTimestamp, patientUuid)
+                    .getParametersToSynchronize(patientUuid)
                     .map { it to lastSynchronizeTimestamp }
             }
             .flatMap { (parametersToSynchronize, lastSynchronizeTimestamp) ->
@@ -228,7 +228,7 @@ class MedicalRecordsRepository(
             .doOnSuccess { synchronizeBodyParametersModel ->
                 bodyParameterLocalStore
                     .saveBlocking(
-                        synchronizeBodyParametersModel.bodyParameters.map { toLocalFromWrapper(it, patientUuid) }
+                        synchronizeBodyParametersModel.bodyParameters.map { toLocalFromWrapper(it, patientUuid, false) }
                     )
                 Preferences.lastSynchronizeTimestamp = synchronizeBodyParametersModel.synchronizeTimestamp
             }

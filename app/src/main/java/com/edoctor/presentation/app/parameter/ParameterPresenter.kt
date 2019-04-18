@@ -16,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class ParameterPresenter @Inject constructor(
-    val medicalRecordsRepository: MedicalRecordsRepository,
+    private val medicalRecordsRepository: MedicalRecordsRepository,
     @Named(ApplicationModule.MAIN_THREAD_SCHEDULER)
     private val observeScheduler: Scheduler,
     @Named(ApplicationModule.IO_THREAD_SCHEDULER)

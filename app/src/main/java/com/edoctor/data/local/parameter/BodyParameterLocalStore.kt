@@ -6,12 +6,11 @@ import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.TABLE
 import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUMN_UUID
 import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUMN_CUSTOM_MODEL_UNIT
 import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUMN_CUSTOM_MODEL_NAME
+import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUMN_IS_CHANGED_LOCALLY
 import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUMN_IS_DELETED
 import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUMN_PATIENT_UUID
-import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract.COLUMN_UPDATE_TIMESTAMP
 import com.edoctor.data.entity.local.parameter.BodyParameterEntityType
 import com.edoctor.data.local.base.BaseLocalStore
-import com.edoctor.utils.currentUnixTime
 import com.pushtorefresh.storio3.sqlite.StorIOSQLite
 import com.pushtorefresh.storio3.sqlite.queries.Query
 import io.reactivex.Completable
@@ -72,21 +71,20 @@ class BodyParameterLocalStore(storIOSQLite: StorIOSQLite) : BaseLocalStore<BodyP
     fun markAsDeleted(uuid: String): Completable =
         getById(uuid).flatMapCompletable { optional ->
             if (optional.isPresent) {
-                save(optional.get().copy(updateTimestamp = currentUnixTime(), isDeleted = 1)).ignoreElement()
+                save(optional.get().copy(isChangedLocally = 1, isDeleted = 1)).ignoreElement()
             } else {
                 Completable.complete()
             }
         }
 
     fun getParametersToSynchronize(
-        lastSynchronizeTimestamp: Long,
         patientUuid: String
     ): Single<List<BodyParameterEntity>> =
         getAllByQuery(
             Query.builder()
                 .table(tableName)
-                .where("$COLUMN_PATIENT_UUID = ? AND $COLUMN_UPDATE_TIMESTAMP > ?")
-                .whereArgs(patientUuid, lastSynchronizeTimestamp)
+                .where("$COLUMN_PATIENT_UUID = ? AND $COLUMN_IS_CHANGED_LOCALLY = 1")
+                .whereArgs(patientUuid)
                 .build()
         )
 

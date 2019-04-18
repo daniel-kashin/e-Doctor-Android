@@ -37,7 +37,7 @@ class BodyParameterEntityStorIOSQLitePutResolver : DefaultPutResolver<BodyParame
 
         contentValues.put("uuid", `object`.uuid)
         contentValues.put("type", `object`.type)
-        contentValues.put("update_timestamp", `object`.updateTimestamp)
+        contentValues.put("is_changed_locally", `object`.isChangedLocally)
         contentValues.put("is_deleted", `object`.isDeleted)
         contentValues.put("measurement_timestamp", `object`.measurementTimestamp)
         contentValues.put("patient_uuid", `object`.patientUuid)
