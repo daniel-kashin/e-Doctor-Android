@@ -1,5 +1,6 @@
 package com.edoctor.data.session
 
+import com.edoctor.data.Preferences
 import com.edoctor.data.entity.remote.model.user.UserModel
 import com.edoctor.data.local.base.DatabaseOpenHelper
 import com.edoctor.data.mapper.UserMapper.unwrapResponse
@@ -75,7 +76,10 @@ class SessionManager @Inject constructor(
         } else {
             Completable.fromAction { isSessionClosingInProgress.set(true) }
                 .andThen(sessionStorage.remove())
-                .doOnComplete { databaseOpenHelper.recreateTables() }
+                .doOnComplete {
+                    databaseOpenHelper.recreateTables()
+                    Preferences.clearUserData()
+                }
                 .onErrorComplete()
                 .doOnComplete {
                     if (sessionInfo != null) {
