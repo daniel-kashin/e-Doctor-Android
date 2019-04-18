@@ -12,33 +12,15 @@ import retrofit2.http.Query
 
 interface ParametersRestApi {
 
-    @POST("/parametersForPatient")
-    fun getParametersForPatient(
-        @Body type: BodyParameterTypeWrapper
-    ) : Single<BodyParametersResponse>
-
     @POST("/parametersForDoctor")
     fun getParametersForDoctor(
         @Body type: BodyParameterTypeWrapper,
         @Query("patientUuid") patientUuid: String
     ) : Single<BodyParametersResponse>
 
-    @GET("/latestParametersForPatient")
-    fun getLatestParametersOfEachTypeForPatient() : Single<BodyParametersResponse>
-
     @GET("/latestParametersForDoctor")
     fun getLatestParametersOfEachTypeForDoctor(
         @Query("patientUuid") patientUuid: String
     ): Single<BodyParametersResponse>
-
-    @POST("/addOrEditParameterForPatient")
-    fun addOrEditParameterForPatient(
-        @Body parameter: BodyParameterWrapper
-    ) : Single<BodyParameterWrapper>
-
-    @POST("/deleteParameterForPatient")
-    fun deleteParameterForPatient(
-        @Body parameter: BodyParameterWrapper
-    ) : Completable
 
 }
