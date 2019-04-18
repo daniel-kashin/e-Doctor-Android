@@ -33,10 +33,12 @@ class BodyParameterEntityStorIOSQLitePutResolver : DefaultPutResolver<BodyParame
      * {@inheritDoc}
      */
     public override fun mapToContentValues(`object`: BodyParameterEntity): ContentValues {
-        val contentValues = ContentValues(8)
+        val contentValues = ContentValues(10)
 
         contentValues.put("uuid", `object`.uuid)
         contentValues.put("type", `object`.type)
+        contentValues.put("update_timestamp", `object`.updateTimestamp)
+        contentValues.put("is_deleted", `object`.isDeleted)
         contentValues.put("measurement_timestamp", `object`.measurementTimestamp)
         contentValues.put("patient_uuid", `object`.patientUuid)
         contentValues.put("first_value", `object`.firstValue)

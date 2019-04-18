@@ -251,7 +251,7 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
                 val isRemoved = data?.getBooleanExtra(IS_REMOVED_PARAM, false) ?: false
                 if (parameter != null) {
                     if (isRemoved) {
-                        presenter.removeParameter(parameter)
+                        presenter.deleteParameter(parameter)
                     } else {
                         presenter.addOrEditParameter(parameter)
                     }

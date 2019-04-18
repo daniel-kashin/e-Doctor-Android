@@ -5,10 +5,8 @@ import com.edoctor.utils.AbstractPreferences
 
 object Preferences : AbstractPreferences("preferences") {
 
-    fun clearUserData() {
-
-    }
-
     var sessionInfo by SharedPreferenceNullableDelegate.create<SessionInfo>(name = "session_info")
+
+    var lastSynchronizeTimestamp by SharedPreferenceNullableDelegate.create<Long>(name = "last_synchronize_timestamp")
 
 }

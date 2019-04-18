@@ -18,6 +18,8 @@ class BodyParameterEntityStorIOSQLiteGetResolver : DefaultGetResolver<BodyParame
 
         val uuid = cursor.getString(cursor.getColumnIndex("uuid"))
         val type = cursor.getInt(cursor.getColumnIndex("type"))
+        val updateTimestamp = cursor.getLong(cursor.getColumnIndex("update_timestamp"))
+        val isDeleted = cursor.getInt(cursor.getColumnIndex("is_deleted"))
         val measurementTimestamp = cursor.getLong(cursor.getColumnIndex("measurement_timestamp"))
         val patientUuid = cursor.getString(cursor.getColumnIndex("patient_uuid"))
         val firstValue = cursor.getDouble(cursor.getColumnIndex("first_value"))
@@ -31,6 +33,8 @@ class BodyParameterEntityStorIOSQLiteGetResolver : DefaultGetResolver<BodyParame
         return BodyParameterEntity(
             uuid,
             type,
+            updateTimestamp,
+            isDeleted,
             measurementTimestamp,
             patientUuid,
             firstValue,
