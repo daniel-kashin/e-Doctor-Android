@@ -2,6 +2,8 @@ package com.edoctor.presentation.app.conversations
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -17,6 +19,8 @@ import com.edoctor.presentation.app.conversations.ConversationsPresenter.ViewSta
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.DialogsAdapter
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
+import com.edoctor.utils.hide
+import com.edoctor.utils.show
 import com.edoctor.utils.toast
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.dialogs.DialogsList
@@ -41,6 +45,7 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
 
     private lateinit var dialogsList: DialogsList
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var errorMessage: TextView
     private lateinit var dialogsAdapter: DialogsAdapter<Conversation>
 
     override fun init(applicationComponent: ApplicationComponent) {
@@ -78,13 +83,20 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         swipeRefreshLayout.setOnRefreshListener { presenter.onReloadConversations() }
         dialogsList = view.findViewById(R.id.dialogs_list)
+        errorMessage = view.findViewById(R.id.error_message)
         dialogsList.setAdapter(dialogsAdapter)
     }
 
     override fun render(viewState: ViewState) {
         swipeRefreshLayout.isRefreshing = viewState.isLoading
-        dialogsAdapter.setDialogs(viewState.conversations) {
+        dialogsAdapter.setDialogs(viewState.conversations.orEmpty()) {
             dialogsList.layoutManager?.scrollToPosition(0)
+        }
+        if (viewState.conversations?.isEmpty() == true) {
+            errorMessage.show()
+            errorMessage.setText(R.string.empty_conversations)
+        } else {
+            errorMessage.hide()
         }
     }
 

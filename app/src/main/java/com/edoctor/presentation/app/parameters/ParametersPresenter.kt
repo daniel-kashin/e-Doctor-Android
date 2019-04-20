@@ -6,10 +6,13 @@ import com.edoctor.data.entity.remote.model.record.BodyParameterModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalRecordsRepository
+import com.edoctor.presentation.app.events.EventsPresenter
 import com.edoctor.presentation.app.parameters.ParametersPresenter.Event
 import com.edoctor.presentation.app.parameters.ParametersPresenter.ViewState
 import com.edoctor.presentation.architecture.presenter.Presenter
+import com.edoctor.utils.SessionExceptionHelper.isSessionException
 import com.edoctor.utils.disposableDelegate
+import com.edoctor.utils.isNoNetworkError
 import com.edoctor.utils.nothing
 import com.edoctor.utils.plusAssign
 import io.reactivex.Scheduler
@@ -40,11 +43,13 @@ class ParametersPresenter @Inject constructor(
                         emptyList(),
                         BodyParameterType.NON_CUSTOM_BODY_PARAMETER_TYPES,
                         false
-                    )
+                    ),
+                    true,
+                    false
                 )
             )
         } else {
-            setViewState(ViewState(LatestBodyParametersInfo(emptyList(), emptyList(), false)))
+            setViewState(ViewState(LatestBodyParametersInfo(emptyList(), emptyList(), false), true, false))
         }
     }
 
@@ -56,15 +61,20 @@ class ParametersPresenter @Inject constructor(
         }
 
         updateDisposable = getParametersSingle
+            .doOnSubscribe { setViewState { copy(isLoading = true) } }
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
                 if (currentUserIsPatient && !it.isSynchronized) {
                     sendEvent(Event.ShowNotSynchronizedEvent)
                 }
-                setViewState { copy(latestBodyParametersInfo = it) }
+                setViewState { copy(latestBodyParametersInfo = it, wasLoaded = true, isLoading = false) }
             }, {
-                sendEvent(Event.ShowUnhandledErrorEvent)
+                when {
+                    it.isSessionException() -> sendEvent(Event.ShowSessionException)
+                    it.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
+                    else -> sendEvent(Event.ShowUnhandledErrorEvent)
+                }
             })
     }
 
@@ -100,12 +110,16 @@ class ParametersPresenter @Inject constructor(
     }
 
     data class ViewState(
-        val latestBodyParametersInfo: LatestBodyParametersInfo
+        val latestBodyParametersInfo: LatestBodyParametersInfo,
+        val isLoading: Boolean,
+        val wasLoaded: Boolean
     ) : Presenter.ViewState
 
     sealed class Event : Presenter.Event {
         object ShowNotSynchronizedEvent : Event()
         object ShowUnhandledErrorEvent : Event()
+        object ShowNoNetworkException : Event()
+        object ShowSessionException : Event()
     }
 
 }

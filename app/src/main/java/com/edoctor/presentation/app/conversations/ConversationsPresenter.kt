@@ -1,10 +1,12 @@
 package com.edoctor.presentation.app.conversations
 
 import com.edoctor.data.entity.presentation.Conversation
+import com.edoctor.data.entity.presentation.MedicalAccessesForDoctor
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.ConversationsRepository
 import com.edoctor.presentation.app.conversations.ConversationsPresenter.Event
 import com.edoctor.presentation.app.conversations.ConversationsPresenter.ViewState
+import com.edoctor.presentation.app.medicalAccessesForDoctor.MedicalAccessesForDoctorPresenter
 import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.SessionExceptionHelper.isSessionException
@@ -55,9 +57,12 @@ class ConversationsPresenter @Inject constructor(
             )
     }
 
-    data class ViewState(val conversations: List<Conversation>, val isLoading: Boolean) : Presenter.ViewState {
+    data class ViewState(
+        val conversations: List<Conversation>?,
+        val isLoading: Boolean
+    ) : Presenter.ViewState {
         companion object {
-            val EMPTY = ViewState(emptyList(), true)
+            val EMPTY = ViewState(null, true)
         }
     }
 

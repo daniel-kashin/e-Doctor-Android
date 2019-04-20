@@ -194,4 +194,12 @@
     <string name="records_synchronization_error">Ошибка синхронизации записей</string>
 
     <string name="deleted_from_medcard">Удалено из медкарты</string>
+
+    <string name="empty_conversations">Здесь будет отображен список ваших чатов</string>
+    <string name="empty_parameters_for_patient">Здесь будет отображен список ваших показателей</string>
+    <string name="empty_parameters_for_doctor">Пациент пока не добавил ни одного показателя</string>
+    <string name="empty_events_for_patient">Здесь будет отображен список ваших событий</string>
+    <string name="empty_requested_events_for_patient">Врач пока не отправил вам ни одной записи</string>
+    <string name="empty_requested_events_for_doctor">Вы пока не отправили пациенту ни одной записи</string>
+    <string name="empty_events_for_doctor">Пациент не добавил ни одного события</string>
 </resources>

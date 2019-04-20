@@ -5,9 +5,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.BodyParameterType
 import com.edoctor.data.entity.remote.model.record.*
@@ -17,12 +19,14 @@ import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.mapper.BodyParameterMapper.toType
 import com.edoctor.presentation.app.addParameter.AddOrEditParameterActivity
-import com.edoctor.presentation.app.events.EventsFragment
 import com.edoctor.presentation.app.parameter.ParameterActivity
 import com.edoctor.presentation.app.parameters.ParametersPresenter.Event
 import com.edoctor.presentation.app.parameters.ParametersPresenter.ViewState
 import com.edoctor.presentation.architecture.fragment.BaseFragment
+import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.edoctor.utils.SimpleDividerItemDecoration
+import com.edoctor.utils.hide
+import com.edoctor.utils.show
 import com.edoctor.utils.toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import javax.inject.Inject
@@ -52,6 +56,8 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
     override val layoutRes: Int = R.layout.fragment_parameters
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var errorMessage: TextView
     private lateinit var fab: FloatingActionButton
 
     private lateinit var adapter: ParametersAdapter
@@ -74,6 +80,13 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
         recyclerView = view.findViewById(R.id.recycler_view)
         fab = view.findViewById(R.id.fab)
 
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        errorMessage = view.findViewById(R.id.error_message)
+
+        swipeRefreshLayout.setOnRefreshListener {
+            presenter.updateAllParameters()
+        }
+
         fab.hide()
 
         adapter = ParametersAdapter()
@@ -87,6 +100,8 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
 
     @SuppressLint("RestrictedApi")
     override fun render(viewState: ViewState) {
+        swipeRefreshLayout.isRefreshing = viewState.isLoading
+
         val info = viewState.latestBodyParametersInfo
 
         adapter.parameters = info.latestBodyParametersOfEachType
@@ -96,6 +111,19 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
                 .patient(presenter.patient)
                 .currentUserIsPatient(presenter.currentUserIsPatient)
                 .start()
+        }
+
+        val currentUserIsPatient = presenter.currentUserIsPatient
+
+        if (info.latestBodyParametersOfEachType.isEmpty() && viewState.wasLoaded) {
+            errorMessage.show()
+            errorMessage.text = if (currentUserIsPatient) {
+                getString(R.string.empty_parameters_for_patient)
+            } else {
+                getString(R.string.empty_parameters_for_doctor)
+            }
+        } else {
+            errorMessage.hide()
         }
 
         if (info.availableBodyParametesTypes.isNotEmpty()) {
@@ -145,6 +173,8 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
         when (event) {
             is Event.ShowNotSynchronizedEvent -> context?.toast(getString(R.string.records_synchronization_error))
             is Event.ShowUnhandledErrorEvent -> context?.toast(getString(R.string.unhandled_error_message))
+            is Event.ShowNoNetworkException -> context?.toast(getString(R.string.network_error_message))
+            is Event.ShowSessionException -> activity?.onSessionException()
         }
     }
 

@@ -239,4 +239,12 @@
     <string name="image">Image</string>
 
     <string name="records_synchronization_error">Error while synchronizing records</string>
+
+    <string name="empty_conversations">Your conversations will be shown here</string>
+    <string name="empty_parameters_for_patient">Your body parameters will be shown here</string>
+    <string name="empty_parameters_for_doctor">Patient did not add any parameters</string>
+    <string name="empty_events_for_patient">Your events will be shown here</string>
+    <string name="empty_requested_events_for_patient">Doctor did not send you any records yet</string>
+    <string name="empty_requested_events_for_doctor">You did not send patient any records yet</string>
+    <string name="empty_events_for_doctor">Patient did not add any events</string>
 </resources>

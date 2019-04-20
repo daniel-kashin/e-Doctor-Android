@@ -4,12 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.edoctor.R
 import com.edoctor.data.entity.presentation.MedicalEventType
 import com.edoctor.data.entity.presentation.MedicalEventType.*
+import com.edoctor.data.entity.presentation.MedicalEventsInfo
 import com.edoctor.data.entity.remote.model.record.MedicalEventModel
 import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
@@ -19,9 +22,8 @@ import com.edoctor.presentation.app.events.EventsPresenter.Event
 import com.edoctor.presentation.app.events.EventsPresenter.ViewState
 import com.edoctor.presentation.app.parameters.ParametersPresenter
 import com.edoctor.presentation.architecture.fragment.BaseFragment
-import com.edoctor.utils.SimpleDividerItemDecoration
-import com.edoctor.utils.nothing
-import com.edoctor.utils.toast
+import com.edoctor.utils.*
+import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import javax.inject.Inject
 
@@ -58,6 +60,8 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
     override val layoutRes: Int = R.layout.fragment_parameters
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var errorMessage: TextView
     private lateinit var fab: FloatingActionButton
 
     private lateinit var adapter: EventsAdapter
@@ -76,6 +80,12 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
 
         recyclerView = view.findViewById(R.id.recycler_view)
         fab = view.findViewById(R.id.fab)
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        errorMessage = view.findViewById(R.id.error_message)
+
+        swipeRefreshLayout.setOnRefreshListener {
+            presenter.updateAllEvents()
+        }
 
         fab.hide()
 
@@ -94,6 +104,8 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
     }
 
     override fun render(viewState: ViewState) {
+        swipeRefreshLayout.isRefreshing = viewState.isLoading
+
         val info = viewState.medicalEventsInfo
 
         adapter.events = info.medicalEvents
@@ -107,6 +119,29 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
                     REQUEST_ADD_OR_EDIT_PARAMETER
                 )
             }
+        }
+
+        val currentUserIsPatient = presenter.currentUserIsPatient
+        val isRequestedRecords = presenter.isRequestedRecords
+
+        if (info.medicalEvents.isEmpty() && viewState.wasLoaded) {
+            errorMessage.show()
+            errorMessage.text = when {
+                currentUserIsPatient && isRequestedRecords -> {
+                    getString(R.string.empty_requested_events_for_patient)
+                }
+                !currentUserIsPatient && isRequestedRecords -> {
+                    getString(R.string.empty_requested_events_for_doctor)
+                }
+                currentUserIsPatient && !isRequestedRecords -> {
+                    getString(R.string.empty_events_for_patient)
+                }
+                else -> {
+                    getString(R.string.empty_events_for_doctor)
+                }
+            }
+        } else {
+            errorMessage.hide()
         }
 
         if (info.availableMedicalEventTypes.isNotEmpty() && presenter.canBeAdded) {
@@ -156,6 +191,8 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
         when (event) {
             is Event.ShowNotSynchronizedEvent -> context?.toast(getString(R.string.records_synchronization_error))
             is Event.ShowUnhandledErrorEvent -> context?.toast(getString(R.string.unhandled_error_message))
+            is Event.ShowNoNetworkException -> context?.toast(getString(R.string.network_error_message))
+            is Event.ShowSessionException -> activity?.onSessionException()
         }
     }
 
