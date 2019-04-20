@@ -31,9 +31,9 @@ class ParametersPresenter @Inject constructor(
         this.currentUserIsPatient = currentUserIsPatient
 
         if (currentUserIsPatient) {
-            setViewState(ViewState(LatestBodyParametersInfo(emptyList(), BodyParameterType.NON_CUSTOM_BODY_PARAMETER_TYPES)))
+            setViewState(ViewState(LatestBodyParametersInfo(emptyList(), BodyParameterType.NON_CUSTOM_BODY_PARAMETER_TYPES, false)))
         } else {
-            setViewState(ViewState(LatestBodyParametersInfo(emptyList(), emptyList())))
+            setViewState(ViewState(LatestBodyParametersInfo(emptyList(), emptyList(), false)))
         }
 
         val getParametersSingle = if (currentUserIsPatient) {
@@ -46,6 +46,7 @@ class ParametersPresenter @Inject constructor(
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
+                if (!it.isSynchronized) sendEvent(Event.ShowNotSynchronizedEvent)
                 setViewState { copy(latestBodyParametersInfo = it) }
             }, { throwable ->
                 nothing()
@@ -54,7 +55,7 @@ class ParametersPresenter @Inject constructor(
 
     fun addOrEditParameter(parameter: BodyParameterModel) {
         if (currentUserIsPatient) {
-            disposables += medicalRecordsRepository.addOrEditParameterPatient(parameter, patient.uuid)
+            disposables += medicalRecordsRepository.addOrEditParameterForPatient(parameter, patient.uuid)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
@@ -67,7 +68,7 @@ class ParametersPresenter @Inject constructor(
 
     fun removeParameter(parameter: BodyParameterModel) {
         if (currentUserIsPatient) {
-            disposables += medicalRecordsRepository.removeParameterForPatient(parameter)
+            disposables += medicalRecordsRepository.deleteParameterForPatient(parameter)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
@@ -82,6 +83,8 @@ class ParametersPresenter @Inject constructor(
         val latestBodyParametersInfo: LatestBodyParametersInfo
     ) : Presenter.ViewState
 
-    class Event : Presenter.Event
+    sealed class Event : Presenter.Event {
+        object ShowNotSynchronizedEvent : Event()
+    }
 
 }

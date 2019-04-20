@@ -50,7 +50,7 @@ class MedicalAccessesForPatientPresenter @Inject constructor(
                 })
     }
 
-    fun deleteMedicalAccessForDoctor(doctor: DoctorModel) {
+    fun deleteMedicalAccess(doctor: DoctorModel) {
         val emptyDoctorAccesses = MedicalAccessesForPatient(listOf(MedicalAccessForPatient(doctor, emptyList())), emptyList())
 
         disposables += medicalAccessesRepository.postMedicalAccessesForPatient(emptyDoctorAccesses)

@@ -96,6 +96,9 @@ class EventsAdapter(val showStatus: Boolean) : RecyclerView.Adapter<ViewHolder>(
 
             val (statusText, textColorRes) = if (showStatus) {
                 when {
+                    medicalEventModel.isDeleted -> {
+                        rootView.context.getString(R.string.deleted_from_medcard) to R.color.decline_call
+                    }
                     medicalEventModel.isAddedFromDoctor -> {
                         rootView.context.getString(R.string.added_to_medcard) to R.color.accept_call
                     }

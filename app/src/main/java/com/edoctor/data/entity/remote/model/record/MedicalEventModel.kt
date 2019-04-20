@@ -2,12 +2,13 @@ package com.edoctor.data.entity.remote.model.record
 
 import java.io.Serializable
 
-sealed class MedicalEventModel : MedicalRecordModel(), DateSpecific, Commentable, Serializable, CreatableByDoctor {
+sealed class MedicalEventModel : MedicalRecordModel(), DateSpecific, Deletable, Commentable, Serializable, CreatableByDoctor {
     abstract override fun getAddedFromDoctorCopy(): MedicalEventModel
 }
 
 data class Analysis(
     override val uuid: String,
+    override val isDeleted: Boolean,
     override val doctorCreatorUuid: String? = null,
     override var isAddedFromDoctor: Boolean = false,
     override val timestamp: Long,
@@ -23,6 +24,7 @@ data class Analysis(
 
 data class Allergy(
     override val uuid: String,
+    override val isDeleted: Boolean,
     override val doctorCreatorUuid: String? = null,
     override var isAddedFromDoctor: Boolean = false,
     override val timestamp: Long,
@@ -39,6 +41,7 @@ data class Allergy(
 
 data class Note(
     override val uuid: String,
+    override val isDeleted: Boolean,
     override val doctorCreatorUuid: String? = null,
     override var isAddedFromDoctor: Boolean = false,
     override val timestamp: Long,
@@ -52,6 +55,7 @@ data class Note(
 
 data class Vaccination(
     override val uuid: String,
+    override val isDeleted: Boolean,
     override val doctorCreatorUuid: String? = null,
     override var isAddedFromDoctor: Boolean = false,
     override val timestamp: Long,
@@ -69,6 +73,7 @@ data class Vaccination(
 
 data class Procedure(
     override val uuid: String,
+    override val isDeleted: Boolean,
     override val doctorCreatorUuid: String? = null,
     override var isAddedFromDoctor: Boolean = false,
     override val timestamp: Long,
@@ -86,6 +91,7 @@ data class Procedure(
 
 data class DoctorVisit(
     override val uuid: String,
+    override val isDeleted: Boolean,
     override val doctorCreatorUuid: String? = null,
     override var isAddedFromDoctor: Boolean = false,
     override val timestamp: Long,
@@ -105,6 +111,7 @@ data class DoctorVisit(
 
 data class Sickness(
     override val uuid: String,
+    override val isDeleted: Boolean,
     override val doctorCreatorUuid: String? = null,
     override var isAddedFromDoctor: Boolean = false,
     override val timestamp: Long,

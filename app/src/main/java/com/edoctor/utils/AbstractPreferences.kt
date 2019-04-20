@@ -45,11 +45,7 @@ abstract class AbstractPreferences(private val name: String) {
             }
         }
 
-        private var cachedValue: T? = null
-
         override fun getValue(thisRef: AbstractPreferences, property: KProperty<*>): T {
-            cachedValue?.let { return it }
-
             val string = runOrElse(null) { thisRef.prefs.getString(name ?: property.name, null) }?.takeIfNotEmpty()
             return when (kClass) {
                 Boolean::class -> string?.toBoolean() ?: default
@@ -67,7 +63,6 @@ abstract class AbstractPreferences(private val name: String) {
                 Boolean::class, Int::class, Float::class, Double::class, Long::class, String::class -> value.toString()
                 else -> thisRef.gson.toJson(value)
             }
-            cachedValue = value
             thisRef.prefs.edit().putString(name ?: property.name, string).apply()
         }
     }
@@ -83,21 +78,17 @@ abstract class AbstractPreferences(private val name: String) {
             }
         }
 
-        private var cachedValue: T? = null
-
         override fun getValue(thisRef: AbstractPreferences, property: KProperty<*>): T? {
-            cachedValue?.let { return it }
-
             val string = runOrElse(null) { thisRef.prefs.getString(name ?: property.name, null) }
 
-            if (string.isNullOrEmpty() && cachedValue == null) return null
+            if (string.isNullOrEmpty()) return null
 
             return when (kClass) {
-                Boolean::class -> string?.toBoolean()
-                Int::class -> string?.toInt()
-                Float::class -> string?.toFloat()
-                Double::class -> string?.toDouble()
-                Long::class -> string?.toLong()
+                Boolean::class -> string.toBoolean()
+                Int::class -> string.toInt()
+                Float::class -> string.toFloat()
+                Double::class -> string.toDouble()
+                Long::class -> string.toLong()
                 String::class -> string
                 else -> runOrElse(null) { thisRef.gson.fromJson(string, property.returnType.javaType) as T? }
             } as T?
@@ -108,7 +99,6 @@ abstract class AbstractPreferences(private val name: String) {
                 Boolean::class, Int::class, Float::class, Double::class, Long::class, String::class -> value?.toString()
                 else -> value?.let { thisRef.gson.toJson(it) }
             }
-            cachedValue = value
             thisRef.prefs.edit().putString(name ?: property.name, string).apply()
         }
     }

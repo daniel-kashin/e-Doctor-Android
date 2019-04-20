@@ -16,7 +16,6 @@ import com.edoctor.utils.plusAssign
 import io.reactivex.Completable
 import io.reactivex.Scheduler
 import io.reactivex.Single
-import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -52,7 +51,7 @@ class EventsPresenter @Inject constructor(
                     medicalRecordsRepository.addOrEditEventForPatient(event.getAddedFromDoctorCopy(), patient.uuid)
                 }
                 deleteEventAction = { event -> medicalRecordsRepository.deleteEventForPatient(event) }
-                val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList()))
+                val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList(), false))
                 val single = medicalRecordsRepository.getRequestedMedicalEventsForPatient(doctor!!.uuid, patient.uuid)
                 viewState to single
             }
@@ -60,7 +59,7 @@ class EventsPresenter @Inject constructor(
                 addOrEditEventAction = { event ->
                     medicalRecordsRepository.addMedicalEventForDoctor(event, patient.uuid)
                 }
-                val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES))
+                val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES, false))
                 val single = medicalRecordsRepository.getRequestedMedicalEventsForDoctor(patient.uuid)
                 viewState to single
             }
@@ -68,12 +67,12 @@ class EventsPresenter @Inject constructor(
                 canBeEdited = true
                 addOrEditEventAction = { event -> medicalRecordsRepository.addOrEditEventForPatient(event, patient.uuid) }
                 deleteEventAction = { event -> medicalRecordsRepository.deleteEventForPatient(event) }
-                val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES))
+                val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES, false))
                 val single = medicalRecordsRepository.getMedicalEventsForPatient(patient.uuid)
                 viewState to single
             }
             else -> {
-                val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList()))
+                val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList(), false))
                 val single = medicalRecordsRepository.getMedicalEventsForDoctor(patient.uuid)
                 viewState to single
             }
@@ -86,11 +85,13 @@ class EventsPresenter @Inject constructor(
             .observeOn(observeScheduler)
             .subscribe(
                 {
+                    if (currentUserIsPatient && !it.isSynchronized) sendEvent(Event.ShowNotSynchronizedEvent)
                     setViewState { copy(medicalEventsInfo = it) }
                 },
                 {
                     nothing()
-                })
+                }
+            )
     }
 
     fun addOrEditEvent(event: MedicalEventModel) {
@@ -123,6 +124,8 @@ class EventsPresenter @Inject constructor(
         val medicalEventsInfo: MedicalEventsInfo
     ) : Presenter.ViewState
 
-    class Event : Presenter.Event
+    sealed class Event : Presenter.Event {
+        object ShowNotSynchronizedEvent : Event()
+    }
 
 }

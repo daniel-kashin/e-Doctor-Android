@@ -258,6 +258,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                                 result = diagnosisEditText.notEmptyText()
                             ) ?: Analysis(
                                 uuid = randomUUID().toString(),
+                                isDeleted = false,
                                 timestamp = timestamp,
                                 comment = commentEditText.notEmptyText(),
                                 clinic = clinicEditText.notEmptyText(),
@@ -296,6 +297,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                                 symptoms = symptomsEditText.notEmptyText()
                             ) ?: Allergy(
                                 uuid = randomUUID().toString(),
+                                isDeleted = false,
                                 timestamp = timestamp,
                                 comment = commentEditText.notEmptyText(),
                                 endTimestamp = endTimestamp,
@@ -328,6 +330,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                                 comment = comment
                             ) ?: Note(
                                 uuid = randomUUID().toString(),
+                                isDeleted = false,
                                 timestamp = timestamp,
                                 comment = comment
                             )
@@ -361,6 +364,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                                 diagnosis = diagnosis
                             ) ?: Sickness(
                                 randomUUID().toString(),
+                                isDeleted = false,
                                 timestamp = timestamp,
                                 comment = commentEditText.notEmptyText(),
                                 endTimestamp = endTimestamp,
@@ -398,6 +402,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                             ) ?: Procedure(
                                 randomUUID().toString(),
                                 timestamp = timestamp,
+                                isDeleted = false,
                                 comment = commentEditText.notEmptyText(),
                                 clinic = clinicEditText.notEmptyText(),
                                 doctorName = doctorNameEditText.notEmptyText(),
@@ -435,6 +440,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                             ) ?: Vaccination(
                                 randomUUID().toString(),
                                 timestamp = timestamp,
+                                isDeleted = false,
                                 comment = commentEditText.notEmptyText(),
                                 clinic = clinicEditText.notEmptyText(),
                                 doctorName = doctorNameEditText.notEmptyText(),
@@ -472,6 +478,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                             ) ?: DoctorVisit(
                                 randomUUID().toString(),
                                 timestamp = timestamp,
+                                isDeleted = false,
                                 comment = commentEditText.notEmptyText(),
                                 clinic = clinicEditText.notEmptyText(),
                                 doctorName = doctorNameEditText.notEmptyText(),

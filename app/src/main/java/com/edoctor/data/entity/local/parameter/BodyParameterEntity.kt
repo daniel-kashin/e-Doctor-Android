@@ -5,13 +5,19 @@ import com.pushtorefresh.storio3.sqlite.annotations.StorIOSQLiteCreator
 import com.pushtorefresh.storio3.sqlite.annotations.StorIOSQLiteType
 
 @StorIOSQLiteType(table = BodyParameterEntityContract.TABLE_NAME)
-class BodyParameterEntity @StorIOSQLiteCreator constructor(
+data class BodyParameterEntity @StorIOSQLiteCreator constructor(
 
     @StorIOSQLiteColumn(name = BodyParameterEntityContract.COLUMN_UUID, key = true)
     val uuid: String,
 
     @StorIOSQLiteColumn(name = BodyParameterEntityContract.COLUMN_TYPE)
     val type: Int,
+
+    @StorIOSQLiteColumn(name = BodyParameterEntityContract.COLUMN_IS_CHANGED_LOCALLY)
+    val isChangedLocally: Int,
+
+    @StorIOSQLiteColumn(name = BodyParameterEntityContract.COLUMN_IS_DELETED)
+    var isDeleted: Int,
 
     @StorIOSQLiteColumn(name = BodyParameterEntityContract.COLUMN_MEASUREMENT_TIMESTAMP)
     var measurementTimestamp: Long,

@@ -8,13 +8,12 @@ import android.net.ConnectivityManager
 import android.util.Log
 import androidx.multidex.MultiDexApplication
 import com.cantrowitz.rxbroadcast.RxBroadcast
-import com.edoctor.data.Preferences
 import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.injection.DaggerApplicationComponent
 import com.edoctor.data.injection.NetworkModule
 import com.edoctor.data.properties.AppProperties
-import com.edoctor.data.session.SessionPreferences
+import com.edoctor.data.Preferences
 import com.edoctor.utils.*
 import com.facebook.stetho.Stetho
 import com.github.anrwatchdog.ANRWatchDog
@@ -76,7 +75,6 @@ open class EDoctor : MultiDexApplication() {
     }
 
     protected open fun initPreferences() {
-        SessionPreferences.init(this)
         Preferences.init(this)
     }
 

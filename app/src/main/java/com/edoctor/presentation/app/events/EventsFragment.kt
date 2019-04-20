@@ -17,9 +17,11 @@ import com.edoctor.data.injection.ApplicationComponent
 import com.edoctor.presentation.app.addEvent.AddOrEditEventActivity
 import com.edoctor.presentation.app.events.EventsPresenter.Event
 import com.edoctor.presentation.app.events.EventsPresenter.ViewState
+import com.edoctor.presentation.app.parameters.ParametersPresenter
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.SimpleDividerItemDecoration
 import com.edoctor.utils.nothing
+import com.edoctor.utils.toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import javax.inject.Inject
 
@@ -142,7 +144,11 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
         }
     }
 
-    override fun showEvent(event: Event) = nothing()
+    override fun showEvent(event: Event) {
+        when (event) {
+            is Event.ShowNotSynchronizedEvent -> context?.toast(getString(R.string.records_synchronization_error))
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

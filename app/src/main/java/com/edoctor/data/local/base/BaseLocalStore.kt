@@ -50,17 +50,6 @@ abstract class BaseLocalStore<T>(protected val storIOSQLite: StorIOSQLite) {
             .map { t }
     }
 
-    fun saveIfExistsNot(id: String, t: T): Single<Boolean> {
-        return getById(id)
-            .flatMap {
-                if (!it.isPresent) {
-                    save(t).map { true }
-                } else {
-                    Single.just(false)
-                }
-            }
-    }
-
     fun saveBlocking(t: T) {
         v(logTag, "saveBlocking(): $t")
         storIOSQLite.put()
@@ -84,22 +73,6 @@ abstract class BaseLocalStore<T>(protected val storIOSQLite: StorIOSQLite) {
             .objects(list)
             .prepare()
             .executeAsBlocking()
-    }
-
-    fun saveBlockingIfExistsNot(id: String, t: T) {
-        val value = storIOSQLite.get()
-            .`object`(objectClass)
-            .withQuery(Query.builder()
-                .table(tableName)
-                .where("$idColumnName = ?")
-                .whereArgs(id)
-                .build())
-            .prepare()
-            .executeAsBlocking()
-        v(logTag, "saveBlockingIfExistsNot(): id = $id, exists = ${value != null}, $t")
-        if (value == null) {
-            saveBlocking(t)
-        }
     }
 
     fun deleteById(id: String) {
