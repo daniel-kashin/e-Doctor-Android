@@ -81,8 +81,16 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
 
         adapter = EventsAdapter(presenter.isRequestedRecords)
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false).apply {
+            reverseLayout = true
+            stackFromEnd = true
+        }
         recyclerView.addItemDecoration(SimpleDividerItemDecoration(view.context))
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter.updateAllEvents()
     }
 
     override fun render(viewState: ViewState) {
@@ -147,6 +155,7 @@ class EventsFragment : BaseFragment<EventsPresenter, ViewState, Event>("EventsFr
     override fun showEvent(event: Event) {
         when (event) {
             is Event.ShowNotSynchronizedEvent -> context?.toast(getString(R.string.records_synchronization_error))
+            is Event.ShowUnhandledErrorEvent -> context?.toast(getString(R.string.unhandled_error_message))
         }
     }
 

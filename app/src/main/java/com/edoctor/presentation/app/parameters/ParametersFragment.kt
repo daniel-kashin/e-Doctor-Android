@@ -63,6 +63,11 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
         presenter.init(patient, currentUserIsPatient)
     }
 
+    override fun onStart() {
+        super.onStart()
+        presenter.updateAllParameters()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -73,7 +78,10 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
 
         adapter = ParametersAdapter()
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false).apply {
+            reverseLayout = true
+            stackFromEnd = true
+        }
         recyclerView.addItemDecoration(SimpleDividerItemDecoration(view.context))
     }
 
@@ -136,6 +144,7 @@ class ParametersFragment : BaseFragment<ParametersPresenter, ViewState, Event>("
     override fun showEvent(event: Event) {
         when (event) {
             is Event.ShowNotSynchronizedEvent -> context?.toast(getString(R.string.records_synchronization_error))
+            is Event.ShowUnhandledErrorEvent -> context?.toast(getString(R.string.unhandled_error_message))
         }
     }
 

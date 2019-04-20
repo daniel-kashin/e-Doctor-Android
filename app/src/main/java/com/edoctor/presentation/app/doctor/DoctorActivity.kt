@@ -104,6 +104,11 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
         showDoctorInfo(presenter.doctor)
     }
 
+    override fun onStart() {
+        super.onStart()
+        presenter.updateDoctorInfo()
+    }
+
     override fun render(viewState: ViewState) {
         val medcardInfo = viewState.medcardInfo
         if (medcardInfo == null) {

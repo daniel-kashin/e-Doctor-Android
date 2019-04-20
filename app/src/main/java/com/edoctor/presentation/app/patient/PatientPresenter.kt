@@ -14,6 +14,7 @@ import com.edoctor.presentation.app.patient.PatientPresenter.Event
 import com.edoctor.presentation.app.patient.PatientPresenter.ViewState
 import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
+import com.edoctor.utils.disposableDelegate
 import com.edoctor.utils.nothing
 import com.edoctor.utils.plusAssign
 import io.reactivex.Scheduler
@@ -30,6 +31,8 @@ class PatientPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ViewState, Event>("DoctorPresenter") {
 
+    private var updateDisposable by disposableDelegate
+
     lateinit var patient: PatientModel
 
     init {
@@ -38,15 +41,17 @@ class PatientPresenter @Inject constructor(
 
     fun init(patient: PatientModel) {
         this.patient = patient
+    }
 
-        disposables += medicalAccessesRepository.getMedicalAccessForDoctor(patient.uuid)
+    fun updatePatientInfo() {
+        updateDisposable = medicalAccessesRepository.getMedicalAccessForDoctor(patient.uuid)
             .zipWith(medicalRecordsRepository.getRequestedMedicalEventsForDoctor(patient.uuid))
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
             .subscribe({
                 setViewState { copy(medcardInfo = it.first to it.second.medicalEvents) }
             }, {
-                nothing()
+                sendEvent(Event.ShowUnhandledEventException)
             })
     }
 
@@ -54,6 +59,8 @@ class PatientPresenter @Inject constructor(
         val medcardInfo: Pair<MedicalAccessForDoctor, List<MedicalEventModel>>?
     ) : Presenter.ViewState
 
-    class Event : Presenter.Event
+    sealed class Event : Presenter.Event {
+        object ShowUnhandledEventException : Event()
+    }
 
 }

@@ -118,7 +118,10 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
 
         adapter = ParameterAdapter()
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false).apply {
+            reverseLayout = true
+            stackFromEnd = true
+        }
         recyclerView.addItemDecoration(SimpleDividerItemDecoration(this))
     }
 
@@ -236,6 +239,9 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
     }
 
     override fun showEvent(event: Event) {
+        when (event) {
+            Event.ShowUnhandledErrorEvent -> toast(getString(R.string.unhandled_error_message))
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
