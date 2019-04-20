@@ -10,7 +10,6 @@ import com.edoctor.presentation.app.parameter.ParameterPresenter.ViewState
 import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.disposableDelegate
-import com.edoctor.utils.nothing
 import com.edoctor.utils.plusAssign
 import io.reactivex.Scheduler
 import javax.inject.Inject

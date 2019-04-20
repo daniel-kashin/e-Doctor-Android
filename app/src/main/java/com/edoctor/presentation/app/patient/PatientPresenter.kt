@@ -1,11 +1,7 @@
 package com.edoctor.presentation.app.patient
 
 import com.edoctor.data.entity.presentation.MedicalAccessForDoctor
-import com.edoctor.data.entity.presentation.MedicalAccessForPatient
-import com.edoctor.data.entity.presentation.MedicalAccessInfo
-import com.edoctor.data.entity.presentation.MedicalRecordType
 import com.edoctor.data.entity.remote.model.record.MedicalEventModel
-import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalAccessesRepository
@@ -15,8 +11,6 @@ import com.edoctor.presentation.app.patient.PatientPresenter.ViewState
 import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.disposableDelegate
-import com.edoctor.utils.nothing
-import com.edoctor.utils.plusAssign
 import io.reactivex.Scheduler
 import io.reactivex.rxkotlin.zipWith
 import javax.inject.Inject

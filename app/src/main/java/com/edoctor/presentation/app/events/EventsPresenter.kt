@@ -7,7 +7,6 @@ import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
 import com.edoctor.data.injection.ApplicationModule
 import com.edoctor.data.repository.MedicalRecordsRepository
-import com.edoctor.presentation.app.conversations.ConversationsPresenter
 import com.edoctor.presentation.app.events.EventsPresenter.Event
 import com.edoctor.presentation.app.events.EventsPresenter.ViewState
 import com.edoctor.presentation.architecture.presenter.BasePresenter
@@ -15,7 +14,6 @@ import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.utils.SessionExceptionHelper.isSessionException
 import com.edoctor.utils.disposableDelegate
 import com.edoctor.utils.isNoNetworkError
-import com.edoctor.utils.nothing
 import com.edoctor.utils.plusAssign
 import io.reactivex.Completable
 import io.reactivex.Scheduler
