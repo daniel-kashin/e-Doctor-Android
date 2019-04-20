@@ -223,6 +223,7 @@
     <string name="requested_records_for_patient_disclaimer">You can send records to the patient. Patient will be able to delete them or move to the medcard</string>
 
     <string name="added_to_medcard">Added to medcard</string>
+    <string name="deleted_from_medcard">Deleted from medcard</string>
     <string name="new_record_request_was_added_hyperlink">&lt;a href=>New record&lt;/a> to medcard</string>
     <string name="medcard_access_changed_hyperlink">Medcard &lt;a href=>access settings&lt;/a> were changed</string>
 

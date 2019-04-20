@@ -10,11 +10,6 @@ import retrofit2.http.Query
 
 interface RequestedEventsRestApi {
 
-    @GET("/requestedMedicalEventsForPatient")
-    fun getRequestedEventsForPatient(
-        @Query("doctorUuid") doctorUuid: String
-    ): Single<MedicalEventsResponse>
-
     @GET("/requestedMedicalEventsForDoctor")
     fun getRequestedEventsForDoctor(
         @Query("patientUuid") patientUuid: String

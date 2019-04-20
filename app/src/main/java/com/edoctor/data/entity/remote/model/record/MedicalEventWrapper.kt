@@ -4,6 +4,7 @@ data class MedicalEventWrapper(
     val uuid: String,
     val timestamp: Long,
     val type: Int,
+    val isDeleted: Boolean,
     val doctorCreatorUuid: String?,
     val isAddedFromDoctor: Boolean,
     val endTimestamp: Long? = null,

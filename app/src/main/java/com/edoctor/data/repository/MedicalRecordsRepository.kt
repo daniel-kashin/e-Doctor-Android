@@ -30,7 +30,8 @@ class MedicalRecordsRepository(
     private val medicalEventLocalStore: MedicalEventLocalStore
 ) {
 
-    private val synchronizeLock = Any()
+    private val synchronizeParametersLock = Any()
+    private val synchronizeEventsLock = Any()
 
     // region doctor
 
@@ -38,7 +39,7 @@ class MedicalRecordsRepository(
         requestedEventsRestApi.getRequestedEventsForDoctor(patientUuid)
             .map { it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.toModelFromWrapper(wrapper) } }
             .map {
-                MedicalEventsInfo(it, ALL_MEDICAL_EVENT_TYPES)
+                MedicalEventsInfo(it, ALL_MEDICAL_EVENT_TYPES, true)
             }
 
     fun addMedicalEventForDoctor(event: MedicalEventModel, patientUuid: String): Single<MedicalEventModel> =
@@ -58,7 +59,7 @@ class MedicalRecordsRepository(
                 it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.toModelFromWrapper(wrapper) }
             }
             .map {
-                MedicalEventsInfo(it, emptyList())
+                MedicalEventsInfo(it, emptyList(), true)
             }
 
     fun getLatestBodyParametersInfoForDoctor(patientUuid: String): Single<LatestBodyParametersInfo> =
@@ -88,75 +89,49 @@ class MedicalRecordsRepository(
     // region patient
 
     fun getRequestedMedicalEventsForPatient(doctorUuid: String, patientUuid: String): Single<MedicalEventsInfo> =
-        requestedEventsRestApi.getRequestedEventsForPatient(doctorUuid)
-            .doOnSuccess { result ->
-                medicalEventLocalStore.saveBlocking(
-                    result.medicalEvents.map { MedicalEventMapper.toLocalFromWrapper(it, patientUuid) }
-                )
-            }
-            .map { result ->
-                MedicalEventsInfo(
-                    result.medicalEvents.mapNotNull { MedicalEventMapper.toModelFromWrapper(it) },
-                    emptyList()
-                )
-            }
-            .onErrorResumeNext {
+        synchronizeMedicalEvents(patientUuid)
+            .flatMap { isSynchronized ->
                 medicalEventLocalStore.getRequestedEventsForPatient(doctorUuid, patientUuid)
                     .map { localEvents ->
                         MedicalEventsInfo(
                             localEvents.mapNotNull {
                                 MedicalEventMapper.toModelFromWrapper(MedicalEventMapper.toWrapperFromLocal(it))
                             },
-                            emptyList()
+                            emptyList(),
+                            isSynchronized
                         )
                     }
             }
 
     fun getMedicalEventsForPatient(patientUuid: String): Single<MedicalEventsInfo> =
-        medicalEventsApi.getEventsForPatient()
-            .doOnSuccess { result ->
-                medicalEventLocalStore.saveBlocking(
-                    result.medicalEvents.map { MedicalEventMapper.toLocalFromWrapper(it, patientUuid) }
-                )
-            }
-            .map { result ->
-                MedicalEventsInfo(
-                    result.medicalEvents.mapNotNull { MedicalEventMapper.toModelFromWrapper(it) },
-                    ALL_MEDICAL_EVENT_TYPES
-                )
-            }
-            .onErrorResumeNext {
+        synchronizeMedicalEvents(patientUuid)
+            .flatMap { isSynchronized ->
                 medicalEventLocalStore.getEventsForPatient(patientUuid)
                     .map { localEvents ->
                         MedicalEventsInfo(
                             localEvents.mapNotNull {
                                 MedicalEventMapper.toModelFromWrapper(MedicalEventMapper.toWrapperFromLocal(it))
                             },
-                            emptyList()
+                            ALL_MEDICAL_EVENT_TYPES,
+                            isSynchronized
                         )
                     }
             }
 
     fun addOrEditEventForPatient(event: MedicalEventModel, patientUuid: String): Single<MedicalEventModel> =
-        Single
-            .defer {
-                medicalEventsApi.addOrEditMedicalEventForPatient(MedicalEventMapper.toWrapperFromModel(event))
-            }
-            .doOnSuccess { wrapper ->
-                medicalEventLocalStore.saveBlocking(MedicalEventMapper.toLocalFromWrapper(wrapper, patientUuid))
-            }
-            .map { wrapper ->
-                MedicalEventMapper.toModelFromWrapper(wrapper)
-            }
+        medicalEventLocalStore.save(
+            MedicalEventMapper.toLocalFromWrapper(
+                MedicalEventMapper.toWrapperFromModel(event),
+                patientUuid,
+                true
+            )
+        ).map {
+            MedicalEventMapper.toModelFromWrapper(MedicalEventMapper.toWrapperFromLocal(it))
+        }
+
 
     fun deleteEventForPatient(event: MedicalEventModel): Completable =
-        Completable
-            .defer {
-                medicalEventsApi.deleteMedicalEventForPatient(MedicalEventMapper.toWrapperFromModel(event))
-            }
-            .doOnComplete {
-                medicalEventLocalStore.deleteById(event.uuid)
-            }
+        medicalEventLocalStore.markAsDeleted(event.uuid)
 
     fun getLatestBodyParametersInfoForPatient(patientUuid: String): Single<LatestBodyParametersInfo> =
         synchronizeBodyParameters(patientUuid)
@@ -199,22 +174,28 @@ class MedicalRecordsRepository(
     fun addOrEditParameterForPatient(parameter: BodyParameterModel, patientUuid: String): Single<BodyParameterModel> =
         bodyParameterLocalStore
             .save(
-                BodyParameterMapper.toLocalFromWrapper(BodyParameterMapper.toWrapperFromModel(parameter), patientUuid, true)
+                BodyParameterMapper.toLocalFromWrapper(
+                    BodyParameterMapper.toWrapperFromModel(parameter),
+                    patientUuid,
+                    true
+                )
             )
             .map { BodyParameterMapper.toModelFromWrapper(BodyParameterMapper.toWrapperFromLocal(it)) }
 
     fun deleteParameterForPatient(parameter: BodyParameterModel): Completable =
         bodyParameterLocalStore.markAsDeleted(parameter.uuid)
 
-// endregion
+    // endregion
 
-    private fun synchronizeBodyParameters(patientUuid: String): Single<Boolean> = synchronized(synchronizeLock) {
+    // region synchronize
+
+    private fun synchronizeBodyParameters(patientUuid: String): Single<Boolean> = synchronized(synchronizeParametersLock) {
         Single
             .defer {
-                val lastSynchronizeTimestamp = Preferences.lastSynchronizeTimestamp ?: -1
+                val lastSynchronizeTimestamp = Preferences.lastSynchronizeParametersTimestamp ?: -1
 
                 bodyParameterLocalStore
-                    .getParametersToSynchronize(patientUuid)
+                    .getParametersToSynchronizeForPatient(patientUuid)
                     .map { it to lastSynchronizeTimestamp }
             }
             .flatMap { (parametersToSynchronize, lastSynchronizeTimestamp) ->
@@ -230,10 +211,40 @@ class MedicalRecordsRepository(
                     .saveBlocking(
                         synchronizeBodyParametersModel.bodyParameters.map { toLocalFromWrapper(it, patientUuid, false) }
                     )
-                Preferences.lastSynchronizeTimestamp = synchronizeBodyParametersModel.synchronizeTimestamp
+                Preferences.lastSynchronizeParametersTimestamp = synchronizeBodyParametersModel.synchronizeTimestamp
             }
             .map { true }
             .onErrorReturnItem(false)
     }
+
+    private fun synchronizeMedicalEvents(patientUuid: String): Single<Boolean> = synchronized(synchronizeEventsLock) {
+        Single
+            .defer {
+                val lastSynchronizeTimestamp = Preferences.lastSynchronizeEventsTimestamp ?: -1
+
+                medicalEventLocalStore
+                    .getEventsToSynchronizeForPatient(patientUuid)
+                    .map { it to lastSynchronizeTimestamp }
+            }
+            .flatMap { (eventsToSynchronize, lastSynchronizeTimestamp) ->
+                medicalEventsApi.synchronizeEventsForPatient(
+                    SynchronizeEventsModel(
+                        eventsToSynchronize.map { MedicalEventMapper.toWrapperFromLocal(it) },
+                        lastSynchronizeTimestamp
+                    )
+                )
+            }
+            .doOnSuccess { synchronizeEventsModel ->
+                medicalEventLocalStore
+                    .saveBlocking(
+                        synchronizeEventsModel.events.map { MedicalEventMapper.toLocalFromWrapper(it, patientUuid, false) }
+                    )
+                Preferences.lastSynchronizeEventsTimestamp = synchronizeEventsModel.synchronizeTimestamp
+            }
+            .map { true }
+            .onErrorReturnItem(false)
+    }
+
+    // endregion
 
 }

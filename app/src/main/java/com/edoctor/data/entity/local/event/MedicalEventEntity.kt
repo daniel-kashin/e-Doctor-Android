@@ -5,13 +5,19 @@ import com.pushtorefresh.storio3.sqlite.annotations.StorIOSQLiteCreator
 import com.pushtorefresh.storio3.sqlite.annotations.StorIOSQLiteType
 
 @StorIOSQLiteType(table = MedicalEventEntityContract.TABLE_NAME)
-class MedicalEventEntity @StorIOSQLiteCreator constructor(
+data class MedicalEventEntity @StorIOSQLiteCreator constructor(
 
     @StorIOSQLiteColumn(name = MedicalEventEntityContract.COLUMN_UUID, key = true)
     val uuid: String,
 
     @StorIOSQLiteColumn(name = MedicalEventEntityContract.COLUMN_TYPE)
     val type: Int,
+
+    @StorIOSQLiteColumn(name = MedicalEventEntityContract.COLUMN_IS_CHANGED_LOCALLY)
+    val isChangedLocally: Int,
+
+    @StorIOSQLiteColumn(name = MedicalEventEntityContract.COLUMN_IS_DELETED)
+    var isDeleted: Int,
 
     @StorIOSQLiteColumn(name = MedicalEventEntityContract.COLUMN_TIMESTAMP)
     var timestamp: Long,

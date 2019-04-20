@@ -77,7 +77,7 @@ class BodyParameterLocalStore(storIOSQLite: StorIOSQLite) : BaseLocalStore<BodyP
             }
         }
 
-    fun getParametersToSynchronize(
+    fun getParametersToSynchronizeForPatient(
         patientUuid: String
     ): Single<List<BodyParameterEntity>> =
         getAllByQuery(

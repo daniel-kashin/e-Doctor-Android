@@ -1,10 +1,14 @@
 package com.edoctor.data.entity.local.event
 
+import com.edoctor.data.entity.local.parameter.BodyParameterEntityContract
+
 object MedicalEventEntityContract {
     const val TABLE_NAME = "medical_events"
 
     const val COLUMN_UUID = "uuid"
     const val COLUMN_TYPE = "type"
+    const val COLUMN_IS_CHANGED_LOCALLY = "is_changed_locally"
+    const val COLUMN_IS_DELETED = "is_deleted"
     const val COLUMN_TIMESTAMP = "timestamp"
     const val COLUMN_PATIENT_UUID = "patient_uuid"
     const val COLUMN_IS_ADDED_FROM_DOCTOR = "is_added_from_doctor"
@@ -24,6 +28,8 @@ object MedicalEventEntityContract {
             $COLUMN_UUID TEXT NOT NULL PRIMARY KEY,
             $COLUMN_TIMESTAMP INTEGER NOT NULL,
             $COLUMN_TYPE INTEGER NOT NULL,
+            $COLUMN_IS_CHANGED_LOCALLY INTEGER NOT NULL,
+            $COLUMN_IS_DELETED INTEGER NOT NULL,
             $COLUMN_PATIENT_UUID TEXT NOT NULL,
             $COLUMN_IS_ADDED_FROM_DOCTOR INTEGER DEFAULT 0,
             $COLUMN_END_TIMESTAMP INTEGER,

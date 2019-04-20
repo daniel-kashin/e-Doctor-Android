@@ -192,4 +192,6 @@
     <string name="image">Изображение</string>
 
     <string name="records_synchronization_error">Ошибка синхронизации записей</string>
+
+    <string name="deleted_from_medcard">Удалено из медкарты</string>
 </resources>
