@@ -31,8 +31,8 @@ class NetworkModule(
 ) {
 
     companion object {
-        const val EDOCTOR_HTTP_ENDPOINT = "http://localhost:9095"
-        const val EDOCTOR_WS_ENDPOINT = "ws://localhost:9095"
+        const val EDOCTOR_HTTP_ENDPOINT = "http://ec2-54-86-51-57.compute-1.amazonaws.com/"
+        const val EDOCTOR_WS_ENDPOINT = "ws://ec2-54-86-51-57.compute-1.amazonaws.com/"
 
         const val NETWORK_LOG_TAG = "Retrofit"
 
@@ -42,9 +42,9 @@ class NetworkModule(
         private const val CONNECT_TIMEOUT_SEC = 30L
         private const val READ_TIMEOUT_SEC = 30L
 
-        fun getAbsoluteImageUrl(relativeImageUrl: String) = EDOCTOR_HTTP_ENDPOINT + relativeImageUrl
+        fun getAbsoluteImageUrl(relativeImageUrl: String) = EDOCTOR_HTTP_ENDPOINT.removeSuffix("/") + relativeImageUrl
 
-        fun getRelativeImageUrl(absoluteImageUrl: String) = absoluteImageUrl.removePrefix(EDOCTOR_HTTP_ENDPOINT)
+        fun getRelativeImageUrl(absoluteImageUrl: String) = absoluteImageUrl.removePrefix(EDOCTOR_HTTP_ENDPOINT.removeSuffix("/"))
 
         fun createConnectivityInterceptor(connectivityManager: ConnectivityManager) = Interceptor {
             if (connectivityManager.isNetworkAvailable()) {

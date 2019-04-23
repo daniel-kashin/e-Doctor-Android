@@ -47,7 +47,6 @@ class AccountPresenter @Inject constructor(
             .observeOn(observeScheduler)
             .doOnSubscribe { setViewState { copy(isLoading = true) } }
             .doOnSuccess { setViewState { copy(account = it, selectedAvatar = null) } }
-
             .flatMap {
                 accountRepository.getCurrentAccount(refresh = true)
                     .subscribeOn(subscribeScheduler)
