@@ -136,9 +136,11 @@ class AddOrEditParameterActivity : AppCompatActivity() {
 
             deleteButton.hide()
         } else {
-            dateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(parameter.timestamp.unixTimeToJavaTime()))
-            timeEditText.setText(SimpleDateFormat("HH:mm").format(parameter.timestamp.unixTimeToJavaTime()))
-            calendar.time = Date(parameter.timestamp)
+            parameter.timestamp.unixTimeToJavaTime().let {
+                dateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(it))
+                timeEditText.setText(SimpleDateFormat("HH:mm").format(it))
+                calendar.time = Date(it)
+            }
 
             deleteButton.setOnClickListener {
                 finishWithRemoveParameter(parameter)

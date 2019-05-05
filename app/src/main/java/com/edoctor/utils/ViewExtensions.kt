@@ -199,11 +199,6 @@ fun Activity.lazyBind(@ArrayRes id: Int) = lazy(LazyThreadSafetyMode.NONE) { res
 fun Activity.onClick(@IdRes id: Int, onClick: (View) -> Unit) = findViewById<View>(id)?.setOnClickListener(onClick)
 fun View.onClick(@IdRes id: Int, onClick: (View) -> Unit) = findViewById<View>(id)?.setOnClickListener(onClick)
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T : Fragment> T.withArguments(vararg params: Pair<String, Any?>) = apply {
-    arguments = bundleOf(*params)
-}
-
 inline val Context.displayMetrics: DisplayMetrics
     get() = resources.displayMetrics
 

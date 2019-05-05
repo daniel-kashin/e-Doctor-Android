@@ -147,7 +147,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                         endCalendar.get(Calendar.MINUTE),
                         0
                     )
-                    endDateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(endCalendar.time.let { calendar.time }))
+                    endDateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(endCalendar.time.let { endCalendar.time }))
                 },
                 endCalendar.get(Calendar.YEAR),
                 endCalendar.get(Calendar.MONTH),

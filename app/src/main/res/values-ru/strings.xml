@@ -208,5 +208,6 @@
     <string name="user_already_exists">Такой пользователь уже существует</string>
 
     <string name="account_updated">Аккаунт был изменен</string>
+    <string name="requested_for_adding">Ожидает добавления</string>
 
 </resources>
