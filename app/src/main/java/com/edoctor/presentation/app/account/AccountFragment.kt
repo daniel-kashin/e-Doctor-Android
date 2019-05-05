@@ -348,6 +348,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             is Event.ShowNoNetworkException -> context.toast(getString(R.string.network_error_message))
             is Event.ShowImageUploadException -> context.toast(R.string.image_upload_error_message)
             is Event.ShowUnknownException -> context.toast(R.string.unhandled_error_message)
+            is Event.ShowChangesSavedEvent -> context.toast(R.string.account_updated)
         }
     }
 

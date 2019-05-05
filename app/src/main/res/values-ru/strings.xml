@@ -202,4 +202,11 @@
     <string name="empty_requested_events_for_patient">Врач пока не отправил вам ни одной записи</string>
     <string name="empty_requested_events_for_doctor">Вы пока не отправили пациенту ни одной записи</string>
     <string name="empty_events_for_doctor">Пациент не добавил ни одного события</string>
+
+    <string name="wrong_password">Неверный пароль</string>
+    <string name="user_not_found">Пользователь не найден</string>
+    <string name="user_already_exists">Такой пользователь уже существует</string>
+
+    <string name="account_updated">Аккаунт был изменен</string>
+
 </resources>

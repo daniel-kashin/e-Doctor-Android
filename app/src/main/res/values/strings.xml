@@ -247,4 +247,11 @@
     <string name="empty_requested_events_for_patient">Doctor did not send you any records yet</string>
     <string name="empty_requested_events_for_doctor">You did not send patient any records yet</string>
     <string name="empty_events_for_doctor">Patient did not add any events</string>
+
+    <string name="wrong_password">Wrong password</string>
+    <string name="user_not_found">User not found</string>
+    <string name="user_already_exists">Such user already exists</string>
+
+    <string name="account_updated">Account was updated</string>
+
 </resources>

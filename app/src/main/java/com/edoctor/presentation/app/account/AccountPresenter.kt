@@ -111,6 +111,7 @@ class AccountPresenter @Inject constructor(
             .doOnSubscribe { setViewState { copy(account = newAccount, isLoading = true) } }
             .subscribe({
                 setViewState { copy(account = it, selectedAvatar = null, isLoading = false) }
+                sendEvent(Event.ShowChangesSavedEvent)
             }, { throwable ->
                 setViewState { copy(account = oldAccount, isLoading = false) }
                 when {
@@ -157,6 +158,7 @@ class AccountPresenter @Inject constructor(
         object ShowNoNetworkException : Event()
         object ShowImageUploadException : Event()
         object ShowUnknownException : Event()
+        object ShowChangesSavedEvent : Event()
     }
 
 }

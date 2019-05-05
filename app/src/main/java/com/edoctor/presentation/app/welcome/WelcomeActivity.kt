@@ -103,12 +103,13 @@ class WelcomeActivity : BaseActivity<WelcomePresenter, ViewState, Event>("Welcom
 
     override fun showEvent(event: Event) {
         when (event) {
-            is Event.NoInternetException -> toast("Нет интернета")
-            is Event.PasswordIsWrong -> toast("Неверный пароль")
-            is Event.UserNotFound -> toast("Пользователь с данной почтой не найден")
-            is Event.UserAlreadyExists -> toast("Пользователь с данной почтой уже существует")
-            is Event.UnknownException -> toast("Необычная ошибка")
+            is Event.NoInternetException -> toast(getString(R.string.network_error_message))
+            is Event.PasswordIsWrong -> toast(getString(R.string.wrong_password))
+            is Event.UserNotFound -> toast(getString(R.string.user_not_found))
+            is Event.UserAlreadyExists -> toast(getString(R.string.user_already_exists))
+            is Event.UnknownException -> toast(getString(R.string.unhandled_error_message))
             is Event.AuthSuccessEvent -> finish()
         }
     }
+
 }
