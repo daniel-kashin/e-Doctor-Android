@@ -255,4 +255,7 @@
 
     <string name="account_updated">Account was updated</string>
 
+    <string name="share_parameter">Share parameter</string>
+    <string name="share_event">Share event</string>
+
 </resources>

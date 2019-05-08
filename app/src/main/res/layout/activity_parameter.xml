@@ -12,6 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
+            app:layout_constraintTop_toTopOf="parent"
             android:elevation="8dp"
             android:focusableInTouchMode="true"
             android:contentInsetLeft="0dp"

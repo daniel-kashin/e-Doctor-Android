@@ -210,4 +210,7 @@
     <string name="account_updated">Аккаунт был изменен</string>
     <string name="requested_for_adding">Ожидает добавления</string>
 
+    <string name="share_parameter">Отправьте параметр</string>
+    <string name="share_event">Отправьте событие</string>
+
 </resources>

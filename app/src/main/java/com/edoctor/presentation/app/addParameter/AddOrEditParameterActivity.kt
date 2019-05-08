@@ -12,6 +12,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
@@ -37,6 +39,8 @@ class AddOrEditParameterActivity : AppCompatActivity() {
     }
 
     private val toolbar by lazyFind<Toolbar>(R.id.toolbar)
+    private val toolbarPrimaryText by lazyFind<TextView>(R.id.toolbar_primary_text)
+    private val iconShare by lazyFind<ImageView>(R.id.icon_share)
 
     private val dateEditText by lazyFind<AppCompatEditText>(R.id.date)
     private val timeEditText by lazyFind<AppCompatEditText>(R.id.time)
@@ -64,7 +68,27 @@ class AddOrEditParameterActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             setBackgroundDrawable(ColorDrawable(Color.WHITE))
-            title = getString(R.string.parameter)
+        }
+        toolbarPrimaryText.text = getString(R.string.parameter)
+
+        iconShare.setOnClickListener {
+            val valuesText = if (secondValueLayout.isVisible) {
+                "${firstValueEditText.hint}: ${firstValueEditText.text} ${unitEditText.text}\n" +
+                        "${secondValueEditText.hint}: ${secondValueEditText.text} ${unitEditText.text}"
+            } else {
+                "${firstValueEditText.text} ${unitEditText.text}"
+            }
+
+            val text = "${nameEditText.text}\n" +
+                    "${dateEditText.text} ${timeEditText.text}\n" +
+                    valuesText
+
+            ShareUtils.shareText(
+                text,
+                getString(R.string.parameter),
+                getString(R.string.share_parameter),
+                this
+            )
         }
 
         dateEditText.isFocusable = false
@@ -113,7 +137,8 @@ class AddOrEditParameterActivity : AppCompatActivity() {
         }
 
         val parameter = intent.getSerializableExtra(PARAMETER_PARAM) as? BodyParameterModel
-        val parameterType = (intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as? BodyParameterType) ?: toType(parameter!!)
+        val parameterType =
+            (intent.getSerializableExtra(PARAMETER_TYPE_PARAM) as? BodyParameterType) ?: toType(parameter!!)
         val readOnly = intent.getBooleanExtra(READ_ONLY_PARAM, true)
 
         if (readOnly) {
