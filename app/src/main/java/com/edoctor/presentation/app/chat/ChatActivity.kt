@@ -158,7 +158,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             presenter.currentUser.uuid,
             holdersConfig,
             ImageLoader { imageView, url, _ ->
-                Glide.with(imageView.context)
+                GlideApp.with(imageView.context)
                     .load(url)
                     .apply(
                         RequestOptions()

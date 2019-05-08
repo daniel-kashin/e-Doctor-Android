@@ -158,7 +158,7 @@ class PatientActivity : BaseActivity<PatientPresenter, ViewState, Event>("Patien
 
     @SuppressLint("SetTextI18n")
     private fun showPatientInfo(patient: PatientModel) {
-        Glide.with(this)
+        GlideApp.with(this)
             .load(patient.relativeImageUrl)
             .apply(
                 RequestOptions()

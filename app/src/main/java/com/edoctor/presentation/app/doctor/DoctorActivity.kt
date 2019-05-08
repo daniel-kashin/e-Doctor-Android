@@ -170,7 +170,7 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
 
     @SuppressLint("SetTextI18n")
     private fun showDoctorInfo(doctor: DoctorModel) {
-        Glide.with(this)
+        GlideApp.with(this)
             .load(doctor.relativeImageUrl)
             .apply(
                 RequestOptions()

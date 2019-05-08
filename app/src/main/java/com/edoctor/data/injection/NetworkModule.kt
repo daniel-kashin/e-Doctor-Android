@@ -32,8 +32,8 @@ class NetworkModule(
 ) {
 
     companion object {
-        const val EDOCTOR_HTTP_ENDPOINT = "https://ec2-54-86-51-57.compute-1.amazonaws.com/"
-        const val EDOCTOR_WS_ENDPOINT = "wss://ec2-54-86-51-57.compute-1.amazonaws.com/"
+        const val EDOCTOR_HTTP_ENDPOINT = "https://ec2-54-86-51-57.compute-1.amazonaws.com:443/"
+        const val EDOCTOR_WS_ENDPOINT = "wss://ec2-54-86-51-57.compute-1.amazonaws.com:443/"
 
         const val NETWORK_LOG_TAG = "Retrofit"
 

@@ -17,11 +17,8 @@ import com.edoctor.presentation.app.chat.ChatActivity
 import com.edoctor.presentation.app.conversations.ConversationsPresenter.Event
 import com.edoctor.presentation.app.conversations.ConversationsPresenter.ViewState
 import com.edoctor.presentation.architecture.fragment.BaseFragment
-import com.edoctor.utils.DialogsAdapter
+import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
-import com.edoctor.utils.hide
-import com.edoctor.utils.show
-import com.edoctor.utils.toast
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.dialogs.DialogsList
 import javax.inject.Inject
@@ -57,7 +54,7 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
         super.onCreate(savedInstanceState)
         dialogsAdapter = DialogsAdapter(
             ImageLoader { imageView, url, _ ->
-                Glide.with(imageView.context)
+                GlideApp.with(imageView.context)
                     .load(url)
                     .apply(
                         RequestOptions()

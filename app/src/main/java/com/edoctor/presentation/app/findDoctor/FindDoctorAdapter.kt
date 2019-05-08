@@ -12,6 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.presentation.app.findDoctor.FindDoctorAdapter.FindDoctorViewHolder
+import com.edoctor.utils.GlideApp
 import com.edoctor.utils.lazyFind
 
 class FindDoctorAdapter : RecyclerView.Adapter<FindDoctorViewHolder>() {
@@ -60,7 +61,7 @@ class FindDoctorAdapter : RecyclerView.Adapter<FindDoctorViewHolder>() {
                     else -> getString(R.string.doctor_no_category)
                 }
             }
-            Glide.with(rootView.context)
+            GlideApp.with(rootView.context)
                 .load(doctor.relativeImageUrl)
                 .apply(
                     RequestOptions()

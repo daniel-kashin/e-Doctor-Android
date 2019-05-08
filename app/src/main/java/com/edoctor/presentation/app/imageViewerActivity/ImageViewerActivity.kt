@@ -52,7 +52,7 @@ class ImageViewerActivity : AppCompatActivity() {
     private fun showImage(imageUrl: String) {
         loader.show()
 
-        Glide.with(imageView.context)
+        GlideApp.with(imageView.context)
             .load(imageUrl)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
