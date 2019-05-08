@@ -86,7 +86,7 @@ class AddOrEditParameterActivity : AppCompatActivity() {
             ShareUtils.shareText(
                 text,
                 getString(R.string.parameter),
-                getString(R.string.share_parameter),
+                getString(R.string.share_using),
                 this
             )
         }
