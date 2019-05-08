@@ -210,6 +210,6 @@
     <string name="account_updated">Аккаунт был изменен</string>
     <string name="requested_for_adding">Ожидает добавления</string>
 
-    <string name="share_using">Отправьте с помощью:</string>
+    <string name="share_using">Поделиться с помощью:</string>
 
 </resources>
