@@ -17,8 +17,8 @@
     <string name="open_gps_settings_request_title">Open GPS settings?</string>
     <string name="open_gps_settings_request_message">Please, turn on GPS to be able to see your location on the map.</string>
 
-    <string name="yes">YES</string>
-    <string name="no">NO</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="ok" translatable="false">OK</string>
 
     <string name="try_again">Try again</string>
@@ -52,6 +52,8 @@
     <string name="city_hint">City</string>
     <string name="gender_hint">Gender</string>
     <string name="blood_group_hint">Blood group</string>
+    <string name="ready_for_consultation_hint">Ready for consultation now</string>
+    <string name="ready_for_audio_hint">Ready to use audio and video</string>
     <string name="years_of_experience_hint">Years of practical experience</string>
     <string name="category_hint">Category</string>
     <string name="specialization_hint">Specialization</string>
@@ -131,6 +133,7 @@
 
     <string name="main_information">Main information</string>
     <string name="career">Career</string>
+    <string name="consultations_settings">Consultations</string>
 
     <string name="incoming_call">Incoming call</string>
     <string name="outcoming_call">Outcoming call</string>
@@ -256,5 +259,8 @@
     <string name="account_updated">Account was updated</string>
 
     <string name="share_using">Share using:</string>
+
+    <string name="audio">Audio</string>
+    <string name="audio_plus_video">Audio + Video</string>
 
 </resources>

@@ -14,8 +14,8 @@
     <string name="open_permission_settings_request_message">Пожалуйста, включите приложению доступ к геолокации, чтобы увидеть свое местоположение на карте.</string>
     <string name="open_gps_settings_request_title">Открыть настройки геолокации?</string>
     <string name="open_gps_settings_request_message">Пожалуйста, включите геолокацию, чтобы увидеть свое местоположение на карте.</string>
-    <string name="yes">ДА</string>
-    <string name="no">НЕТ</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
     <string name="try_again">Попробовать еще раз</string>
     <string name="network_error_message">Пожалуйста, проверьте соединение с интернетом</string>
     <string name="image_upload_error_message">Ошибка загрузки изображения</string>
@@ -211,5 +211,11 @@
     <string name="requested_for_adding">Ожидает добавления</string>
 
     <string name="share_using">Поделиться с помощью:</string>
+    <string name="consultations_settings">Консультации</string>
+    <string name="ready_for_consultation_hint">Готов провести консультацию сейчас</string>
+    <string name="ready_for_audio_hint">Готов использовать аудио- и видеосвязь</string>
+
+    <string name="audio">Аудио</string>
+    <string name="audio_plus_video">Аудио + Видео</string>
 
 </resources>

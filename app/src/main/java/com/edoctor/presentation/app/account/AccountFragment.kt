@@ -61,12 +61,17 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     private var isMale: Boolean? = null
     private var categoryNumber: Int? = null
     private var bloodGroup: Int? = null
+    private var isReadyForConversation: Boolean? = null
+    private var isReadyForAudio: Int? = null
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var contentLayout: ConstraintLayout
 
     private lateinit var imageView: ImageView
     private lateinit var imageViewPlaceholder: ImageView
+    private lateinit var labelConsultation: TextView
+    private lateinit var readyForConversationEditText: TextInputEditText
+    private lateinit var readyForAudioEditText: TextInputEditText
     private lateinit var cityEditText: TextInputEditText
     private lateinit var fullNameEditText: TextInputEditText
     private lateinit var dateOfBirthEditText: TextInputEditText
@@ -89,7 +94,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     private val doctorEditTexts by lazy {
         listOf(
             yearsOfExperienceEditText, categoryEditText, specializationEditText, clinicalInterestsEditText,
-            educationEditText, workExperienceEditText, trainingsEditText
+            educationEditText, workExperienceEditText, trainingsEditText, readyForConversationEditText,
+            readyForAudioEditText
         )
     }
 
@@ -117,6 +123,9 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout)
             imageView = findViewById(R.id.image_view)
             imageViewPlaceholder = findViewById(R.id.image_view_placeholder)
+            labelConsultation = findViewById(R.id.label_consultations_settings)
+            readyForConversationEditText = findViewById(R.id.ready_for_consultation)
+            readyForAudioEditText = findViewById(R.id.ready_for_audio)
             fullNameEditText = findViewById(R.id.full_name)
             dateOfBirthEditText = findViewById(R.id.date_of_birth)
             genderEditText = findViewById(R.id.gender)
@@ -208,7 +217,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             PopupMenu(bloodGroupEditText.context, bloodGroupEditText).apply {
                 menuInflater.inflate(R.menu.blood_group, menu)
                 setOnMenuItemClickListener { item ->
-                    bloodGroupEditText.setText( item.title)
+                    bloodGroupEditText.setText(item.title)
                     bloodGroup = when (item.itemId) {
                         R.id.first_negative -> 0
                         R.id.first_positive -> 1
@@ -219,6 +228,37 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                         R.id.fourth_negative -> 6
                         R.id.fourth_positive -> 7
                         else -> null
+                    }
+                    true
+                }
+                show()
+            }
+        }
+
+        readyForConversationEditText.setOnClickListener {
+            PopupMenu(readyForConversationEditText.context, readyForConversationEditText).apply {
+                menuInflater.inflate(R.menu.is_ready_for_conversation, menu)
+                setOnMenuItemClickListener { item ->
+                    readyForConversationEditText.setText(item.title)
+                    isReadyForConversation = when (item.itemId) {
+                        R.id.yes -> true
+                        else -> false
+                    }
+                    true
+                }
+                show()
+            }
+        }
+
+        readyForAudioEditText.setOnClickListener {
+            PopupMenu(readyForAudioEditText.context, readyForAudioEditText).apply {
+                menuInflater.inflate(R.menu.is_ready_for_audio, menu)
+                setOnMenuItemClickListener { item ->
+                    readyForAudioEditText.setText(item.title)
+                    isReadyForAudio = when (item.itemId) {
+                        R.id.audio -> 1
+                        R.id.audio_plus_video -> 2
+                        else -> 0
                     }
                     true
                 }
@@ -237,6 +277,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         dateOfBirthTimestamp = viewState.account?.dateOfBirthTimestamp
         categoryNumber = (viewState.account as? DoctorModel)?.category
         bloodGroup = (viewState.account as? PatientModel)?.bloodGroup
+        isReadyForConversation = (viewState.account as? DoctorModel)?.isReadyForConsultation
+        isReadyForAudio = (viewState.account as? DoctorModel)?.isReadyForAudio
 
         swipeRefreshLayout.isRefreshing = viewState.isLoading
 
@@ -248,6 +290,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                     dateOfBirthTimestamp = dateOfBirthTimestamp,
                     isMale = isMale,
                     bloodGroup = bloodGroup,
+                    isReadyForConsultation = isReadyForConversation,
+                    isReadyForAudio = isReadyForAudio,
                     yearsOfExperience = yearsOfExperienceEditText.text?.toString()?.toIntOrNull(),
                     category = categoryNumber,
                     specialization = specializationEditText.text?.toString()?.takeIfNotEmpty(),
@@ -262,26 +306,6 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         if (viewState.selectedAvatar != null) {
             GlideApp.with(imageView.context)
                 .load(viewState.selectedAvatar)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
-                })
                 .apply(
                     RequestOptions()
                         .centerCrop()
@@ -294,26 +318,6 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         } else {
             GlideApp.with(imageView.context)
                 .load(viewState.account?.relativeImageUrl)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
-                })
                 .apply(
                     RequestOptions()
                         .centerCrop()
@@ -348,15 +352,31 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
 
             if (viewState.account is DoctorModel) {
                 labelCareer.show()
+                labelConsultation.show()
                 doctorEditTexts.forEach { (it.parent.parent as View).show() }
                 patientEditTexts.forEach { (it.parent.parent as View).hide() }
                 yearsOfExperienceEditText.setText(viewState.account.yearsOfExperience?.toString())
-                categoryEditText.setText(when (viewState.account.category) {
-                    0 -> getString(R.string.highest_category)
-                    1 -> getString(R.string.first_category)
-                    2 -> getString(R.string.second_category)
-                    else -> null
-                })
+                categoryEditText.setText(
+                    when (viewState.account.category) {
+                        0 -> getString(R.string.highest_category)
+                        1 -> getString(R.string.first_category)
+                        2 -> getString(R.string.second_category)
+                        else -> null
+                    }
+                )
+                readyForConversationEditText.setText(
+                    when (viewState.account.isReadyForConsultation) {
+                        true -> getString(R.string.yes)
+                        false -> getString(R.string.no)
+                    }
+                )
+                readyForAudioEditText.setText(
+                    when (viewState.account.isReadyForAudio) {
+                        1 -> getString(R.string.audio)
+                        2 -> getString(R.string.audio_plus_video)
+                        else -> getString(R.string.no)
+                    }
+                )
                 specializationEditText.setText(viewState.account.specialization)
                 clinicalInterestsEditText.setText(viewState.account.clinicalInterests)
                 educationEditText.setText(viewState.account.education)
@@ -364,6 +384,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                 trainingsEditText.setText(viewState.account.trainings)
             } else if (viewState.account is PatientModel) {
                 labelCareer.hide()
+                labelConsultation.hide()
                 doctorEditTexts.forEach { (it.parent.parent as View).hide() }
                 patientEditTexts.forEach { (it.parent.parent as View).show() }
                 bloodGroupEditText.setText(

@@ -48,6 +48,66 @@
                     android:backgroundTint="@color/gray"/>
 
             <TextView
+                    android:id="@+id/label_consultations_settings"
+                    android:layout_marginTop="25dp"
+                    android:textSize="30sp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="11dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:text="@string/consultations_settings"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/card_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ready_for_consultation_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    app:errorEnabled="false"
+                    app:layout_constraintTop_toBottomOf="@id/label_consultations_settings"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ready_for_consultation"
+                        android:inputType="textNoSuggestions|text"
+                        android:focusable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/ready_for_consultation_hint"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ready_for_audio_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    app:errorEnabled="false"
+                    app:layout_constraintTop_toBottomOf="@id/ready_for_consultation_layout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ready_for_audio"
+                        android:inputType="textNoSuggestions|text"
+                        android:focusable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/ready_for_audio_hint"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
                     android:id="@+id/label_main"
                     android:layout_marginTop="25dp"
                     android:textSize="30sp"
@@ -59,7 +119,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/card_image_view"
+                    app:layout_constraintTop_toBottomOf="@id/ready_for_audio_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
