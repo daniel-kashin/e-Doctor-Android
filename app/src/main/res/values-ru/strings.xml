@@ -212,10 +212,14 @@
 
     <string name="share_using">Поделиться с помощью:</string>
     <string name="consultations_settings">Консультации</string>
-    <string name="ready_for_consultation_hint">Готов провести консультацию сейчас</string>
-    <string name="ready_for_audio_hint">Готов использовать аудио- и видеосвязь</string>
+    <string name="ready_for_consultation_now">Готов провести консультацию сейчас</string>
+    <string name="ready_for_consultation">Готов провести консультацию</string>
+    <string name="not_ready_for_consultation_now">Не готов провести консультацию сейчас</string>
+    <string name="ready_for_audio_and_video">Готов использовать Аудио и Видео</string>
+    <string name="ready_for_audio">Готов использовать Аудио</string>
+    <string name="not_ready_for_audio_or_video">Не готов использовать Аудио или Видео</string>
 
     <string name="audio">Аудио</string>
-    <string name="audio_plus_video">Аудио + Видео</string>
+    <string name="audio_plus_video">Аудио и Видео</string>
 
 </resources>

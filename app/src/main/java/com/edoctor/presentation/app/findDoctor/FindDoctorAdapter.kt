@@ -14,6 +14,7 @@ import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.presentation.app.findDoctor.FindDoctorAdapter.FindDoctorViewHolder
 import com.edoctor.utils.GlideApp
 import com.edoctor.utils.lazyFind
+import com.edoctor.utils.show
 
 class FindDoctorAdapter : RecyclerView.Adapter<FindDoctorViewHolder>() {
 
@@ -47,11 +48,13 @@ class FindDoctorAdapter : RecyclerView.Adapter<FindDoctorViewHolder>() {
 
         private val imageView by rootView.lazyFind<ImageView>(R.id.image_view)
         private val name by rootView.lazyFind<TextView>(R.id.name)
+        private val readyForConsultationNow by rootView.lazyFind<TextView>(R.id.ready_for_consultation)
         private val specialization by rootView.lazyFind<TextView>(R.id.specialization)
         private val category by rootView.lazyFind<TextView>(R.id.category)
 
         fun bind(doctor: DoctorModel) {
             name.text = doctor.fullName
+            readyForConsultationNow.show(doctor.isReadyForConsultation)
             specialization.text = doctor.specialization
             category.text = rootView.context.run {
                 when (doctor.category) {

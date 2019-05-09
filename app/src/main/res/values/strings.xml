@@ -52,8 +52,8 @@
     <string name="city_hint">City</string>
     <string name="gender_hint">Gender</string>
     <string name="blood_group_hint">Blood group</string>
-    <string name="ready_for_consultation_hint">Ready for consultation now</string>
-    <string name="ready_for_audio_hint">Ready to use audio and video</string>
+    <string name="ready_for_consultation_now">Ready for consultation now</string>
+    <string name="ready_for_audio_and_video">Ready to use Audio and Video</string>
     <string name="years_of_experience_hint">Years of practical experience</string>
     <string name="category_hint">Category</string>
     <string name="specialization_hint">Specialization</string>
@@ -261,6 +261,10 @@
     <string name="share_using">Share using:</string>
 
     <string name="audio">Audio</string>
-    <string name="audio_plus_video">Audio + Video</string>
+    <string name="audio_plus_video">Audio And Video</string>
+    <string name="ready_for_consultation">Ready for consultation</string>
+    <string name="not_ready_for_consultation_now">Not ready for consultation now</string>
+    <string name="ready_for_audio">Ready to use Audio</string>
+    <string name="not_ready_for_audio_or_video">Not ready to use Audio or Video</string>
 
 </resources>

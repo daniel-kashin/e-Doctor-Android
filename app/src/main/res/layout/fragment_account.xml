@@ -81,7 +81,7 @@
                         android:focusable="false"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/ready_for_consultation_hint"/>
+                        android:hint="@string/ready_for_consultation_now"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -103,7 +103,7 @@
                         android:focusable="false"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/ready_for_audio_hint"/>
+                        android:hint="@string/ready_for_audio_and_video"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
