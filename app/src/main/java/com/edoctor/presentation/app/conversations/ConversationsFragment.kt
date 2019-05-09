@@ -19,6 +19,7 @@ import com.edoctor.presentation.app.conversations.ConversationsPresenter.ViewSta
 import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
+import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.dialogs.DialogsList
 import javax.inject.Inject
@@ -54,14 +55,11 @@ class ConversationsFragment : BaseFragment<ConversationsPresenter, ViewState, Ev
         super.onCreate(savedInstanceState)
         dialogsAdapter = DialogsAdapter(
             ImageLoader { imageView, url, _ ->
-                GlideApp.with(imageView.context)
+                PicassoProvider.get(imageView.context)
                     .load(url)
-                    .apply(
-                        RequestOptions()
-                            .centerCrop()
-                            .placeholder(R.color.lightLightGrey)
-                            .dontAnimate()
-                    )
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.color.lightLightGrey)
                     .into(imageView)
             }
         )

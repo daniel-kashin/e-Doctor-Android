@@ -15,6 +15,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
 import com.edoctor.utils.*
 import com.github.chrisbanes.photoview.PhotoView
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
+import java.lang.Exception
 
 class ImageViewerActivity : AppCompatActivity() {
 
@@ -52,38 +55,22 @@ class ImageViewerActivity : AppCompatActivity() {
     private fun showImage(imageUrl: String) {
         loader.show()
 
-        GlideApp.with(imageView.context)
+        PicassoProvider.get(imageView.context)
             .load(imageUrl)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: com.bumptech.glide.request.target.Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
+            .fit()
+            .centerInside()
+            .placeholder(R.color.lightLightGrey)
+            .into(imageView, object : Callback {
+                override fun onSuccess() {
+                    loader.hide()
+                }
+
+                override fun onError(e: Exception?) {
                     showErrorView()
                     loader.hide()
                     toast(R.string.unhandled_error_message, Duration.LONG)
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: com.bumptech.glide.request.target.Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    loader.hide()
-                    return false
                 }
             })
-            .apply(
-                RequestOptions()
-                    .fitCenter()
-                    .dontAnimate()
-            )
-            .into(imageView)
     }
 
     private fun showErrorView() {

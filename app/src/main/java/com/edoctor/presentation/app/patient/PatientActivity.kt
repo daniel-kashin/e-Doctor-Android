@@ -30,6 +30,9 @@ import com.edoctor.presentation.architecture.activity.BaseActivity
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.google.android.material.textfield.TextInputEditText
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
+import java.lang.Exception
 import javax.inject.Inject
 
 class PatientActivity : BaseActivity<PatientPresenter, ViewState, Event>("PatientActivity") {
@@ -158,15 +161,10 @@ class PatientActivity : BaseActivity<PatientPresenter, ViewState, Event>("Patien
 
     @SuppressLint("SetTextI18n")
     private fun showPatientInfo(patient: PatientModel) {
-        GlideApp.with(this)
+        PicassoProvider.get(this)
             .load(patient.relativeImageUrl)
-            .apply(
-                RequestOptions()
-                    .centerCrop()
-                    .placeholder(R.color.lightLightGrey)
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            )
+            .fit()
+            .centerCrop()
             .into(imageView)
 
         name.text = patient.fullName ?: getString(R.string.name_not_set)

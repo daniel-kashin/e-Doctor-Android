@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.presentation.app.findDoctor.FindDoctorAdapter.FindDoctorViewHolder
-import com.edoctor.utils.GlideApp
+import com.edoctor.utils.PicassoProvider
 import com.edoctor.utils.lazyFind
 import com.edoctor.utils.show
+import com.squareup.picasso.Picasso
 
 class FindDoctorAdapter : RecyclerView.Adapter<FindDoctorViewHolder>() {
 
@@ -64,15 +64,11 @@ class FindDoctorAdapter : RecyclerView.Adapter<FindDoctorViewHolder>() {
                     else -> getString(R.string.doctor_no_category)
                 }
             }
-            GlideApp.with(rootView.context)
+            PicassoProvider.get(rootView.context)
                 .load(doctor.relativeImageUrl)
-                .apply(
-                    RequestOptions()
-                        .centerCrop()
-                        .placeholder(R.color.lightLightGrey)
-                        .dontAnimate()
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                )
+                .fit()
+                .centerCrop()
+                .placeholder(R.color.lightLightGrey)
                 .into(imageView)
 
             rootView.setOnClickListener {

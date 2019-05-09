@@ -40,6 +40,7 @@ import com.edoctor.presentation.views.CallingView.CallType.OUTCOMING
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.facebook.react.modules.core.PermissionListener
+import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
@@ -158,14 +159,11 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
             presenter.currentUser.uuid,
             holdersConfig,
             ImageLoader { imageView, url, _ ->
-                GlideApp.with(imageView.context)
+                PicassoProvider.get(imageView.context)
                     .load(url)
-                    .apply(
-                        RequestOptions()
-                            .centerCrop()
-                            .placeholder(R.color.lightLightGrey)
-                            .dontAnimate()
-                    )
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.color.lightLightGrey)
                     .into(imageView)
             }
         )

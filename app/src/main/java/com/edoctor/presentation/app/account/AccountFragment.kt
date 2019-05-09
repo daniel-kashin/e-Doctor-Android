@@ -34,6 +34,9 @@ import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.google.android.material.textfield.TextInputEditText
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.NetworkPolicy
+import com.squareup.picasso.Picasso
 import com.tbruyelle.rxpermissions.RxPermissions
 import java.text.SimpleDateFormat
 import java.util.*
@@ -304,27 +307,20 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         }
 
         if (viewState.selectedAvatar != null) {
-            GlideApp.with(imageView.context)
+            PicassoProvider.get(imageView.context)
                 .load(viewState.selectedAvatar)
-                .apply(
-                    RequestOptions()
-                        .centerCrop()
-                        .placeholder(R.color.lightLightGrey)
-                        .dontAnimate()
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                )
+                .fit()
+                .centerCrop()
+                .placeholder(R.color.lightLightGrey)
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .networkPolicy(NetworkPolicy.OFFLINE)
                 .into(imageView)
         } else {
-            GlideApp.with(imageView.context)
+            PicassoProvider.get(imageView.context)
                 .load(viewState.account?.relativeImageUrl)
-                .apply(
-                    RequestOptions()
-                        .centerCrop()
-                        .placeholder(R.color.lightLightGrey)
-                        .dontAnimate()
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                )
+                .fit()
+                .centerCrop()
+                .placeholder(R.color.lightLightGrey)
                 .into(imageView)
         }
 

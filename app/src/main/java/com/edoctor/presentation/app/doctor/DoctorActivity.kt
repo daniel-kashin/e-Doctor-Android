@@ -15,8 +15,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
@@ -172,15 +170,11 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
 
     @SuppressLint("SetTextI18n")
     private fun showDoctorInfo(doctor: DoctorModel) {
-        GlideApp.with(this)
+        PicassoProvider.get(this)
             .load(doctor.relativeImageUrl)
-            .apply(
-                RequestOptions()
-                    .centerCrop()
-                    .placeholder(R.color.lightLightGrey)
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            )
+            .fit()
+            .centerCrop()
+            .placeholder(R.color.lightLightGrey)
             .into(imageView)
 
         name.text = doctor.fullName ?: getString(R.string.name_not_set)

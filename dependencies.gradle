@@ -14,7 +14,7 @@ ext {
     awsVersion = '2.6.30'
     leakCanaryVersion = '1.5.1'
     blockCanaryVersion = '1.5.0'
-    glideVersion = '4.9.0'
+    glideVersion = '4.7.1'
     scarletVersion = '0.2.4-alpha1'
 
     // Testing
