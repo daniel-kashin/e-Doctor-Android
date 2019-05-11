@@ -118,7 +118,10 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
 
         adapter = ParameterAdapter()
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false).apply {
+            reverseLayout = true
+            stackFromEnd = true
+        }
         recyclerView.addItemDecoration(SimpleDividerItemDecoration(this))
     }
 
@@ -145,9 +148,7 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
                 .startForResult(REQUEST_ADD_OR_EDIT_PARAMETER)
         }
 
-        val firstParameter = parameters.getOrNull(0)
-
-        val unit = when (firstParameter) {
+        val unit = when (val firstParameter = parameters.getOrNull(0)) {
             is HeightModel -> getString(R.string.cm)
             is WeightModel -> getString(R.string.kg)
             is BloodPressureModel -> getString(R.string.mmHg)
@@ -157,7 +158,6 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
             is CustomBodyParameterModel -> firstParameter.unit
             else -> null
         }
-
 
         lineChart.run {
             val entries = parameters.map { Entry(it.timestamp.toFloat(), it.value.toFloat()) }
@@ -236,6 +236,9 @@ class ParameterActivity : BaseActivity<ParameterPresenter, ViewState, Event>("Pa
     }
 
     override fun showEvent(event: Event) {
+        when (event) {
+            Event.ShowUnhandledErrorEvent -> toast(getString(R.string.unhandled_error_message))
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

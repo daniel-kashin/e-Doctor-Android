@@ -13,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
@@ -36,6 +38,8 @@ class AddOrEditEventActivity : AppCompatActivity() {
     }
 
     private val toolbar by lazyFind<Toolbar>(R.id.toolbar)
+    private val toolbarPrimaryText by lazyFind<TextView>(R.id.toolbar_primary_text)
+    private val iconShare by lazyFind<ImageView>(R.id.icon_share)
 
     private val dateEditText by lazyFind<AppCompatEditText>(R.id.date)
     private val timeEditText by lazyFind<AppCompatEditText>(R.id.time)
@@ -79,15 +83,42 @@ class AddOrEditEventActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             setBackgroundDrawable(ColorDrawable(Color.WHITE))
-            title = when (eventType) {
-                is MedicalEventType.Analysis -> getString(R.string.analysis)
-                is MedicalEventType.Allergy -> getString(R.string.allergy)
-                is MedicalEventType.Note -> getString(R.string.note)
-                is MedicalEventType.Vaccination -> getString(R.string.vaccination)
-                is MedicalEventType.Procedure -> getString(R.string.procedure)
-                is MedicalEventType.DoctorVisit -> getString(R.string.doctor_visit)
-                is MedicalEventType.Sickness -> getString(R.string.sickness)
+        }
+        toolbarPrimaryText.text = when (eventType) {
+            is MedicalEventType.Analysis -> getString(R.string.analysis)
+            is MedicalEventType.Allergy -> getString(R.string.allergy)
+            is MedicalEventType.Note -> getString(R.string.note)
+            is MedicalEventType.Vaccination -> getString(R.string.vaccination)
+            is MedicalEventType.Procedure -> getString(R.string.procedure)
+            is MedicalEventType.DoctorVisit -> getString(R.string.doctor_visit)
+            is MedicalEventType.Sickness -> getString(R.string.sickness)
+        }
+
+        iconShare.setOnClickListener {
+            val datesText = if (endDateEditText.getParentView()?.isVisible == true) {
+                "\n${getString(R.string.start_date)}: ${dateEditText.text} ${timeEditText.text}" +
+                        "\n${getString(R.string.end_date)}: ${endDateEditText.text} ${endTimeEditText.text}"
+            } else {
+                "\n${dateEditText.text} ${timeEditText.text}"
             }
+
+            val text = "${toolbarPrimaryText.text}" +
+                    datesText +
+                    nameEditText.hintAndValueIfFilledOrEmpty() +
+                    clinicEditText.hintAndValueIfFilledOrEmpty() +
+                    doctorNameEditText.hintAndValueIfFilledOrEmpty() +
+                    doctorSpecializationEditText.hintAndValueIfFilledOrEmpty() +
+                    symptomsEditText.hintAndValueIfFilledOrEmpty() +
+                    diagnosisEditText.hintAndValueIfFilledOrEmpty() +
+                    recipeEditText.hintAndValueIfFilledOrEmpty() +
+                    commentEditText.hintAndValueIfFilledOrEmpty()
+
+            ShareUtils.shareText(
+                text,
+                getString(R.string.parameter),
+                getString(R.string.share_using),
+                this
+            )
         }
 
         dateEditText.isFocusable = false
@@ -147,7 +178,7 @@ class AddOrEditEventActivity : AppCompatActivity() {
                         endCalendar.get(Calendar.MINUTE),
                         0
                     )
-                    endDateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(endCalendar.time.let { calendar.time }))
+                    endDateEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(endCalendar.time.let { endCalendar.time }))
                 },
                 endCalendar.get(Calendar.YEAR),
                 endCalendar.get(Calendar.MONTH),
@@ -517,6 +548,14 @@ class AddOrEditEventActivity : AppCompatActivity() {
         )
         finish()
     }
+
+    private fun AppCompatEditText.hintAndValueIfFilledOrEmpty(): String =
+        if ((parent.parent as? TextInputLayout)?.isVisible == true && !text.isNullOrEmpty()) {
+            "\n$hint: $text"
+        } else {
+            ""
+        }
+
 
     private fun AppCompatEditText.getParentView(): TextInputLayout? = parent.parent as? TextInputLayout
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log.d
 import com.edoctor.utils.NoConnectivityException
+import com.edoctor.utils.SslUtils.getTrustAllHostsSSLSocketFactory
 import com.edoctor.utils.connectivityManager
 import com.edoctor.utils.isNetworkAvailable
 import com.google.gson.Gson
@@ -31,8 +32,8 @@ class NetworkModule(
 ) {
 
     companion object {
-        const val EDOCTOR_HTTP_ENDPOINT = "http://localhost:9095"
-        const val EDOCTOR_WS_ENDPOINT = "ws://localhost:9095"
+        const val EDOCTOR_HTTP_ENDPOINT = "https://ec2-54-86-51-57.compute-1.amazonaws.com:443/"
+        const val EDOCTOR_WS_ENDPOINT = "wss://ec2-54-86-51-57.compute-1.amazonaws.com:443/"
 
         const val NETWORK_LOG_TAG = "Retrofit"
 
@@ -42,9 +43,9 @@ class NetworkModule(
         private const val CONNECT_TIMEOUT_SEC = 30L
         private const val READ_TIMEOUT_SEC = 30L
 
-        fun getAbsoluteImageUrl(relativeImageUrl: String) = EDOCTOR_HTTP_ENDPOINT + relativeImageUrl
+        fun getAbsoluteImageUrl(relativeImageUrl: String) = EDOCTOR_HTTP_ENDPOINT.removeSuffix("/") + relativeImageUrl
 
-        fun getRelativeImageUrl(absoluteImageUrl: String) = absoluteImageUrl.removePrefix(EDOCTOR_HTTP_ENDPOINT)
+        fun getRelativeImageUrl(absoluteImageUrl: String) = absoluteImageUrl.removePrefix(EDOCTOR_HTTP_ENDPOINT.removeSuffix("/"))
 
         fun createConnectivityInterceptor(connectivityManager: ConnectivityManager) = Interceptor {
             if (connectivityManager.isNetworkAvailable()) {
@@ -84,6 +85,12 @@ class NetworkModule(
     fun provideAuthorizedBookmateOkHttpClientBuilder(context: Context): OkHttpClient.Builder =
         OkHttpClient.Builder()
             .addConnectionTimeout()
+            .apply {
+                getTrustAllHostsSSLSocketFactory()?.let {
+                    sslSocketFactory(it.first, it.second)
+                    hostnameVerifier { _, _ -> true }
+                }
+            }
             .addInterceptor(createConnectivityInterceptor(context.connectivityManager))
             .addInterceptor(credentialsInterceptor)
             .addInterceptor(createLoggingInterceptor())
@@ -93,6 +100,12 @@ class NetworkModule(
     fun provideAnonymousBookmateOkHttpClientBuilder(context: Context): OkHttpClient.Builder =
         OkHttpClient.Builder()
             .addConnectionTimeout()
+            .apply {
+                getTrustAllHostsSSLSocketFactory()?.let {
+                    sslSocketFactory(it.first, it.second)
+                    hostnameVerifier { _, _ -> true }
+                }
+            }
             .addInterceptor(createConnectivityInterceptor(context.connectivityManager))
             .addInterceptor(anonymousInterceptor)
             .addInterceptor(createLoggingInterceptor())

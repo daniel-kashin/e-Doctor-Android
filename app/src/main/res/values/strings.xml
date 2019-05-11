@@ -17,8 +17,8 @@
     <string name="open_gps_settings_request_title">Open GPS settings?</string>
     <string name="open_gps_settings_request_message">Please, turn on GPS to be able to see your location on the map.</string>
 
-    <string name="yes">YES</string>
-    <string name="no">NO</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="ok" translatable="false">OK</string>
 
     <string name="try_again">Try again</string>
@@ -52,6 +52,8 @@
     <string name="city_hint">City</string>
     <string name="gender_hint">Gender</string>
     <string name="blood_group_hint">Blood group</string>
+    <string name="ready_for_consultation_now">Ready for consultation now</string>
+    <string name="ready_for_audio_and_video">Ready to use Audio and Video</string>
     <string name="years_of_experience_hint">Years of practical experience</string>
     <string name="category_hint">Category</string>
     <string name="specialization_hint">Specialization</string>
@@ -131,6 +133,7 @@
 
     <string name="main_information">Main information</string>
     <string name="career">Career</string>
+    <string name="consultations_settings">Consultations</string>
 
     <string name="incoming_call">Incoming call</string>
     <string name="outcoming_call">Outcoming call</string>
@@ -223,6 +226,7 @@
     <string name="requested_records_for_patient_disclaimer">You can send records to the patient. Patient will be able to delete them or move to the medcard</string>
 
     <string name="added_to_medcard">Added to medcard</string>
+    <string name="requested_for_adding">Requested for adding</string>
     <string name="deleted_from_medcard">Deleted from medcard</string>
     <string name="new_record_request_was_added_hyperlink">&lt;a href=>New record&lt;/a> to medcard</string>
     <string name="medcard_access_changed_hyperlink">Medcard &lt;a href=>access settings&lt;/a> were changed</string>
@@ -239,4 +243,28 @@
     <string name="image">Image</string>
 
     <string name="records_synchronization_error">Error while synchronizing records</string>
+
+    <string name="empty_conversations">Your conversations will be shown here</string>
+    <string name="empty_parameters_for_patient">Your body parameters will be shown here</string>
+    <string name="empty_parameters_for_doctor">Patient did not add any parameters</string>
+    <string name="empty_events_for_patient">Your events will be shown here</string>
+    <string name="empty_requested_events_for_patient">Doctor did not send you any records yet</string>
+    <string name="empty_requested_events_for_doctor">You did not send patient any records yet</string>
+    <string name="empty_events_for_doctor">Patient did not add any events</string>
+
+    <string name="wrong_password">Wrong password</string>
+    <string name="user_not_found">User not found</string>
+    <string name="user_already_exists">Such user already exists</string>
+
+    <string name="account_updated">Account was updated</string>
+
+    <string name="share_using">Share using:</string>
+
+    <string name="audio">Audio</string>
+    <string name="audio_plus_video">Audio And Video</string>
+    <string name="ready_for_consultation">Ready for consultation</string>
+    <string name="not_ready_for_consultation_now">Not ready for consultation now</string>
+    <string name="ready_for_audio">Ready to use Audio</string>
+    <string name="not_ready_for_audio_or_video">Not ready to use Audio or Video</string>
+
 </resources>

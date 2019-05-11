@@ -47,7 +47,6 @@ class AccountPresenter @Inject constructor(
             .observeOn(observeScheduler)
             .doOnSubscribe { setViewState { copy(isLoading = true) } }
             .doOnSuccess { setViewState { copy(account = it, selectedAvatar = null) } }
-
             .flatMap {
                 accountRepository.getCurrentAccount(refresh = true)
                     .subscribeOn(subscribeScheduler)
@@ -71,6 +70,8 @@ class AccountPresenter @Inject constructor(
         dateOfBirthTimestamp: Long?,
         isMale: Boolean?,
         bloodGroup: Int?,
+        isReadyForConsultation: Boolean?,
+        isReadyForAudio: Int?,
         yearsOfExperience: Int?,
         category: Int?,
         specialization: String?,
@@ -95,6 +96,8 @@ class AccountPresenter @Inject constructor(
                 city = city,
                 dateOfBirthTimestamp = dateOfBirthTimestamp,
                 isMale = isMale,
+                isReadyForAudio = isReadyForAudio ?: 0,
+                isReadyForConsultation = isReadyForConsultation ?: false,
                 yearsOfExperience = yearsOfExperience,
                 category = category,
                 specialization = specialization,
@@ -112,6 +115,7 @@ class AccountPresenter @Inject constructor(
             .doOnSubscribe { setViewState { copy(account = newAccount, isLoading = true) } }
             .subscribe({
                 setViewState { copy(account = it, selectedAvatar = null, isLoading = false) }
+                sendEvent(Event.ShowChangesSavedEvent)
             }, { throwable ->
                 setViewState { copy(account = oldAccount, isLoading = false) }
                 when {
@@ -158,6 +162,7 @@ class AccountPresenter @Inject constructor(
         object ShowNoNetworkException : Event()
         object ShowImageUploadException : Event()
         object ShowUnknownException : Event()
+        object ShowChangesSavedEvent : Event()
     }
 
 }

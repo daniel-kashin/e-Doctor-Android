@@ -94,8 +94,12 @@ dependencies {
     implementation androidDependencies.customTabs
     implementation androidDependencies.multidex
     implementation androidDependencies.constraintLayout
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
     implementation androidDependencies.glide
     implementation androidDependencies.glideAnnotations
+    kapt androidDependencies.glideCompiler
     implementation androidDependencies.glideOkHttp3
 
     // Dagger

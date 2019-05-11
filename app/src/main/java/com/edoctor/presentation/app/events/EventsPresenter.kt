@@ -11,7 +11,9 @@ import com.edoctor.presentation.app.events.EventsPresenter.Event
 import com.edoctor.presentation.app.events.EventsPresenter.ViewState
 import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
-import com.edoctor.utils.nothing
+import com.edoctor.utils.SessionExceptionHelper.isSessionException
+import com.edoctor.utils.disposableDelegate
+import com.edoctor.utils.isNoNetworkError
 import com.edoctor.utils.plusAssign
 import io.reactivex.Completable
 import io.reactivex.Scheduler
@@ -27,8 +29,11 @@ class EventsPresenter @Inject constructor(
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ViewState, Event>() {
 
+    private var updateDisposable by disposableDelegate
+
     private var addOrEditEventAction: ((MedicalEventModel) -> Single<MedicalEventModel>)? = null
     private var deleteEventAction: ((MedicalEventModel) -> Completable)? = null
+    private lateinit var getEventsSingleAction: (() -> Single<MedicalEventsInfo>)
 
     var isRequestedRecords: Boolean = false
     var currentUserIsPatient: Boolean = false
@@ -51,7 +56,7 @@ class EventsPresenter @Inject constructor(
                     medicalRecordsRepository.addOrEditEventForPatient(event.getAddedFromDoctorCopy(), patient.uuid)
                 }
                 deleteEventAction = { event -> medicalRecordsRepository.deleteEventForPatient(event) }
-                val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList(), false))
+                val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList(), false), true, false)
                 val single = medicalRecordsRepository.getRequestedMedicalEventsForPatient(doctor!!.uuid, patient.uuid)
                 viewState to single
             }
@@ -59,20 +64,21 @@ class EventsPresenter @Inject constructor(
                 addOrEditEventAction = { event ->
                     medicalRecordsRepository.addMedicalEventForDoctor(event, patient.uuid)
                 }
-                val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES, false))
+                val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES, false), true, false)
                 val single = medicalRecordsRepository.getRequestedMedicalEventsForDoctor(patient.uuid)
                 viewState to single
             }
             currentUserIsPatient && !isRequestedRecords -> {
                 canBeEdited = true
-                addOrEditEventAction = { event -> medicalRecordsRepository.addOrEditEventForPatient(event, patient.uuid) }
+                addOrEditEventAction =
+                        { event -> medicalRecordsRepository.addOrEditEventForPatient(event, patient.uuid) }
                 deleteEventAction = { event -> medicalRecordsRepository.deleteEventForPatient(event) }
-                val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES, false))
+                val viewState = ViewState(MedicalEventsInfo(emptyList(), MedicalEventType.ALL_MEDICAL_EVENT_TYPES, false), true, false)
                 val single = medicalRecordsRepository.getMedicalEventsForPatient(patient.uuid)
                 viewState to single
             }
             else -> {
-                val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList(), false))
+                val viewState = ViewState(MedicalEventsInfo(emptyList(), emptyList(), false), true, false)
                 val single = medicalRecordsRepository.getMedicalEventsForDoctor(patient.uuid)
                 viewState to single
             }
@@ -80,18 +86,27 @@ class EventsPresenter @Inject constructor(
 
         setViewState(initialViewState)
 
-        disposables += getEventsSingle
+        getEventsSingleAction = { getEventsSingle }
+    }
+
+    fun updateAllEvents() {
+        updateDisposable = getEventsSingleAction()
+            .doOnSubscribe { setViewState { copy(isLoading = true) } }
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
-            .subscribe(
-                {
-                    if (currentUserIsPatient && !it.isSynchronized) sendEvent(Event.ShowNotSynchronizedEvent)
-                    setViewState { copy(medicalEventsInfo = it) }
-                },
-                {
-                    nothing()
+            .subscribe({
+                if (currentUserIsPatient && !it.isSynchronized) {
+                    sendEvent(Event.ShowNotSynchronizedEvent)
                 }
-            )
+                setViewState { copy(medicalEventsInfo = it, wasLoaded = true, isLoading = false) }
+            }, {
+                setViewState { copy(isLoading = false) }
+                when {
+                    it.isSessionException() -> sendEvent(Event.ShowSessionException)
+                    it.isNoNetworkError() -> sendEvent(Event.ShowNoNetworkException)
+                    else -> sendEvent(Event.ShowUnhandledErrorEvent)
+                }
+            })
     }
 
     fun addOrEditEvent(event: MedicalEventModel) {
@@ -100,9 +115,9 @@ class EventsPresenter @Inject constructor(
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
-                    nothing()
+                    updateAllEvents()
                 }, {
-                    nothing()
+                    sendEvent(Event.ShowUnhandledErrorEvent)
                 })
         }
     }
@@ -113,19 +128,29 @@ class EventsPresenter @Inject constructor(
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
-                    nothing()
+                    updateAllEvents()
                 }, {
-                    nothing()
+                    sendEvent(Event.ShowUnhandledErrorEvent)
                 })
         }
     }
 
+    override fun destroy() {
+        updateDisposable = null
+        super.destroy()
+    }
+
     data class ViewState(
-        val medicalEventsInfo: MedicalEventsInfo
+        val medicalEventsInfo: MedicalEventsInfo,
+        val isLoading: Boolean,
+        val wasLoaded: Boolean
     ) : Presenter.ViewState
 
     sealed class Event : Presenter.Event {
         object ShowNotSynchronizedEvent : Event()
+        object ShowUnhandledErrorEvent : Event()
+        object ShowNoNetworkException : Event()
+        object ShowSessionException : Event()
     }
 
 }

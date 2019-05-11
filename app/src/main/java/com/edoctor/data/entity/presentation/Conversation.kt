@@ -12,7 +12,7 @@ class Conversation(
     private var _lastMessage: UserMessage
 ) : IDialog<UserMessage> {
 
-    val recipientUser = _lastMessage.run { recipientUser.takeIf { it != currentUser } ?: senderUser }
+    val recipientUser = _lastMessage.run { recipientUser.takeIf { it.uuid != currentUser.uuid } ?: senderUser }
 
     override fun getDialogPhoto() = recipientUser.relativeImageUrl
 

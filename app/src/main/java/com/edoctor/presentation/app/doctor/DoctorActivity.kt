@@ -14,9 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
+import androidx.core.content.ContextCompat
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
@@ -42,6 +40,8 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
     private val toolbar by lazyFind<Toolbar>(R.id.toolbar)
     private val imageView by lazyFind<ImageView>(R.id.image_view)
     private val name by lazyFind<TextView>(R.id.name)
+    private val readyForConsultation by lazyFind<TextView>(R.id.ready_for_consultation)
+    private val readyForAudio by lazyFind<TextView>(R.id.ready_for_audio)
     private val specialization by lazyFind<TextView>(R.id.specialization)
     private val category by lazyFind<TextView>(R.id.category)
     private val openChat by lazyFind<Button>(R.id.open_chat)
@@ -102,6 +102,11 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
         recordRequest.isFocusable = false
 
         showDoctorInfo(presenter.doctor)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter.updateDoctorInfo()
     }
 
     override fun render(viewState: ViewState) {
@@ -165,18 +170,40 @@ class DoctorActivity : BaseActivity<DoctorPresenter, ViewState, Event>("DoctorAc
 
     @SuppressLint("SetTextI18n")
     private fun showDoctorInfo(doctor: DoctorModel) {
-        Glide.with(this)
+        PicassoProvider.get(this)
             .load(doctor.relativeImageUrl)
-            .apply(
-                RequestOptions()
-                    .centerCrop()
-                    .placeholder(R.color.lightLightGrey)
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            )
+            .fit()
+            .centerCrop()
+            .placeholder(R.color.lightLightGrey)
             .into(imageView)
 
         name.text = doctor.fullName ?: getString(R.string.name_not_set)
+
+        val acceptColor = ContextCompat.getColor(this, R.color.accept_call)
+        val declineColor = ContextCompat.getColor(this, R.color.decline_call)
+
+        if (doctor.isReadyForConsultation) {
+            readyForConsultation.text = getString(R.string.ready_for_consultation_now)
+            readyForConsultation.setTextColor(acceptColor)
+        } else {
+            readyForConsultation.text = getString(R.string.not_ready_for_consultation_now)
+            readyForConsultation.setTextColor(declineColor)
+        }
+
+        when (doctor.isReadyForAudio) {
+            1 -> {
+                readyForAudio.text = getString(R.string.ready_for_audio)
+                readyForAudio.setTextColor(acceptColor)
+            }
+            2 -> {
+                readyForAudio.text = getString(R.string.ready_for_audio_and_video)
+                readyForAudio.setTextColor(acceptColor)
+            }
+            else -> {
+                readyForAudio.text = getString(R.string.not_ready_for_audio_or_video)
+                readyForAudio.setTextColor(declineColor)
+            }
+        }
 
         if (doctor.specialization != null) {
             specialization.text = doctor.specialization

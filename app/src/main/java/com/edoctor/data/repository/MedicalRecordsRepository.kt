@@ -37,7 +37,11 @@ class MedicalRecordsRepository(
 
     fun getRequestedMedicalEventsForDoctor(patientUuid: String): Single<MedicalEventsInfo> =
         requestedEventsRestApi.getRequestedEventsForDoctor(patientUuid)
-            .map { it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.toModelFromWrapper(wrapper) } }
+            .map { result ->
+                result.medicalEvents
+                    .mapNotNull { MedicalEventMapper.toModelFromWrapper(it) }
+                    .sortedBy { it.timestamp }
+            }
             .map {
                 MedicalEventsInfo(it, ALL_MEDICAL_EVENT_TYPES, true)
             }
@@ -53,10 +57,11 @@ class MedicalRecordsRepository(
             .map { MedicalEventMapper.toModelFromWrapper(it) }
 
     fun getMedicalEventsForDoctor(patientUuid: String): Single<MedicalEventsInfo> =
-        medicalEventsApi
-            .getEventsForDoctor(patientUuid)
-            .map {
-                it.medicalEvents.mapNotNull { wrapper -> MedicalEventMapper.toModelFromWrapper(wrapper) }
+        medicalEventsApi.getEventsForDoctor(patientUuid)
+            .map { result ->
+                result.medicalEvents
+                    .mapNotNull { MedicalEventMapper.toModelFromWrapper(it) }
+                    .sortedBy { it.timestamp }
             }
             .map {
                 MedicalEventsInfo(it, emptyList(), true)
@@ -65,8 +70,10 @@ class MedicalRecordsRepository(
     fun getLatestBodyParametersInfoForDoctor(patientUuid: String): Single<LatestBodyParametersInfo> =
         parametersApi
             .getLatestParametersOfEachTypeForDoctor(patientUuid)
-            .map {
-                it.bodyParameters.mapNotNull { wrapper -> toModelFromWrapper(wrapper) }
+            .map { parameters ->
+                parameters.bodyParameters
+                    .mapNotNull { wrapper -> toModelFromWrapper(wrapper) }
+                    .sortedBy { it.timestamp }
             }
             .map {
                 LatestBodyParametersInfo(it, emptyList(), false)
@@ -80,8 +87,10 @@ class MedicalRecordsRepository(
             .defer {
                 parametersApi.getParametersForDoctor(BodyParameterMapper.toWrapperType(bodyParameterType), patientUuid)
             }
-            .map {
-                it.bodyParameters.mapNotNull { wrapper -> BodyParameterMapper.toModelFromWrapper(wrapper) }
+            .map { result ->
+                result.bodyParameters
+                    .mapNotNull { wrapper -> BodyParameterMapper.toModelFromWrapper(wrapper) }
+                    .sortedBy { it.timestamp }
             }
 
     // endregion
@@ -93,13 +102,13 @@ class MedicalRecordsRepository(
             .flatMap { isSynchronized ->
                 medicalEventLocalStore.getRequestedEventsForPatient(doctorUuid, patientUuid)
                     .map { localEvents ->
-                        MedicalEventsInfo(
-                            localEvents.mapNotNull {
+                        val mappedEvents = localEvents
+                            .mapNotNull {
                                 MedicalEventMapper.toModelFromWrapper(MedicalEventMapper.toWrapperFromLocal(it))
-                            },
-                            emptyList(),
-                            isSynchronized
-                        )
+                            }
+                            .sortedBy { it.timestamp }
+
+                        MedicalEventsInfo(mappedEvents, emptyList(), isSynchronized)
                     }
             }
 
@@ -108,13 +117,13 @@ class MedicalRecordsRepository(
             .flatMap { isSynchronized ->
                 medicalEventLocalStore.getEventsForPatient(patientUuid)
                     .map { localEvents ->
-                        MedicalEventsInfo(
-                            localEvents.mapNotNull {
+                        val mappedEvents = localEvents
+                            .mapNotNull {
                                 MedicalEventMapper.toModelFromWrapper(MedicalEventMapper.toWrapperFromLocal(it))
-                            },
-                            ALL_MEDICAL_EVENT_TYPES,
-                            isSynchronized
-                        )
+                            }
+                            .sortedBy { it.timestamp }
+
+                        MedicalEventsInfo(mappedEvents, ALL_MEDICAL_EVENT_TYPES, isSynchronized)
                     }
             }
 
@@ -137,10 +146,12 @@ class MedicalRecordsRepository(
         synchronizeBodyParameters(patientUuid)
             .flatMap { isSynchronized ->
                 bodyParameterLocalStore.getLatestParametersOfEachTypeForPatient(patientUuid)
-                    .map {
-                        it.mapNotNull {
-                            BodyParameterMapper.toModelFromWrapper(BodyParameterMapper.toWrapperFromLocal(it))
-                        }
+                    .map { result ->
+                        result
+                            .mapNotNull {
+                                BodyParameterMapper.toModelFromWrapper(BodyParameterMapper.toWrapperFromLocal(it))
+                            }
+                            .sortedBy { it.timestamp }
                     }
                     .map { it to isSynchronized }
             }
@@ -166,9 +177,11 @@ class MedicalRecordsRepository(
                 BodyParameterMapper.toEntityType(bodyParameterType)
             )
             .map { parameters ->
-                parameters.mapNotNull {
-                    BodyParameterMapper.toModelFromWrapper(BodyParameterMapper.toWrapperFromLocal(it))
-                }
+                parameters
+                    .mapNotNull {
+                        BodyParameterMapper.toModelFromWrapper(BodyParameterMapper.toWrapperFromLocal(it))
+                    }
+                    .sortedBy { it.timestamp }
             }
 
     fun addOrEditParameterForPatient(parameter: BodyParameterModel, patientUuid: String): Single<BodyParameterModel> =
@@ -189,33 +202,40 @@ class MedicalRecordsRepository(
 
     // region synchronize
 
-    private fun synchronizeBodyParameters(patientUuid: String): Single<Boolean> = synchronized(synchronizeParametersLock) {
-        Single
-            .defer {
-                val lastSynchronizeTimestamp = Preferences.lastSynchronizeParametersTimestamp ?: -1
+    private fun synchronizeBodyParameters(patientUuid: String): Single<Boolean> =
+        synchronized(synchronizeParametersLock) {
+            Single
+                .defer {
+                    val lastSynchronizeTimestamp = Preferences.lastSynchronizeParametersTimestamp ?: -1
 
-                bodyParameterLocalStore
-                    .getParametersToSynchronizeForPatient(patientUuid)
-                    .map { it to lastSynchronizeTimestamp }
-            }
-            .flatMap { (parametersToSynchronize, lastSynchronizeTimestamp) ->
-                parametersApi.synchronizeParametersForPatient(
-                    SynchronizeBodyParametersModel(
-                        parametersToSynchronize.map { toWrapperFromLocal(it) },
-                        lastSynchronizeTimestamp
+                    bodyParameterLocalStore
+                        .getParametersToSynchronizeForPatient(patientUuid)
+                        .map { it to lastSynchronizeTimestamp }
+                }
+                .flatMap { (parametersToSynchronize, lastSynchronizeTimestamp) ->
+                    parametersApi.synchronizeParametersForPatient(
+                        SynchronizeBodyParametersModel(
+                            parametersToSynchronize.map { toWrapperFromLocal(it) },
+                            lastSynchronizeTimestamp
+                        )
                     )
-                )
-            }
-            .doOnSuccess { synchronizeBodyParametersModel ->
-                bodyParameterLocalStore
-                    .saveBlocking(
-                        synchronizeBodyParametersModel.bodyParameters.map { toLocalFromWrapper(it, patientUuid, false) }
-                    )
-                Preferences.lastSynchronizeParametersTimestamp = synchronizeBodyParametersModel.synchronizeTimestamp
-            }
-            .map { true }
-            .onErrorReturnItem(false)
-    }
+                }
+                .doOnSuccess { synchronizeBodyParametersModel ->
+                    bodyParameterLocalStore
+                        .saveBlocking(
+                            synchronizeBodyParametersModel.bodyParameters.map {
+                                toLocalFromWrapper(
+                                    it,
+                                    patientUuid,
+                                    false
+                                )
+                            }
+                        )
+                    Preferences.lastSynchronizeParametersTimestamp = synchronizeBodyParametersModel.synchronizeTimestamp
+                }
+                .map { true }
+                .onErrorReturnItem(false)
+        }
 
     private fun synchronizeMedicalEvents(patientUuid: String): Single<Boolean> = synchronized(synchronizeEventsLock) {
         Single
@@ -237,7 +257,13 @@ class MedicalRecordsRepository(
             .doOnSuccess { synchronizeEventsModel ->
                 medicalEventLocalStore
                     .saveBlocking(
-                        synchronizeEventsModel.events.map { MedicalEventMapper.toLocalFromWrapper(it, patientUuid, false) }
+                        synchronizeEventsModel.events.map {
+                            MedicalEventMapper.toLocalFromWrapper(
+                                it,
+                                patientUuid,
+                                false
+                            )
+                        }
                     )
                 Preferences.lastSynchronizeEventsTimestamp = synchronizeEventsModel.synchronizeTimestamp
             }
