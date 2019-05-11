@@ -18,6 +18,7 @@ object MedicalEventMapper {
             uuid = uuid,
             timestamp = timestamp,
             type = type,
+            isDeleted = isDeleted != 0,
             doctorCreatorUuid = doctorCreatorUuid,
             isAddedFromDoctor = isAddedFromDoctor != 0,
             endTimestamp = endTimestamp,
@@ -32,11 +33,17 @@ object MedicalEventMapper {
         )
     }
 
-    fun toLocalFromWrapper(medicalEventWrapper: MedicalEventWrapper, patientUuid: String): MedicalEventEntity = medicalEventWrapper.run {
+    fun toLocalFromWrapper(
+        medicalEventWrapper: MedicalEventWrapper,
+        patientUuid: String,
+        isChangedLocally: Boolean
+    ): MedicalEventEntity = medicalEventWrapper.run {
         MedicalEventEntity(
             uuid = uuid,
             timestamp = timestamp,
             type = type,
+            isChangedLocally = if (isChangedLocally) 1 else 0,
+            isDeleted = if (isDeleted) 1 else 0,
             doctorCreatorUuid = doctorCreatorUuid,
             isAddedFromDoctor = if (isAddedFromDoctor) 1 else 0,
             endTimestamp = endTimestamp,
@@ -58,6 +65,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     doctorCreatorUuid = doctorCreatorUuid,
+                    isDeleted = false,
                     isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_ANALYSIS,
@@ -71,6 +79,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     doctorCreatorUuid = doctorCreatorUuid,
+                    isDeleted = false,
                     isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_ALLERGY,
@@ -84,6 +93,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     doctorCreatorUuid = doctorCreatorUuid,
+                    isDeleted = false,
                     isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_NOTE,
@@ -94,6 +104,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     doctorCreatorUuid = doctorCreatorUuid,
+                    isDeleted = false,
                     isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_VACCINATION,
@@ -108,6 +119,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     doctorCreatorUuid = doctorCreatorUuid,
+                    isDeleted = false,
                     isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_PROCEDURE,
@@ -122,6 +134,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     doctorCreatorUuid = doctorCreatorUuid,
+                    isDeleted = false,
                     isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_DOCTOR_VISIT,
@@ -138,6 +151,7 @@ object MedicalEventMapper {
                 MedicalEventWrapper(
                     uuid = uuid,
                     doctorCreatorUuid = doctorCreatorUuid,
+                    isDeleted = false,
                     isAddedFromDoctor = isAddedFromDoctor,
                     timestamp = timestamp,
                     type = MEDICAL_EVENT_TYPE_SICKNESS,
@@ -154,13 +168,14 @@ object MedicalEventMapper {
         when (this.type) {
             MEDICAL_EVENT_TYPE_ANALYSIS -> {
                 name?.let {
-                    Analysis(uuid, doctorCreatorUuid, isAddedFromDoctor, timestamp, comment, clinic, name, diagnosis)
+                    Analysis(uuid, isDeleted, doctorCreatorUuid, isAddedFromDoctor, timestamp, comment, clinic, name, diagnosis)
                 }
             }
             MEDICAL_EVENT_TYPE_ALLERGY -> {
                 name?.let {
                     Allergy(
                         uuid,
+                        isDeleted,
                         doctorCreatorUuid,
                         isAddedFromDoctor,
                         timestamp,
@@ -172,12 +187,13 @@ object MedicalEventMapper {
                 }
             }
             MEDICAL_EVENT_TYPE_NOTE -> {
-                Note(uuid, doctorCreatorUuid, isAddedFromDoctor, timestamp, comment)
+                Note(uuid, isDeleted, doctorCreatorUuid, isAddedFromDoctor, timestamp, comment)
             }
             MEDICAL_EVENT_TYPE_VACCINATION -> {
                 name?.let {
                     Vaccination(
                         uuid,
+                        isDeleted,
                         doctorCreatorUuid,
                         isAddedFromDoctor,
                         timestamp,
@@ -193,6 +209,7 @@ object MedicalEventMapper {
                 name?.let {
                     Procedure(
                         uuid,
+                        isDeleted,
                         doctorCreatorUuid,
                         isAddedFromDoctor,
                         timestamp,
@@ -208,6 +225,7 @@ object MedicalEventMapper {
                 if (symptoms != null && diagnosis != null) {
                     DoctorVisit(
                         uuid,
+                        isDeleted,
                         doctorCreatorUuid,
                         isAddedFromDoctor,
                         timestamp,
@@ -227,6 +245,7 @@ object MedicalEventMapper {
                 diagnosis?.let {
                     Sickness(
                         uuid,
+                        isDeleted,
                         doctorCreatorUuid,
                         isAddedFromDoctor,
                         timestamp,

@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
@@ -16,8 +17,12 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.edoctor.R
 import com.edoctor.data.entity.remote.model.user.DoctorModel
 import com.edoctor.data.entity.remote.model.user.PatientModel
@@ -29,6 +34,9 @@ import com.edoctor.presentation.architecture.fragment.BaseFragment
 import com.edoctor.utils.*
 import com.edoctor.utils.SessionExceptionHelper.onSessionException
 import com.google.android.material.textfield.TextInputEditText
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.NetworkPolicy
+import com.squareup.picasso.Picasso
 import com.tbruyelle.rxpermissions.RxPermissions
 import java.text.SimpleDateFormat
 import java.util.*
@@ -56,12 +64,17 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     private var isMale: Boolean? = null
     private var categoryNumber: Int? = null
     private var bloodGroup: Int? = null
+    private var isReadyForConversation: Boolean? = null
+    private var isReadyForAudio: Int? = null
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var contentLayout: ConstraintLayout
 
     private lateinit var imageView: ImageView
     private lateinit var imageViewPlaceholder: ImageView
+    private lateinit var labelConsultation: TextView
+    private lateinit var readyForConversationEditText: TextInputEditText
+    private lateinit var readyForAudioEditText: TextInputEditText
     private lateinit var cityEditText: TextInputEditText
     private lateinit var fullNameEditText: TextInputEditText
     private lateinit var dateOfBirthEditText: TextInputEditText
@@ -84,7 +97,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
     private val doctorEditTexts by lazy {
         listOf(
             yearsOfExperienceEditText, categoryEditText, specializationEditText, clinicalInterestsEditText,
-            educationEditText, workExperienceEditText, trainingsEditText
+            educationEditText, workExperienceEditText, trainingsEditText, readyForConversationEditText,
+            readyForAudioEditText
         )
     }
 
@@ -112,6 +126,9 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout)
             imageView = findViewById(R.id.image_view)
             imageViewPlaceholder = findViewById(R.id.image_view_placeholder)
+            labelConsultation = findViewById(R.id.label_consultations_settings)
+            readyForConversationEditText = findViewById(R.id.ready_for_consultation)
+            readyForAudioEditText = findViewById(R.id.ready_for_audio)
             fullNameEditText = findViewById(R.id.full_name)
             dateOfBirthEditText = findViewById(R.id.date_of_birth)
             genderEditText = findViewById(R.id.gender)
@@ -203,7 +220,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             PopupMenu(bloodGroupEditText.context, bloodGroupEditText).apply {
                 menuInflater.inflate(R.menu.blood_group, menu)
                 setOnMenuItemClickListener { item ->
-                    bloodGroupEditText.setText( item.title)
+                    bloodGroupEditText.setText(item.title)
                     bloodGroup = when (item.itemId) {
                         R.id.first_negative -> 0
                         R.id.first_positive -> 1
@@ -214,6 +231,37 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                         R.id.fourth_negative -> 6
                         R.id.fourth_positive -> 7
                         else -> null
+                    }
+                    true
+                }
+                show()
+            }
+        }
+
+        readyForConversationEditText.setOnClickListener {
+            PopupMenu(readyForConversationEditText.context, readyForConversationEditText).apply {
+                menuInflater.inflate(R.menu.is_ready_for_conversation, menu)
+                setOnMenuItemClickListener { item ->
+                    readyForConversationEditText.setText(item.title)
+                    isReadyForConversation = when (item.itemId) {
+                        R.id.yes -> true
+                        else -> false
+                    }
+                    true
+                }
+                show()
+            }
+        }
+
+        readyForAudioEditText.setOnClickListener {
+            PopupMenu(readyForAudioEditText.context, readyForAudioEditText).apply {
+                menuInflater.inflate(R.menu.is_ready_for_audio, menu)
+                setOnMenuItemClickListener { item ->
+                    readyForAudioEditText.setText(item.title)
+                    isReadyForAudio = when (item.itemId) {
+                        R.id.audio -> 1
+                        R.id.audio_plus_video -> 2
+                        else -> 0
                     }
                     true
                 }
@@ -232,6 +280,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         dateOfBirthTimestamp = viewState.account?.dateOfBirthTimestamp
         categoryNumber = (viewState.account as? DoctorModel)?.category
         bloodGroup = (viewState.account as? PatientModel)?.bloodGroup
+        isReadyForConversation = (viewState.account as? DoctorModel)?.isReadyForConsultation
+        isReadyForAudio = (viewState.account as? DoctorModel)?.isReadyForAudio
 
         swipeRefreshLayout.isRefreshing = viewState.isLoading
 
@@ -243,6 +293,8 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                     dateOfBirthTimestamp = dateOfBirthTimestamp,
                     isMale = isMale,
                     bloodGroup = bloodGroup,
+                    isReadyForConsultation = isReadyForConversation,
+                    isReadyForAudio = isReadyForAudio,
                     yearsOfExperience = yearsOfExperienceEditText.text?.toString()?.toIntOrNull(),
                     category = categoryNumber,
                     specialization = specializationEditText.text?.toString()?.takeIfNotEmpty(),
@@ -255,27 +307,20 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
         }
 
         if (viewState.selectedAvatar != null) {
-            Glide.with(imageView.context)
+            PicassoProvider.get(imageView.context)
                 .load(viewState.selectedAvatar)
-                .apply(
-                    RequestOptions()
-                        .centerCrop()
-                        .placeholder(R.color.lightLightGrey)
-                        .dontAnimate()
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                )
+                .fit()
+                .centerCrop()
+                .placeholder(R.color.lightLightGrey)
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .networkPolicy(NetworkPolicy.OFFLINE)
                 .into(imageView)
         } else {
-            Glide.with(imageView.context)
+            PicassoProvider.get(imageView.context)
                 .load(viewState.account?.relativeImageUrl)
-                .apply(
-                    RequestOptions()
-                        .centerCrop()
-                        .placeholder(R.color.lightLightGrey)
-                        .dontAnimate()
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                )
+                .fit()
+                .centerCrop()
+                .placeholder(R.color.lightLightGrey)
                 .into(imageView)
         }
 
@@ -303,15 +348,31 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
 
             if (viewState.account is DoctorModel) {
                 labelCareer.show()
+                labelConsultation.show()
                 doctorEditTexts.forEach { (it.parent.parent as View).show() }
                 patientEditTexts.forEach { (it.parent.parent as View).hide() }
                 yearsOfExperienceEditText.setText(viewState.account.yearsOfExperience?.toString())
-                categoryEditText.setText(when (viewState.account.category) {
-                    0 -> getString(R.string.highest_category)
-                    1 -> getString(R.string.first_category)
-                    2 -> getString(R.string.second_category)
-                    else -> null
-                })
+                categoryEditText.setText(
+                    when (viewState.account.category) {
+                        0 -> getString(R.string.highest_category)
+                        1 -> getString(R.string.first_category)
+                        2 -> getString(R.string.second_category)
+                        else -> null
+                    }
+                )
+                readyForConversationEditText.setText(
+                    when (viewState.account.isReadyForConsultation) {
+                        true -> getString(R.string.yes)
+                        false -> getString(R.string.no)
+                    }
+                )
+                readyForAudioEditText.setText(
+                    when (viewState.account.isReadyForAudio) {
+                        1 -> getString(R.string.audio)
+                        2 -> getString(R.string.audio_plus_video)
+                        else -> getString(R.string.no)
+                    }
+                )
                 specializationEditText.setText(viewState.account.specialization)
                 clinicalInterestsEditText.setText(viewState.account.clinicalInterests)
                 educationEditText.setText(viewState.account.education)
@@ -319,6 +380,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
                 trainingsEditText.setText(viewState.account.trainings)
             } else if (viewState.account is PatientModel) {
                 labelCareer.hide()
+                labelConsultation.hide()
                 doctorEditTexts.forEach { (it.parent.parent as View).hide() }
                 patientEditTexts.forEach { (it.parent.parent as View).show() }
                 bloodGroupEditText.setText(
@@ -348,6 +410,7 @@ class AccountFragment : BaseFragment<AccountPresenter, ViewState, Event>("Accoun
             is Event.ShowNoNetworkException -> context.toast(getString(R.string.network_error_message))
             is Event.ShowImageUploadException -> context.toast(R.string.image_upload_error_message)
             is Event.ShowUnknownException -> context.toast(R.string.unhandled_error_message)
+            is Event.ShowChangesSavedEvent -> context.toast(R.string.account_updated)
         }
     }
 

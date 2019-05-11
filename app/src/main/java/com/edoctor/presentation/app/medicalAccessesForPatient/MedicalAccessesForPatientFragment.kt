@@ -61,7 +61,7 @@ class MedicalAccessesForPatientFragment :
     private fun initializeRecyclerView(context: Context) {
         adapter = MedicalAccessesForPatientAdapter().apply {
             onDeletePatientMedicalAccessClickListener = {
-                presenter.deleteMedicalAccessForDoctor(it.doctor)
+                presenter.deleteMedicalAccess(it.doctor)
             }
             onPatientMedicalAccessClickListener = { medicalAccess ->
                 context.session.runIfOpened { userModel ->

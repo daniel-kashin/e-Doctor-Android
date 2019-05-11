@@ -33,11 +33,13 @@ class MedicalEventEntityStorIOSQLitePutResolver : DefaultPutResolver<MedicalEven
      * {@inheritDoc}
      */
     public override fun mapToContentValues(`object`: MedicalEventEntity): ContentValues {
-        val contentValues = ContentValues(15)
+        val contentValues = ContentValues(17)
 
         contentValues.put("uuid", `object`.uuid)
         contentValues.put("type", `object`.type)
         contentValues.put("timestamp", `object`.timestamp)
+        contentValues.put("is_changed_locally", `object`.isChangedLocally)
+        contentValues.put("is_deleted", `object`.isDeleted)
         contentValues.put("patient_uuid", `object`.patientUuid)
         contentValues.put("is_added_from_doctor", `object`.isAddedFromDoctor)
         contentValues.put("end_timestamp", `object`.endTimestamp)

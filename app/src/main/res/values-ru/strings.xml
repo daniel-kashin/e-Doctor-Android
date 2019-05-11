@@ -14,8 +14,8 @@
     <string name="open_permission_settings_request_message">Пожалуйста, включите приложению доступ к геолокации, чтобы увидеть свое местоположение на карте.</string>
     <string name="open_gps_settings_request_title">Открыть настройки геолокации?</string>
     <string name="open_gps_settings_request_message">Пожалуйста, включите геолокацию, чтобы увидеть свое местоположение на карте.</string>
-    <string name="yes">ДА</string>
-    <string name="no">НЕТ</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
     <string name="try_again">Попробовать еще раз</string>
     <string name="network_error_message">Пожалуйста, проверьте соединение с интернетом</string>
     <string name="image_upload_error_message">Ошибка загрузки изображения</string>
@@ -94,7 +94,7 @@
     <string name="tab_parameters">Показатели</string>
     <string name="height">Рост</string>
     <string name="weight">Вес</string>
-    <string name="blood_pressure">Кровяное давление</string>
+    <string name="blood_pressure">Артериальное давление</string>
     <string name="blood_sugar">Сахар в крови</string>
     <string name="temperature">Температура тела</string>
     <string name="blood_oxygen">Кислород в крови</string>
@@ -190,4 +190,36 @@
     <string name="connected">Подключено</string>
 
     <string name="image">Изображение</string>
+
+    <string name="records_synchronization_error">Ошибка синхронизации записей</string>
+
+    <string name="deleted_from_medcard">Удалено из медкарты</string>
+
+    <string name="empty_conversations">Здесь будет отображен список ваших чатов</string>
+    <string name="empty_parameters_for_patient">Здесь будет отображен список ваших показателей</string>
+    <string name="empty_parameters_for_doctor">Пациент пока не добавил ни одного показателя</string>
+    <string name="empty_events_for_patient">Здесь будет отображен список ваших событий</string>
+    <string name="empty_requested_events_for_patient">Врач пока не отправил вам ни одной записи</string>
+    <string name="empty_requested_events_for_doctor">Вы пока не отправили пациенту ни одной записи</string>
+    <string name="empty_events_for_doctor">Пациент не добавил ни одного события</string>
+
+    <string name="wrong_password">Неверный пароль</string>
+    <string name="user_not_found">Пользователь не найден</string>
+    <string name="user_already_exists">Такой пользователь уже существует</string>
+
+    <string name="account_updated">Аккаунт был изменен</string>
+    <string name="requested_for_adding">Ожидает добавления</string>
+
+    <string name="share_using">Поделиться с помощью:</string>
+    <string name="consultations_settings">Консультации</string>
+    <string name="ready_for_consultation_now">Готов провести консультацию сейчас</string>
+    <string name="ready_for_consultation">Готов провести консультацию</string>
+    <string name="not_ready_for_consultation_now">Не готов провести консультацию сейчас</string>
+    <string name="ready_for_audio_and_video">Готов использовать Аудио и Видео</string>
+    <string name="ready_for_audio">Готов использовать Аудио</string>
+    <string name="not_ready_for_audio_or_video">Не готов использовать Аудио или Видео</string>
+
+    <string name="audio">Аудио</string>
+    <string name="audio_plus_video">Аудио и Видео</string>
+
 </resources>

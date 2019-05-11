@@ -18,6 +18,8 @@ data class DoctorModel(
     override val dateOfBirthTimestamp: Long? = null,
     override val isMale: Boolean? = null,
     override val relativeImageUrl: String? = null,
+    val isReadyForConsultation: Boolean = false,
+    val isReadyForAudio: Int = 0,
     val yearsOfExperience: Int? = null,
     val category: Int? = null,
     val specialization: String? = null,

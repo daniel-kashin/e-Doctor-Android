@@ -13,7 +13,7 @@ import com.edoctor.presentation.app.events.EventsAdapter.ViewHolder
 import com.edoctor.utils.*
 import java.text.SimpleDateFormat
 
-class EventsAdapter(val showStatus: Boolean) : RecyclerView.Adapter<ViewHolder>() {
+class EventsAdapter(private val showStatus: Boolean) : RecyclerView.Adapter<ViewHolder>() {
 
     var onEventClickListener: ((MedicalEventModel) -> Unit)? = null
 
@@ -96,10 +96,15 @@ class EventsAdapter(val showStatus: Boolean) : RecyclerView.Adapter<ViewHolder>(
 
             val (statusText, textColorRes) = if (showStatus) {
                 when {
+                    medicalEventModel.isDeleted -> {
+                        rootView.context.getString(R.string.deleted_from_medcard) to R.color.decline_call
+                    }
                     medicalEventModel.isAddedFromDoctor -> {
                         rootView.context.getString(R.string.added_to_medcard) to R.color.accept_call
                     }
-                    else -> null to null
+                    else -> {
+                        rootView.context.getString(R.string.requested_for_adding) to R.color.hintText
+                    }
                 }
             } else {
                 null to null

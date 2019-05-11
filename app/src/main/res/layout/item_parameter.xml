@@ -14,13 +14,14 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/date"
+            app:layout_constraintTop_toTopOf="parent"
             android:singleLine="true"
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintHorizontal_bias="0.0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Кровяное давление"/>
+            tools:text="Артериальное давление"/>
 
     <TextView
             android:id="@+id/date"

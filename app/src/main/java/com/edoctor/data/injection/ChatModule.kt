@@ -43,7 +43,7 @@ class ChatModule(
                 .addInterceptor(RecipientUuidInterceptor(recipientUser.uuid))
                 .build(),
             requestFactory = OkHttpWebSocket.SimpleRequestFactory(
-                { Request.Builder().url("$EDOCTOR_WS_ENDPOINT/chat").build() },
+                { Request.Builder().url("${EDOCTOR_WS_ENDPOINT}chat").build() },
                 { ShutdownReason.GRACEFUL }
             )
         )

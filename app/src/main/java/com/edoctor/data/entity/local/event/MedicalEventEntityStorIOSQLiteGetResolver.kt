@@ -34,10 +34,14 @@ class MedicalEventEntityStorIOSQLiteGetResolver : DefaultGetResolver<MedicalEven
         val diagnosis = cursor.getString(cursor.getColumnIndex("diagnosis"))
         val recipe = cursor.getString(cursor.getColumnIndex("recipe"))
         val comment = cursor.getString(cursor.getColumnIndex("comment"))
+        val isChangedLocally = cursor.getInt(cursor.getColumnIndex("is_changed_locally"))
+        val isDeleted = cursor.getInt(cursor.getColumnIndex("is_deleted"))
 
         return MedicalEventEntity(
             uuid,
             type,
+            isChangedLocally,
+            isDeleted,
             timestamp,
             patientUuid,
             isAddedFromDoctor,

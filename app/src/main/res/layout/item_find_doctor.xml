@@ -25,6 +25,7 @@
 
     <TextView
             android:id="@+id/name"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/card_image_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -37,9 +38,21 @@
             tools:text="Пупкин Василий Игоревич"/>
 
     <TextView
-            android:id="@+id/specialization"
+            android:id="@+id/ready_for_consultation"
             app:layout_constraintStart_toStartOf="@id/name"
             app:layout_constraintTop_toBottomOf="@id/name"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/ready_for_consultation"
+            android:textColor="@color/accept_call"
+            android:layout_marginTop="5dp"
+            android:textSize="18sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:id="@+id/specialization"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/ready_for_consultation"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="5dp"
             android:textSize="18sp"

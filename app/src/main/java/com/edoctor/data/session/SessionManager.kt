@@ -78,7 +78,7 @@ class SessionManager @Inject constructor(
                 .andThen(sessionStorage.remove())
                 .doOnComplete {
                     databaseOpenHelper.recreateTables()
-                    Preferences.clearUserData()
+                    Preferences.clearData()
                 }
                 .onErrorComplete()
                 .doOnComplete {

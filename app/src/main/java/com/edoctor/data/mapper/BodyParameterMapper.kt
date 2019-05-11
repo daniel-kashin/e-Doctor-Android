@@ -22,6 +22,7 @@ object BodyParameterMapper {
         BodyParameterWrapper(
             uuid = uuid,
             measurementTimestamp = measurementTimestamp,
+            isDeleted = isDeleted != 0,
             type = type,
             firstValue = firstValue,
             secondValue = secondValue,
@@ -30,11 +31,13 @@ object BodyParameterMapper {
         )
     }
 
-    fun toLocalFromWrapper(bodyParameterWrapper: BodyParameterWrapper, patientUuid: String): BodyParameterEntity =
+    fun toLocalFromWrapper(bodyParameterWrapper: BodyParameterWrapper, patientUuid: String, isChangedLocally: Boolean): BodyParameterEntity =
         bodyParameterWrapper.run {
             BodyParameterEntity(
                 uuid = uuid,
                 measurementTimestamp = measurementTimestamp,
+                isChangedLocally = if (isChangedLocally) 1 else 0,
+                isDeleted = if (isDeleted) 1 else 0,
                 type = type,
                 patientUuid = patientUuid,
                 firstValue = firstValue,
@@ -47,24 +50,25 @@ object BodyParameterMapper {
     fun toWrapperFromModel(bodyParameterModel: BodyParameterModel): BodyParameterWrapper = bodyParameterModel.let {
         when (it) {
             is HeightModel -> {
-                BodyParameterWrapper(it.uuid, it.timestamp, BODY_PARAMETER_TYPE_HEIGHT, it.centimeters)
+                BodyParameterWrapper(it.uuid, it.timestamp, false, BODY_PARAMETER_TYPE_HEIGHT, it.centimeters)
             }
             is WeightModel -> {
-                BodyParameterWrapper(it.uuid, it.timestamp, BODY_PARAMETER_TYPE_WEIGHT, it.kilograms)
+                BodyParameterWrapper(it.uuid, it.timestamp, false, BODY_PARAMETER_TYPE_WEIGHT, it.kilograms)
             }
             is BloodOxygenModel -> {
-                BodyParameterWrapper(it.uuid, it.timestamp, BODY_PARAMETER_TYPE_BLOOD_OXYGEN, it.percents.toDouble())
+                BodyParameterWrapper(it.uuid, it.timestamp, false, BODY_PARAMETER_TYPE_BLOOD_OXYGEN, it.percents.toDouble())
             }
             is BloodSugarModel -> {
-                BodyParameterWrapper(it.uuid, it.timestamp, BODY_PARAMETER_TYPE_BLOOD_SUGAR, it.mmolPerLiter)
+                BodyParameterWrapper(it.uuid, it.timestamp, false, BODY_PARAMETER_TYPE_BLOOD_SUGAR, it.mmolPerLiter)
             }
             is TemperatureModel -> {
-                BodyParameterWrapper(it.uuid, it.timestamp, BODY_PARAMETER_TYPE_TEMPERATURE, it.celsiusDegrees)
+                BodyParameterWrapper(it.uuid, it.timestamp, false, BODY_PARAMETER_TYPE_TEMPERATURE, it.celsiusDegrees)
             }
             is BloodPressureModel -> {
                 BodyParameterWrapper(
                     uuid = it.uuid,
                     measurementTimestamp = it.timestamp,
+                    isDeleted = false,
                     type = BODY_PARAMETER_TYPE_BLOOD_PRESSURE,
                     firstValue = it.systolicMmHg.toDouble(),
                     secondValue = it.diastolicMmHg.toDouble()
@@ -74,6 +78,7 @@ object BodyParameterMapper {
                 BodyParameterWrapper(
                     uuid = it.uuid,
                     measurementTimestamp = it.timestamp,
+                    isDeleted = false,
                     type = BODY_PARAMETER_TYPE_CUSTOM,
                     firstValue = it.value,
                     customModelName = it.name,

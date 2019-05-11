@@ -9,19 +9,21 @@ import com.edoctor.presentation.app.parameter.ParameterPresenter.Event
 import com.edoctor.presentation.app.parameter.ParameterPresenter.ViewState
 import com.edoctor.presentation.architecture.presenter.BasePresenter
 import com.edoctor.presentation.architecture.presenter.Presenter
-import com.edoctor.utils.nothing
+import com.edoctor.utils.disposableDelegate
 import com.edoctor.utils.plusAssign
 import io.reactivex.Scheduler
 import javax.inject.Inject
 import javax.inject.Named
 
 class ParameterPresenter @Inject constructor(
-    val medicalRecordsRepository: MedicalRecordsRepository,
+    private val medicalRecordsRepository: MedicalRecordsRepository,
     @Named(ApplicationModule.MAIN_THREAD_SCHEDULER)
     private val observeScheduler: Scheduler,
     @Named(ApplicationModule.IO_THREAD_SCHEDULER)
     private val subscribeScheduler: Scheduler
 ) : BasePresenter<ViewState, Event>() {
+
+    private var updateDisposable by disposableDelegate
 
     lateinit var parameterType: BodyParameterType
     lateinit var patient: PatientModel
@@ -34,52 +36,63 @@ class ParameterPresenter @Inject constructor(
 
         setViewState(ViewState(emptyList()))
 
+        updateAllParameters()
+    }
+
+    private fun updateAllParameters() {
         val getAllParametersSingle = if (currentUserIsPatient) {
-            medicalRecordsRepository.getAllParametersOfTypeForPatient(bodyParameterType, patient.uuid)
+            medicalRecordsRepository.getAllParametersOfTypeForPatient(parameterType, patient.uuid)
         } else {
-            medicalRecordsRepository.getAllParametersOfTypeForDoctor(bodyParameterType, patient.uuid)
+            medicalRecordsRepository.getAllParametersOfTypeForDoctor(parameterType, patient.uuid)
         }
 
-        disposables += getAllParametersSingle
+        updateDisposable = getAllParametersSingle
             .subscribeOn(subscribeScheduler)
             .observeOn(observeScheduler)
-            .subscribe({
-                setViewState { copy(parameters = it.sortedBy { it.timestamp }) }
-            }, { throwable ->
-                nothing()
+            .subscribe({ parameters ->
+                setViewState { copy(parameters = parameters) }
+            }, {
+                sendEvent(Event.ShowUnhandledErrorEvent)
             })
     }
 
     fun addOrEditParameter(parameter: BodyParameterModel) {
         if (currentUserIsPatient) {
-            disposables += medicalRecordsRepository.addOrEditParameterPatient(parameter, patient.uuid)
+            disposables += medicalRecordsRepository.addOrEditParameterForPatient(parameter, patient.uuid)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
-                    nothing()
+                    updateAllParameters()
                 }, {
-                    nothing()
+                    sendEvent(Event.ShowUnhandledErrorEvent)
                 })
         }
     }
 
-    fun removeParameter(parameter: BodyParameterModel) {
+    fun deleteParameter(parameter: BodyParameterModel) {
         if (currentUserIsPatient) {
-            disposables += medicalRecordsRepository.removeParameterForPatient(parameter)
+            disposables += medicalRecordsRepository.deleteParameterForPatient(parameter)
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observeScheduler)
                 .subscribe({
-                    nothing()
+                    updateAllParameters()
                 }, {
-                    nothing()
+                    sendEvent(Event.ShowUnhandledErrorEvent)
                 })
         }
+    }
+
+    override fun destroy() {
+        updateDisposable = null
+        super.destroy()
     }
 
     data class ViewState(
         val parameters: List<BodyParameterModel>
     ) : Presenter.ViewState
 
-    class Event : Presenter.Event
+    sealed class Event : Presenter.Event {
+        object ShowUnhandledErrorEvent : Event()
+    }
 
 }

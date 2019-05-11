@@ -32,6 +32,10 @@ interface CreatableByDoctor {
     fun getAddedFromDoctorCopy(): CreatableByDoctor
 }
 
+interface Deletable {
+    val isDeleted: Boolean
+}
+
 interface DocumentAttachable {
     val documents: List<String>
 }

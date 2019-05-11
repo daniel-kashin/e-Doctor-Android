@@ -1,12 +1,13 @@
 package com.edoctor.data.entity.local.parameter
 
-import com.edoctor.data.entity.local.message.MessageEntityContract
 
 object BodyParameterEntityContract {
     const val TABLE_NAME = "body_parameters"
 
     const val COLUMN_UUID = "uuid"
     const val COLUMN_TYPE = "type"
+    const val COLUMN_IS_CHANGED_LOCALLY = "is_changed_locally"
+    const val COLUMN_IS_DELETED = "is_deleted"
     const val COLUMN_MEASUREMENT_TIMESTAMP = "measurement_timestamp"
     const val COLUMN_PATIENT_UUID = "patient_uuid"
     const val COLUMN_FIRST_VALUE = "first_value"
@@ -18,6 +19,8 @@ object BodyParameterEntityContract {
         CREATE TABLE $TABLE_NAME(
             $COLUMN_UUID TEXT NOT NULL PRIMARY KEY,
             $COLUMN_TYPE INTEGER NOT NULL,
+            $COLUMN_IS_CHANGED_LOCALLY INTEGER NOT NULL,
+            $COLUMN_IS_DELETED INTEGER NOT NULL,
             $COLUMN_MEASUREMENT_TIMESTAMP INTEGER NOT NULL,
             $COLUMN_PATIENT_UUID TEXT NOT NULL,
             $COLUMN_FIRST_VALUE REAL NOT NULL,
@@ -26,6 +29,6 @@ object BodyParameterEntityContract {
             $COLUMN_CUSTOM_MODEL_UNIT TEXT
     );"""
 
-    internal val DELETE_TABLE_QUERY = "DROP TABLE IF EXISTS ${MessageEntityContract.TABLE_NAME}"
+    const val DELETE_TABLE_QUERY = "DROP TABLE IF EXISTS $TABLE_NAME"
 
 }

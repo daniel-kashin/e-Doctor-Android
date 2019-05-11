@@ -1,9 +1,8 @@
 package com.edoctor.data.remote.rest
 
-import com.edoctor.data.entity.remote.model.record.BodyParameterWrapper
+import com.edoctor.data.entity.remote.model.record.SynchronizeBodyParametersModel
 import com.edoctor.data.entity.remote.request.BodyParameterTypeWrapper
 import com.edoctor.data.entity.remote.response.BodyParametersResponse
-import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -12,33 +11,20 @@ import retrofit2.http.Query
 
 interface ParametersRestApi {
 
-    @POST("/parametersForPatient")
-    fun getParametersForPatient(
-        @Body type: BodyParameterTypeWrapper
-    ) : Single<BodyParametersResponse>
-
     @POST("/parametersForDoctor")
     fun getParametersForDoctor(
         @Body type: BodyParameterTypeWrapper,
         @Query("patientUuid") patientUuid: String
     ) : Single<BodyParametersResponse>
 
-    @GET("/latestParametersForPatient")
-    fun getLatestParametersOfEachTypeForPatient() : Single<BodyParametersResponse>
-
     @GET("/latestParametersForDoctor")
     fun getLatestParametersOfEachTypeForDoctor(
         @Query("patientUuid") patientUuid: String
     ): Single<BodyParametersResponse>
 
-    @POST("/addOrEditParameterForPatient")
-    fun addOrEditParameterForPatient(
-        @Body parameter: BodyParameterWrapper
-    ) : Single<BodyParameterWrapper>
-
-    @POST("/deleteParameterForPatient")
-    fun deleteParameterForPatient(
-        @Body parameter: BodyParameterWrapper
-    ) : Completable
+    @POST("/synchronizeParametersForPatient")
+    fun synchronizeParametersForPatient(
+        @Body request: SynchronizeBodyParametersModel
+    ): Single<SynchronizeBodyParametersModel>
 
 }

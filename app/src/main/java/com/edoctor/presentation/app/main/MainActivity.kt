@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (supportFragmentManager.findFragmentById(R.id.fragment_container) == null) {
-            bottomNavigationView.selectedItemId = R.id.action_account
+            bottomNavigationView.selectedItemId = R.id.action_chat
         }
     }
 
