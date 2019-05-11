@@ -21,8 +21,6 @@ import com.github.anrwatchdog.ANRWatchDog
 open class EDoctor : MultiDexApplication() {
 
     companion object {
-        private const val TAG = "EDoctor"
-
         val applicationKey: String
             get() = AppProperties[AppProperties.Key.APPLICATION_KEY]
 

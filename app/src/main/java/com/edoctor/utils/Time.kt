@@ -7,10 +7,6 @@ package com.edoctor.utils
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.FUNCTION)
 annotation class JavaTime
 
-/**
- * Denotes that marked Long or Int represents unix timestamp
- */
-@Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.FUNCTION)
 annotation class UnixTime
 

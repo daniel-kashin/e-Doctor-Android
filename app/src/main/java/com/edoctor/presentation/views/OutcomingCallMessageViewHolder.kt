@@ -14,8 +14,8 @@ class OutcomingCallMessageViewHolder(
     payload: Any?
 ) : MessageHolders.OutcomingTextMessageViewHolder<CallStatusMessage>(itemView, payload) {
 
-    val imageArrow by itemView.lazyFind<ImageView>(R.id.image_arrow)
-    val imagePhone by itemView.lazyFind<ImageView>(R.id.image_phone)
+    private val imageArrow by itemView.lazyFind<ImageView>(R.id.image_arrow)
+    private val imagePhone by itemView.lazyFind<ImageView>(R.id.image_phone)
 
     override fun onBind(data: CallStatusMessage) {
         super.onBind(data)

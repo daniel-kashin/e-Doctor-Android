@@ -4,10 +4,6 @@ import android.os.Bundle
 import android.os.Parcelable
 import java.io.Serializable
 
-fun bundleOf(params: List<Pair<String, Any?>>): Bundle = bundleOf(*params.toTypedArray())
-
-fun bundleOf(vararg params: Pair<String, Any?>): Bundle = Bundle().apply { params.forEach { (key, value) -> put(key, value) } }
-
 fun Bundle.put(k: String, v: Any?) {
     v ?: return
     when (v) {

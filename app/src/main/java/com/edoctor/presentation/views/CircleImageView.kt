@@ -16,8 +16,8 @@ import com.edoctor.utils.setColor
 
 class CircleImageView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
 
-    val circleView by lazyFind<FrameLayout>(R.id.circle_view)
-    val imageView by lazyFind<ImageView>(R.id.image_view)
+    private val circleView by lazyFind<FrameLayout>(R.id.circle_view)
+    private val imageView by lazyFind<ImageView>(R.id.image_view)
 
     init {
         inflate(context, R.layout.view_circle_image, this)

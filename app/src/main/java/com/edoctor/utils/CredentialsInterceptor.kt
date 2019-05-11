@@ -14,7 +14,7 @@ class CredentialsInterceptor(private val context: Application) : AnonymousInterc
     companion object {
         private const val HTTP_ERROR_EXPIRED_TOKEN = 401
 
-        private val AUTHORIZATION_HEADER = "Authorization"
+        private const val AUTHORIZATION_HEADER = "Authorization"
     }
 
     private val refreshTokenLock = Any()
@@ -57,8 +57,7 @@ class CredentialsInterceptor(private val context: Application) : AnonymousInterc
             val newRefreshToken = SessionInfo.RefreshToken(tokenResult.refreshToken)
             val accessToken = SessionInfo.AccessToken(tokenResult.tokenType, tokenResult.accessToken, expiresAfter)
             session.update {
-                val result = it.copy(refreshToken = newRefreshToken, accessToken = accessToken)
-                return@update result
+                return@update it.copy(refreshToken = newRefreshToken, accessToken = accessToken)
             }.blockingAwait()
             accessToken
         } catch (e: Exception) {

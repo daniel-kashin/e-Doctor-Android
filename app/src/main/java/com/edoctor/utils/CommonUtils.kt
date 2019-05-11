@@ -7,8 +7,6 @@ import rx.subscriptions.CompositeSubscription
 
 fun nothing(@Suppress("UNUSED_PARAMETER") param: Any? = null) {}
 
-fun unreachable(): Nothing = throw IllegalStateException("Unreachable code")
-
 fun <R> Boolean.either(left: R, right: R) = if (this) left else right
 
 fun String?.takeIfNotEmpty() = this?.takeIf(String::isNotEmpty)

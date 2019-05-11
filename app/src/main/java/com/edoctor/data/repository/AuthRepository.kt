@@ -6,7 +6,6 @@ import com.edoctor.data.entity.remote.model.user.UserModelWrapper
 import com.edoctor.data.remote.rest.AuthRestApi
 import com.edoctor.data.session.SessionInfo
 import com.edoctor.data.session.SessionManager
-import com.edoctor.utils.onErrorConvertRetrofitThrowable
 import com.edoctor.utils.unixTimeToJavaTime
 import io.reactivex.Completable
 import retrofit2.HttpException
@@ -32,7 +31,6 @@ class AuthRepository(
                         sessionManager.open(getSessionInfo(userResponseWrapper, token))
                     }
             }
-            .onErrorConvertRetrofitThrowable()
     }
 
     fun login(loginData: LoginDataRequest): Completable {
@@ -43,7 +41,6 @@ class AuthRepository(
                         sessionManager.open(getSessionInfo(userResponseWrapper, token))
                     }
             }
-            .onErrorConvertRetrofitThrowable()
     }
 
     fun logOut(): Completable {

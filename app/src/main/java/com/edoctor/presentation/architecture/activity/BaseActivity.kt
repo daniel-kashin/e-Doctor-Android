@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.annotation.CallSuper
 import com.edoctor.EDoctor
 import com.edoctor.data.injection.ApplicationComponent
-import com.edoctor.presentation.architecture.SessionHelper
 import com.edoctor.presentation.architecture.presenter.Presenter
 import com.edoctor.presentation.architecture.presenter.Presenter.Event
 import com.edoctor.presentation.architecture.presenter.Presenter.ViewState
@@ -17,11 +16,10 @@ import kotlin.LazyThreadSafetyMode.NONE
 import kotlin.reflect.KProperty1
 
 abstract class BaseActivity<P : Presenter<VS, EV>, VS : ViewState, EV : Event>(
-        protected val TAG: String?,
-        protected val saveRenderedViewState: Boolean = false
+    protected val TAG: String?,
+    protected val saveRenderedViewState: Boolean = false
 ) : ViewStateActivity<P, VS, EV>() {
 
-    private val sessionHelper = SessionHelper
     private val screenConfig by lazy(NONE) { createScreenConfig() }
 
     protected open fun createScreenConfig(): ScreenConfig = ScreenConfig()
@@ -59,12 +57,10 @@ abstract class BaseActivity<P : Presenter<VS, EV>, VS : ViewState, EV : Event>(
     @CallSuper
     override fun onResume() {
         super.onResume()
-        sessionHelper.resume()
     }
 
     @CallSuper
     override fun onPause() {
-        sessionHelper.pause()
         super.onPause()
     }
 
@@ -80,8 +76,8 @@ abstract class BaseActivity<P : Presenter<VS, EV>, VS : ViewState, EV : Event>(
     }
 
     protected inline fun <T> renderIfChanged(
-            property: KProperty1<VS, T>,
-            action: (oldValue: T?, newValue: T) -> Unit
+        property: KProperty1<VS, T>,
+        action: (oldValue: T?, newValue: T) -> Unit
     ): Boolean {
         if (!saveRenderedViewState)
             throw IllegalStateException("renderIfChanged(): allowed only with saveRenderedViewState == true")
@@ -101,7 +97,7 @@ abstract class BaseActivity<P : Presenter<VS, EV>, VS : ViewState, EV : Event>(
     protected fun w(message: String) = Log.w(TAG, message)
 
     class ScreenConfig constructor(
-            val isPortraitOrientationRequired: Boolean = false,
-            val isOpenedSessionRequired: Boolean = true
+        val isPortraitOrientationRequired: Boolean = false,
+        val isOpenedSessionRequired: Boolean = true
     )
 }

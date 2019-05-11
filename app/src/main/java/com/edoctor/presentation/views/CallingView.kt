@@ -10,7 +10,7 @@ import com.edoctor.utils.changesObservableDelegate
 import com.edoctor.utils.lazyFind
 import com.edoctor.utils.show
 
-class CallingView(val _context: Context, attrs: AttributeSet) : FrameLayout(_context, attrs) {
+class CallingView(private val _context: Context, attrs: AttributeSet) : FrameLayout(_context, attrs) {
 
     private val nameTextView by lazyFind<TextView>(R.id.name_text_view)
     private val statusTextView by lazyFind<TextView>(R.id.status_text_view)

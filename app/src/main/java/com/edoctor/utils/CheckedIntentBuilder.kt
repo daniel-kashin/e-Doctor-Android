@@ -10,10 +10,6 @@ import android.util.Log.w
 @Suppress("TooGenericExceptionCaught")
 abstract class CheckedIntentBuilder : IntentBuilder {
 
-    companion object {
-        fun isNotNull(vararg objects: Any?): Boolean = objects.all { it != null }
-    }
-
     constructor(context: Context) : super(context)
     constructor(fragment: androidx.fragment.app.Fragment) : super(fragment)
 

@@ -20,7 +20,7 @@ class IncomingHyperlinkTextMessageViewHolder(
     payload: Any?
 ) : MessageHolders.IncomingTextMessageViewHolder<UserMessage>(itemView, payload) {
 
-    val messageText by itemView.lazyFind<TextView>(R.id.messageText)
+    private val messageText by itemView.lazyFind<TextView>(R.id.messageText)
 
     override fun onBind(data: UserMessage) {
         super.onBind(data)

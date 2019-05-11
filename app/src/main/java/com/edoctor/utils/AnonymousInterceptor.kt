@@ -8,7 +8,7 @@ import okhttp3.Response
 open class AnonymousInterceptor : Interceptor {
 
     companion object {
-        private val AUTHORIZATION_HEADER = "Authorization"
+        private const val AUTHORIZATION_HEADER = "Authorization"
     }
 
     private val applicationBasicCredentials by lazy {
