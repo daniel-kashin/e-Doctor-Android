@@ -318,7 +318,7 @@ class ChatActivity : BaseActivity<ChatPresenter, ViewState, Event>("ChatActivity
 
     override fun showEvent(event: Event) {
         when (event) {
-            is Event.ShowException -> toast(event.throwable.toString())
+            is Event.ShowException -> toast(getString(R.string.unhandled_error_message))
             is Event.ShowNetworkException -> toast(getString(R.string.network_error_message))
             is Event.ShowSessionException -> onSessionException()
             is Event.ShowImageUploadStart -> toast(getString(R.string.image_upload_start))
