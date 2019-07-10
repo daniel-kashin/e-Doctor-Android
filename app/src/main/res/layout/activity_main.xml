@@ -7,7 +7,7 @@
               xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
-              tools:applicationContext="com.danielkashin.edoctor.presentation.app.main.MainActivity">
+              tools:applicationContext="com.infostrategic.edoctor.presentation.app.main.MainActivity">
 
     <FrameLayout
             android:id="@+id/fragment_container"

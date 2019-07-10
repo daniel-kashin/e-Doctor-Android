@@ -117,7 +117,7 @@
 
     </LinearLayout>
 
-    <com.danielkashin.edoctor.presentation.views.CallingView
+    <com.infostrategic.edoctor.presentation.views.CallingView
             android:id="@+id/calling_view"
             android:visibility="gone"
             android:layout_width="match_parent"

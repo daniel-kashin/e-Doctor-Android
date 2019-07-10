@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="com.danielkashin.edoctor">
+          xmlns:tools="http://schemas.android.com/tools" package="com.infostrategic.edoctor">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
-            android:name=".EDoctor"
+            android:name="com.infostrategic.edoctor.EDoctor"
             android:usesCleartextTraffic="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
@@ -19,7 +19,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme" tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
-        <activity android:name=".presentation.app.launch.LaunchActivity">
+        <activity android:name="com.infostrategic.edoctor.presentation.app.launch.LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -29,55 +29,55 @@
         </activity>
 
         <activity
-                android:name="com.danielkashin.edoctor.presentation.app.welcome.WelcomeActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.welcome.WelcomeActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.main.MainActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.main.MainActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.addParameter.AddOrEditParameterActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.addParameter.AddOrEditParameterActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.addEvent.AddOrEditEventActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.addEvent.AddOrEditEventActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name="com.danielkashin.edoctor.presentation.app.chat.ChatActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.chat.ChatActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.doctor.DoctorActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.doctor.DoctorActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.patient.PatientActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.patient.PatientActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.editMedicalAccess.EditMedicalAccessActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.editMedicalAccess.EditMedicalAccessActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.parameter.ParameterActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.parameter.ParameterActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.medcardForDoctor.MedcardForDoctorActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.medcardForDoctor.MedcardForDoctorActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.requestedRecordsForPatient.RequestedRecordsForPatientActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.requestedRecordsForPatient.RequestedRecordsForPatientActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.recordsForDoctor.RecordsForDoctorActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.recordsForDoctor.RecordsForDoctorActivity"
                 android:windowSoftInputMode="adjustPan"/>
 
         <activity
-                android:name=".presentation.app.imageViewerActivity.ImageViewerActivity"
+                android:name="com.infostrategic.edoctor.presentation.app.imageViewerActivity.ImageViewerActivity"
                 android:launchMode="singleTask"
                 android:windowSoftInputMode="adjustPan"/>
 

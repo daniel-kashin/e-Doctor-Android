@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 android {
     signingConfigs {
         eDoctor {
-            storeFile file('eDoctor')
+            storeFile file('eDoctorKey')
             storePassword 'eDoctor'
             keyAlias = 'eDoctor'
             keyPassword 'eDoctor'
@@ -16,7 +16,7 @@ android {
     buildToolsVersion androidBuildToolsVersion
 
     defaultConfig {
-        applicationId "com.danielkashin.edoctor"
+        applicationId "com.infostrategic.edoctor"
 
         minSdkVersion androidMinSdkVersion
         targetSdkVersion androidTargetSdkVersion

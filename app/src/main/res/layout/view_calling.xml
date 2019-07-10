@@ -36,7 +36,7 @@
             android:orientation="horizontal"
             android:layout_marginBottom="40dp">
 
-        <com.danielkashin.edoctor.presentation.views.CircleImageView
+        <com.infostrategic.edoctor.presentation.views.CircleImageView
                 android:id="@+id/enable_audio_image_view"
                 android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
@@ -44,7 +44,7 @@
                 android:layout_height="52dp"
                 android:layout_gravity="center_vertical"/>
 
-        <com.danielkashin.edoctor.presentation.views.CircleImageView
+        <com.infostrategic.edoctor.presentation.views.CircleImageView
                 android:id="@+id/accept_call_image_view"
                 android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
@@ -52,7 +52,7 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center_vertical"/>
 
-        <com.danielkashin.edoctor.presentation.views.CircleImageView
+        <com.infostrategic.edoctor.presentation.views.CircleImageView
                 android:id="@+id/decline_call_image_view"
                 android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
@@ -60,7 +60,7 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center_vertical"/>
 
-        <com.danielkashin.edoctor.presentation.views.CircleImageView
+        <com.infostrategic.edoctor.presentation.views.CircleImageView
                 android:id="@+id/enable_video_image_view"
                 android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
