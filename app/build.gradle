@@ -4,24 +4,32 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
+    signingConfigs {
+        eDoctor {
+            storeFile file('eDoctor')
+            storePassword 'eDoctor'
+            keyAlias = 'eDoctor'
+            keyPassword 'eDoctor'
+        }
+    }
     compileSdkVersion androidCompileSdkVersion
     buildToolsVersion androidBuildToolsVersion
 
     defaultConfig {
-        applicationId "com.edoctor"
+        applicationId "com.danielkashin.edoctor"
 
         minSdkVersion androidMinSdkVersion
         targetSdkVersion androidTargetSdkVersion
 
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.2"
 
         multiDexEnabled true
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
-            abiFilters "armeabi-v7a", "x86"
+            abiFilters 'armeabi-v7a','arm64-v8a','x86','x86_64'
         }
     }
 
